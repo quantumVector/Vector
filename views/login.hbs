@@ -1,0 +1,11 @@
+<div class="login">
+  <h2>Авторизация</h2>
+  {{#if errors}}
+  <h2 class="error-msg">{{errors}}</h2>
+  {{/if}}
+  <form action="/login" method="POST">
+    <label>Имя <input name="name" type="text" placeholder="Введите имя"></label><br>
+    <label>Пароль <input name="password" type="password" placeholder="Введите пароль"></label><br>
+    <input id="btn-login-user" type="submit" value="Войти">
+  </form>
+</div>
