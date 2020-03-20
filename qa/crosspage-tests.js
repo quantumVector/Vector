@@ -134,6 +134,40 @@ suite((env) => {
           'Сложный русский пароль',
           'Пароль должен содержать только цифры, латиницу, нижнее подчеркивание, тире');
       });
+
+      describe('Авторизация пользователя', () => {
+        it(`Пользователь не должен быть авторизован, если
+            он не зарегистрирован`, async () => {
+          await driver.get('http://localhost:3000/login');
+          await driver.findElement(By.name('name')).sendKeys('nonexistentUser');
+          await driver.findElement(By.name('password')).sendKeys('123456');
+          await driver.findElement(By.id('btn-login-user')).click();
+          const needUrl = 'http://localhost:3000/register';
+          const currentUrl = await driver.getCurrentUrl();
+          assert.strictEqual(needUrl, currentUrl);
+        });
+
+        it(`Пользователь должен быть авторизован, если
+            он зарегистрирован`, async () => {
+          await driver.get('http://localhost:3000/login');
+          await driver.findElement(By.name('name')).sendKeys('test');
+          await driver.findElement(By.name('password')).sendKeys('123456');
+          await driver.findElement(By.id('btn-login-user')).click();
+          const needUrl = 'http://localhost:3000/';
+          const currentUrl = await driver.getCurrentUrl();
+          assert.strictEqual(needUrl, currentUrl);
+        });
+
+        it(`Неавторизованный пользователь не должен попасть на страницу,
+            требующую авторизацию`, async () => {
+          await driver.get('http://localhost:3000/');
+          await driver.findElement(By.css('.logout')).click();
+          await driver.get('http://localhost:3000/achievements');
+          const needUrl = 'http://localhost:3000/login';
+          const currentUrl = await driver.getCurrentUrl();
+          assert.strictEqual(needUrl, currentUrl);
+        });
+      });
     });
   });
 
