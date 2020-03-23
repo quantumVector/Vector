@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -54,7 +55,8 @@ async function start() {
       useUnifiedTopology: true,
     });
     app.listen(PORT, () => {
-      console.log('Server has been started...');
+      console.log(`App listening to ${PORT}....`);
+      console.log('Press Ctrl+C to quit.');
     });
   } catch (e) {
     console.log(e);
