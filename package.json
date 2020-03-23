@@ -7,8 +7,6 @@
     "dev": "webpack-dev-server --mode development --open",
     "build": "webpack --mode production",
     "start": "node server.js",
-    "lint": "eslint loader.js",
-    "lint:fix": "eslint loader.js --fix",
     "cross-test": "mocha qa/crosspage-tests.js --timeout 10000",
     "unit-test": "mocha --u tdd qa/tests-unit.js",
     "tests": "npm run unit-test && npm run cross-test"
