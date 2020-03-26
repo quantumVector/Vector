@@ -21,6 +21,7 @@ router.get('/', async (req, res) => {
   res.render('index', {
     title: 'Goals Calendar',
     calendar,
+    calendarStyle: 'css/calendar.css',
   });
 });
 
