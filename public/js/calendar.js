@@ -59,12 +59,26 @@ class CalendarCreator {
     const table = document.createElement('table');
 
     div.classList.add(`${position}-calendar`);
+
+    this.constructor.makeTitle(year, month, div);
+
     div.appendChild(table);
 
     this.constructor.makeTHead(table);
     this.constructor.makeTBody(year, month, position, table);
 
     this.container.appendChild(div);
+  }
+
+  static makeTitle(year, month, div) {
+    const title = document.createElement('div');
+
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+      'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
+    title.classList.add('calendar-title');
+    title.innerText = `${months[month]} ${year}`;
+    div.appendChild(title);
   }
 
   static makeTHead(table) {

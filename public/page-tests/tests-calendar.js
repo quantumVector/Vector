@@ -173,5 +173,4 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(rightCalendar[1], newCalendar.rightCalendar[1]);
     });
   });
-
 });

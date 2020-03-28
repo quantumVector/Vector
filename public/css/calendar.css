@@ -9,7 +9,8 @@
   border: 1px solid green;
   position: absolute;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   top: 0;
   bottom: 0;
   width: 100%;
@@ -56,15 +57,22 @@
   content: '>';
 }
 
+.calendar .calendar-title {
+  padding: 20px 0;
+  font-size: 1.5vw;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
 .calendar table {
   border: 1px solid red;
   width: 80%;
-  height: 100%;
+  height: 90%;
 }
 
 .calendar table thead tr th {
   width: 14.28%;
-  font-size: 1.8vw;
+  font-size: 1.5vw;
   text-transform: uppercase;
 }
 
