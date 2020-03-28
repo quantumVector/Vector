@@ -87,7 +87,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(leftCalendar[1], newCalendar.currentDate[1]);
     });
 
-    it('Дата левого календаря должна поменяться на дату прошлого месяца, относительно новой текущей даты ', () => {
+    it('Дата левого календаря должна поменяться на дату прошлого месяца, относительно новой текущей даты', () => {
       const leftMonth = newCalendar.currentDate[1] - 1;
       let leftCalendar;
 
@@ -98,7 +98,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(leftCalendar[1], newCalendar.leftCalendar[1]);
     });
 
-    it('Дата центрального календаря должна поменяться на текущую дату ', () => {
+    it('Дата центрального календаря должна поменяться на текущую дату', () => {
       const leftMonth = date.getMonth() - 1;
       let leftCalendar;
 
@@ -109,7 +109,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(leftCalendar[1], newCalendar.middleCalendar[1]);
     });
 
-    it('Дата правого календаря должна поменяться на дату следующего месяца, относительно новой текущей даты ', () => {
+    it('Дата правого календаря должна поменяться на дату следующего месяца, относительно новой текущей даты', () => {
       const rightMonth = newCalendar.currentDate[1] + 1;
       let rightCalendar;
 
@@ -140,7 +140,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(rightCalendar[1], newCalendar.currentDate[1]);
     });
 
-    it('Дата левого календаря должна поменяться на дату прошлого месяца, относительно новой текущей даты ', () => {
+    it('Дата левого календаря должна поменяться на дату прошлого месяца, относительно новой текущей даты', () => {
       const leftMonth = newCalendar.currentDate[1] - 1;
       let leftCalendar;
 
@@ -151,7 +151,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(leftCalendar[1], newCalendar.leftCalendar[1]);
     });
 
-    it('Дата центрального календаря должна поменяться на текущую дату ', () => {
+    it('Дата центрального календаря должна поменяться на текущую дату', () => {
       const rightMonth = date.getMonth() + 1;
       let rightCalendar;
 
@@ -162,7 +162,7 @@ describe('Тестирования класса CalendarCreator', () => {
       assert.equal(rightCalendar[1], newCalendar.middleCalendar[1]);
     });
 
-    it('Дата правого календаря должна поменяться на дату следующего месяца, относительно новой текущей даты ', () => {
+    it('Дата правого календаря должна поменяться на дату следующего месяца, относительно новой текущей даты', () => {
       const rightMonth = newCalendar.currentDate[1] + 1;
       let rightCalendar;
 
@@ -171,6 +171,48 @@ describe('Тестирования класса CalendarCreator', () => {
 
       assert.equal(rightCalendar[0], newCalendar.rightCalendar[0]);
       assert.equal(rightCalendar[1], newCalendar.rightCalendar[1]);
+    });
+  });
+
+  describe('Рендер элементов таблицы', () => {
+    const container = document.createElement('div');
+    const newCalendar = new CalendarCreator(container);
+
+    newCalendar.install();
+
+    it('Название текущего месяца и года рендерится', () => {
+      const div = container.getElementsByClassName('middle-calendar')[0];
+      const title = div.getElementsByClassName('calendar-title')[0];
+
+      assert.isDefined(title);
+    });
+
+    it('Название месяца должно быть корректным', () => {
+      const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+        'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+
+      for (let i = 0; i < 12; i++) {
+        const leftCalendar = container.getElementsByClassName('left-calendar')[0];
+        const middleCalendar = container.getElementsByClassName('middle-calendar')[0];
+        const rightCalendar = container.getElementsByClassName('right-calendar')[0];
+
+        rightCalendar.remove();
+
+        middleCalendar.classList.remove('middle-calendar');
+        middleCalendar.classList.add('right-calendar');
+
+        leftCalendar.classList.remove('left-calendar');
+        leftCalendar.classList.add('middle-calendar');
+
+        newCalendar.update('left');
+
+        const div = container.getElementsByClassName('middle-calendar')[0];
+        const title = div.getElementsByClassName('calendar-title')[0];
+
+        const month = title.innerText.match(/^\S+/i);
+
+        assert.equal(months.indexOf(month[0]), newCalendar.currentDate[1]);
+      }
     });
   });
 });
