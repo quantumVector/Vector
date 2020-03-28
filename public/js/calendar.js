@@ -1,8 +1,7 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-undef */
 'use strict';
 
-// eslint-disable-next-line import/extensions
-// import CalendarCreator from './calendarCreator.js';
 class CalendarCreator {
   constructor(container) {
     this.currentDate = 0;
