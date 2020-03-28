@@ -7,8 +7,8 @@
     "dev": "webpack-dev-server --mode development --open",
     "build": "webpack --mode production",
     "start": "node server.js",
-    "cross-test": "mocha qa/crosspage-tests.js --timeout 10000",
-    "unit-test": "mocha --u tdd qa/tests-unit.js",
+    "cross-test": "mocha tests/crosspage-tests.js --timeout 10000",
+    "unit-test": "mocha --u tdd tests/unit-tests.js",
     "tests": "npm run unit-test && npm run cross-test"
   },
   "author": "",

@@ -43,6 +43,11 @@ app.use((req, res, next) => {
 
 app.use(express.static(`${__dirname}/public`));
 
+app.use((req, res, next) => {
+  res.locals.showTests = environment !== 'production' && req.query.test === '1';
+  next();
+});
+
 app.use(routes);
 
 // ------------------------------ Database Connection ----------------------------------

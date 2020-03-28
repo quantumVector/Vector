@@ -3,4 +3,21 @@
   {{> navbar}}
 
   {{{ body }}}
+
+  {{#if showTests}}
+    <div id="mocha"></div>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.js"></script>
+      <script>
+        mocha.setup('bdd');
+      </script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.0.0/chai.js"></script>
+      <script>
+        let assert = chai.assert;
+      </script>
+      <script src="page-tests/tests-global.js"></script>
+      {{#if pageTestScript}}
+        <script src="{{pageTestScript}}" ></script>
+      {{/if}}
+      <script>mocha.run();</script>
+  {{/if}}
 </html>

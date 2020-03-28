@@ -22,6 +22,7 @@ router.get('/', async (req, res) => {
     title: 'Goals Calendar',
     calendar,
     calendarStyle: 'css/calendar.css',
+    pageTestScript: 'page-tests/tests-calendar.js',
   });
 });
 
