@@ -27,11 +27,12 @@ router.get('/', async (req, res) => {
   });
 });
 
-router.get('/settings', (req, res) => {
+router.get('/settings', async (req, res) => {
   if (req.session.userId) {
     res.render('settings', {
       title: 'Настройки',
       isSettings: true,
+      actions: await UserActions.getActions(req.session.userId),
       style: 'css/settings.css',
       pageTestScript: 'page-tests/tests-settings.js',
     });
@@ -195,6 +196,18 @@ router.post('/settings', (req, res) => {
       res.redirect('/');
     },
   );
+});
+
+router.get('/getdata', async (req, res) => {
+  let actions;
+
+  await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
+    if (err) throw err;
+
+    actions = user.actions;
+  });
+
+  res.json(actions);
 });
 
 module.exports = router;
