@@ -187,7 +187,7 @@ router.post('/settings', (req, res) => {
   const { action, period, debt } = req.body;
 
   UserCalendar.findOneAndUpdate(
-    { name: 'test' },
+    { _id: new ObjectId(req.session.userId) },
     { $push: { actions: UserActions.addAction(action, period, debt) } },
     (err) => {
       if (err) throw err;
@@ -195,8 +195,6 @@ router.post('/settings', (req, res) => {
       res.redirect('/');
     },
   );
-
-  // res.redirect('/');
 });
 
 module.exports = router;
