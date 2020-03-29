@@ -214,5 +214,19 @@ describe('Тестирования класса CalendarCreator', () => {
         assert.equal(months.indexOf(month[0]), newCalendar.currentDate[1]);
       }
     });
+
+    it('Голова таблицы рендерится', () => {
+      const div = container.getElementsByClassName('middle-calendar')[0];
+      const thead = div.getElementsByTagName('thead')[0];
+
+      assert.isDefined(thead);
+    });
+
+    it('Тело таблицы рендерится', () => {
+      const div = container.getElementsByClassName('middle-calendar')[0];
+      const tbody = div.getElementsByTagName('tbody')[0];
+
+      assert.isDefined(tbody);
+    });
   });
 });
