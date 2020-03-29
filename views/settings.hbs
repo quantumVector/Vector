@@ -1,7 +1,7 @@
 <section class="settings">
   <form action="/settings" method="POST" class="create-action">
     <label>Название действия <input name="action" type="text" placeholder="Введите название фазы"></label><br>
-    <p>Каждый день <input type="checkbox" id="all-days" name="period" value="all" checked></p>
+    <p>Каждый день <input type="checkbox" id="everyday" name="period" value="everyday" checked></p>
     <p>В определённые дни:
       <div class="days-action">
         <div>Понедельник <input type="checkbox" name="period" value="Пн" disabled></div>
@@ -18,4 +18,9 @@
   </form>
 </section>
 
-<script src="js/settings.js"></script>
+<section class="actions">
+  <h2>Текущие действия</h2>
+  <div class="actions-box"></div>
+</section>
+
+<script src="js/settings.js" defer></script>

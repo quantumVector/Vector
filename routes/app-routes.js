@@ -32,7 +32,6 @@ router.get('/settings', async (req, res) => {
     res.render('settings', {
       title: 'Настройки',
       isSettings: true,
-      actions: await UserActions.getActions(req.session.userId),
       style: 'css/settings.css',
       pageTestScript: 'page-tests/tests-settings.js',
     });

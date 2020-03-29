@@ -19,3 +19,30 @@
 .settings .create-action .days-action div {
   margin-right: 20px;
 }
+
+.actions {
+  border: 1px solid blue;
+}
+.actions h2 {
+  text-align: center;
+}
+
+.actions .actions-box {
+  border: 1px solid red;
+  display: flex;
+  justify-content: center;
+}
+
+.actions .action-item {
+  border: 1px solid green;
+  min-width: 20%;
+  margin-right: 20px;
+}
+
+.actions .action-name {
+  border: 1px solid purple;
+}
+
+.actions .action-days {
+  border: 1px solid indigo;
+}
