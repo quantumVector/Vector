@@ -1,0 +1,21 @@
+.settings {
+  border: 1px solid blue;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.settings .create-action {
+  border: 1px solid green;
+  width: 80%;
+}
+
+.settings .create-action .days-action {
+  border: 1px solid purple;
+  display: flex;
+  padding: 0 20px;
+}
+
+.settings .create-action .days-action div {
+  margin-right: 20px;
+}

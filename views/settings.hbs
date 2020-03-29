@@ -1,6 +1,21 @@
-<h2>Settings</h2>
+<section class="settings">
+  <form action="/settings" method="POST" class="create-action">
+    <label>Название действия <input name="phase" type="text" placeholder="Введите название фазы"></label><br>
+    <p>Каждый день <input type="checkbox" id="all-days" name="period" value="all" checked></p>
+    <p>В определённые дни:
+      <div class="days-action">
+        <div>Понедельник <input type="checkbox" name="period" value="Пн" disabled></div>
+        <div>Вторник <input type="checkbox" name="period" value="Вт" disabled></div>
+        <div>Среда <input type="checkbox" name="period" value="Ср" disabled></div>
+        <div>Четверг <input type="checkbox" name="period" value="Чт" disabled></div>
+        <div>Пятница <input type="checkbox" name="period" value="Пт" disabled></div>
+        <div>Суббота <input type="checkbox" name="period" value="Сб" disabled></div>
+        <div>Воскресенье <input type="checkbox" name="period" value="Вс" disabled></div>
+      </div>
+    </p>
+    <p>Учитывать долги <input type="checkbox" name="debt" value="1"></p>
+    <button id="btn-create-phase" type="submit">Создать фазу</button>
+  </form>
+</section>
 
-<form action="/settings" method="POST">
-  <label>Название фазы<input name="phase" type="text" placeholder="Введите название фазы"></label><br>
-  <button id="btn-create-phase" type="submit">Создать фазу</button>
-</form>
+<script src="js/settings.js"></script>

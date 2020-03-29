@@ -22,7 +22,7 @@ router.get('/', async (req, res) => {
   res.render('index', {
     title: 'Goals Calendar',
     calendar,
-    calendarStyle: 'css/calendar.css',
+    style: 'css/calendar.css',
     pageTestScript: 'page-tests/tests-calendar.js',
   });
 });
@@ -32,6 +32,8 @@ router.get('/settings', (req, res) => {
     res.render('settings', {
       title: 'Настройки',
       isSettings: true,
+      style: 'css/settings.css',
+      pageTestScript: 'page-tests/tests-settings.js',
     });
   } else {
     res.redirect('/login');
