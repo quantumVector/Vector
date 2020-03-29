@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { check, body, validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types.ObjectId;
 const UserCalendar = require('../models/UserCalendar');
+const UserActions = require('../lib/user-actions');
 
 const router = Router();
 
@@ -171,7 +172,8 @@ router.post('/register', [
     UserCalendar.create({
       name,
       password,
-      actions: { tester: 123 },
+      // actions: UserActions.createActions(),
+      // actions: 'something',
     }, (error, post) => {
       console.log(error, post);
     });
@@ -180,5 +182,19 @@ router.post('/register', [
   }
 });
 // ------------------------------ Register user end ----------------------------------
+
+router.post('/settings', (req, res) => {
+  const { phase } = req.body;
+
+  console.log(phase);
+
+  UserCalendar.findOneAndUpdate({ name: 'test' }, { $push: { actions: UserActions.addAction(phase) } }, (err) => {
+    if (err) throw err;
+
+    res.redirect('/');
+  });
+
+  // res.redirect('/');
+});
 
 module.exports = router;

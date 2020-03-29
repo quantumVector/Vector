@@ -9,7 +9,7 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  actions: {},
+  actions: [],
 });
 
 module.exports = model('UserCalendar', schema);
