@@ -174,8 +174,6 @@ router.post('/register', [
     UserCalendar.create({
       name,
       password,
-      // actions: UserActions.createActions(),
-      // actions: 'something',
     }, (error, post) => {
       console.log(error, post);
     });
@@ -186,15 +184,17 @@ router.post('/register', [
 // ------------------------------ Register user end ----------------------------------
 
 router.post('/settings', (req, res) => {
-  const { phase } = req.body;
+  const { action, period, debt } = req.body;
 
-  console.log(phase);
+  UserCalendar.findOneAndUpdate(
+    { name: 'test' },
+    { $push: { actions: UserActions.addAction(action, period, debt) } },
+    (err) => {
+      if (err) throw err;
 
-  UserCalendar.findOneAndUpdate({ name: 'test' }, { $push: { actions: UserActions.addAction(phase) } }, (err) => {
-    if (err) throw err;
-
-    res.redirect('/');
-  });
+      res.redirect('/');
+    },
+  );
 
   // res.redirect('/');
 });
