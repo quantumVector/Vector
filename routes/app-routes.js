@@ -193,6 +193,8 @@ router.post('/settings', [
     .withMessage('Название должно содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел'),
 
   body('name').trim(),
+
+  check('period').not().isEmpty().withMessage('Должен быть указан минимум один день'),
 ], (req, res) => {
   const errorFormatter = ({ msg }) => msg;
   const result = validationResult(req).formatWith(errorFormatter);
