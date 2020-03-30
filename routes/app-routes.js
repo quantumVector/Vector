@@ -187,7 +187,7 @@ router.post('/settings', [
   check('action', 'Название должно состоять от 1 до 30 символов и содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел')
     .not().isEmpty()
     .withMessage('Вы не указали название')
-    .isLength({ min: 1, max: 16 })
+    .isLength({ min: 1, max: 30 })
     .withMessage('Название должно состоять от 1 до 30 символов')
     .matches(/^[a-zA-Z0-9_ -]+$/, 'i')
     .withMessage('Название должно содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел'),
@@ -226,6 +226,18 @@ router.get('/getdata', async (req, res) => {
   let actions;
 
   await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
+    if (err) throw err;
+
+    actions = user.actions;
+  });
+
+  res.json(actions);
+});
+
+router.get('/getdata-test', async (req, res) => {
+  let actions;
+
+  await UserCalendar.findOne({ name: 'simulated tester' }, (err, user) => {
     if (err) throw err;
 
     actions = user.actions;
