@@ -32,24 +32,32 @@ class Settings {
   async renderActions(container) {
     await this.getData();
 
-    for (const action of this.data) {
-      const div = document.createElement('div');
-      const name = document.createElement('h2');
-      const box = document.createElement('div');
-      const boxTitle = document.createElement('h3');
-      const debt = document.createElement('p');
+    if (this.data.length) {
+      for (const action of this.data) {
+        const div = document.createElement('div');
+        const name = document.createElement('h2');
+        const box = document.createElement('div');
+        const boxTitle = document.createElement('h3');
+        const debt = document.createElement('p');
 
-      container.appendChild(div);
-      div.classList.add('action-item');
-      div.appendChild(name);
-      name.classList.add('action-name');
-      div.appendChild(boxTitle);
-      boxTitle.innerText = 'Периодичность:';
-      div.appendChild(box);
-      box.classList.add('action-days');
-      div.appendChild(debt);
+        container.appendChild(div);
+        div.classList.add('action-item');
+        div.appendChild(name);
+        name.classList.add('action-name');
+        div.appendChild(boxTitle);
+        boxTitle.innerText = 'Периодичность:';
+        div.appendChild(box);
+        box.classList.add('action-days');
+        div.appendChild(debt);
 
-      this.constructor.embedData(action, name, box, debt);
+        this.constructor.embedData(action, name, box, debt);
+      }
+    } else {
+      const emptyMsg = document.createElement('p');
+
+      emptyMsg.classList.add('empty-msg');
+      emptyMsg.innerText = 'Вы ещё не создали ни одного действия';
+      container.appendChild(emptyMsg);
     }
   }
 
