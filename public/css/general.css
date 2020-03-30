@@ -33,3 +33,10 @@ nav ul li{
   z-index: 1000;
   background-color: #fff;
 }
+
+.error-msg {
+  border: 1px solid red;
+  padding: 10px 20px;
+  font-weight: bold;
+  color: red;
+}

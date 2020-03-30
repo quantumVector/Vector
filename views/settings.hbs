@@ -1,5 +1,8 @@
 <section class="settings">
   <form action="/settings" method="POST" class="create-action">
+    {{#if errors}}
+      <p class="error-msg">{{errors}}</p>
+    {{/if}}
     <label>Название действия <input name="action" type="text" placeholder="Введите название фазы"></label><br>
     <p>Каждый день <input type="checkbox" id="everyday" name="period" value="everyday" checked></p>
     <p>В определённые дни:
