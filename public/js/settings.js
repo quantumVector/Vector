@@ -79,5 +79,5 @@ const settings = new Settings();
 settings.renderActions(document.getElementsByClassName('actions-box')[0]);
 
 everyday.addEventListener('click', () => {
-  settings.togglePeriod();
+  settings.constructor.togglePeriod();
 });
