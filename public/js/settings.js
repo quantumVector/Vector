@@ -29,9 +29,7 @@ class Settings {
     }
   }
 
-  async renderActions() {
-    const container = document.getElementsByClassName('actions-box')[0];
-
+  async renderActions(container) {
     await this.getData();
 
     for (const action of this.data) {
@@ -78,7 +76,7 @@ class Settings {
 
 const settings = new Settings();
 
-settings.renderActions();
+settings.renderActions(document.getElementsByClassName('actions-box')[0]);
 
 everyday.addEventListener('click', () => {
   settings.togglePeriod();
