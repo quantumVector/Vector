@@ -183,18 +183,43 @@ router.post('/register', [
 });
 // ------------------------------ Register user end ----------------------------------
 
-router.post('/settings', (req, res) => {
-  const { action, period, debt } = req.body;
+router.post('/settings', [
+  check('action', 'Название должно состоять от 1 до 30 символов и содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел')
+    .not().isEmpty()
+    .withMessage('Вы не указали название')
+    .isLength({ min: 1, max: 16 })
+    .withMessage('Название должно состоять от 1 до 30 символов')
+    .matches(/^[a-zA-Z0-9_ -]+$/, 'i')
+    .withMessage('Название должно содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел'),
 
-  UserCalendar.findOneAndUpdate(
-    { _id: new ObjectId(req.session.userId) },
-    { $push: { actions: UserActions.addAction(action, period, debt) } },
-    (err) => {
-      if (err) throw err;
+  body('name').trim(),
 
-      res.redirect('/');
-    },
-  );
+  check('period').not().isEmpty().withMessage('Должен быть указан минимум один день'),
+], (req, res) => {
+  const errorFormatter = ({ msg }) => msg;
+  const result = validationResult(req).formatWith(errorFormatter);
+
+  if (!result.isEmpty()) {
+    res.render('settings', {
+      title: 'Настройки',
+      isSettings: true,
+      style: 'css/settings.css',
+      pageTestScript: 'page-tests/tests-settings.js',
+      errors: result.array({ onlyFirstError: true })[0],
+    });
+  } else {
+    const { action, period, debt } = req.body;
+
+    UserCalendar.findOneAndUpdate(
+      { _id: new ObjectId(req.session.userId) },
+      { $push: { actions: UserActions.addAction(action, period, debt) } },
+      (err) => {
+        if (err) throw err;
+
+        res.redirect('/');
+      },
+    );
+  }
 });
 
 router.get('/getdata', async (req, res) => {
