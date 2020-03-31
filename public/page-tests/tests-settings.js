@@ -82,7 +82,7 @@ describe('Тестирование страницы "Настройки"', () =>
     });
 
     it('Название действия должно отображаться в соответствующем ему блоке', () => {
-      for (let i = 1; i < settings.data.length; i++) {
+      for (let i = 0; i < settings.data.length; i++) {
         const nameAction = div.getElementsByClassName('action-name')[i];
         const key = Object.keys(dataTester[i])[0];
 
@@ -91,19 +91,50 @@ describe('Тестирование страницы "Настройки"', () =>
     });
 
     it('Периодичность должна отображаться в соответствующем ему блоке', () => {
-      assert();
+      for (let i = 0; i < settings.data.length; i++) {
+        const daysAction = div.getElementsByClassName('action-days')[i];
+        const key = Object.keys(dataTester[i])[0];
+        let period = dataTester[i][key].params.days;
+
+        if (Array.isArray(period)) period = period.join(', ');
+        if (period === 'everyday') period = 'Каждый день';
+
+        assert.equal(daysAction.innerText, period);
+      }
     });
 
     it('Должна отображаться надпись "Каждый день", если в действии был указан соответсвущий пункт', () => {
-      assert();
+      for (let i = 0; i < settings.data.length; i++) {
+        const daysAction = div.getElementsByClassName('action-days')[i];
+        const key = Object.keys(dataTester[i])[0];
+        const period = dataTester[i][key].params.days;
+
+        if (period === 'everyday') assert.equal(daysAction.innerText, 'Каждый день');
+      }
     });
 
-    it('Должныо ображаться дни, которые были выбраны для действия', () => {
-      assert();
+    it('Должны отображаться дни, которые были выбраны для действия', () => {
+      for (let i = 0; i < settings.data.length; i++) {
+        const daysAction = div.getElementsByClassName('action-days')[i];
+        const key = Object.keys(dataTester[i])[0];
+        const period = dataTester[i][key].params.days;
+
+        if (Array.isArray(period)) assert.equal(daysAction.innerText, period.join(', '));
+      }
     });
 
     it('Информация об учёте долгов должна отображаться в соответствующем ему блоке', () => {
-      assert();
+      for (let i = 0; i < settings.data.length; i++) {
+        const actionDebt = div.getElementsByClassName('action-debt')[i];
+        const key = Object.keys(dataTester[i])[0];
+        const dataDebt = dataTester[i][key].params.debt;
+
+        if (dataDebt) {
+          assert.equal(actionDebt.innerText, 'Долги учитываются');
+        } else {
+          assert.equal(actionDebt.innerText, 'Без учёта долгов');
+        }
+      }
     });
   });
 });
