@@ -49,6 +49,7 @@ class Settings {
         div.appendChild(box);
         box.classList.add('action-days');
         div.appendChild(debt);
+        debt.classList.add('action-debt');
 
         this.constructor.embedData(action, name, box, debt);
       }
