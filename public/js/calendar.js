@@ -1,5 +1,5 @@
-/* eslint-disable no-plusplus */
 /* eslint-disable no-undef */
+
 'use strict';
 
 class CalendarCreator {

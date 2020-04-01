@@ -1,7 +1,7 @@
 {
     "extends": ["airbnb/base"],
     "rules": {
-        "no-restricted-syntax": ["error", "FunctionExpression", "WithStatement", "BinaryExpression[operator='in']"],
+        "no-restricted-syntax": ["error", "WithStatement", "BinaryExpression[operator='in']"],
         "strict": "off",
         "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
     }
