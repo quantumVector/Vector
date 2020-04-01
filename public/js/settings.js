@@ -34,24 +34,24 @@ class Settings {
 
     if (this.data.length) {
       for (const action of this.data) {
-        const div = document.createElement('div');
+        const item = document.createElement('div');
         const name = document.createElement('h2');
         const box = document.createElement('div');
         const boxTitle = document.createElement('h3');
         const debt = document.createElement('p');
 
-        container.appendChild(div);
-        div.classList.add('action-item');
-        div.appendChild(name);
+        container.appendChild(item);
+        item.classList.add('action-item');
+        item.appendChild(name);
         name.classList.add('action-name');
-        div.appendChild(boxTitle);
+        item.appendChild(boxTitle);
         boxTitle.innerText = 'Периодичность:';
-        div.appendChild(box);
+        item.appendChild(box);
         box.classList.add('action-days');
-        div.appendChild(debt);
+        item.appendChild(debt);
         debt.classList.add('action-debt');
 
-        this.constructor.embedData(action, name, box, debt);
+        this.constructor.embedData(item, action, name, box, debt);
       }
     } else {
       const emptyMsg = document.createElement('p');
@@ -62,13 +62,14 @@ class Settings {
     }
   }
 
-  static embedData(action, name, box, debt) {
+  static embedData(item, action, name, box, debt) {
     for (const key in action) {
       if ({}.hasOwnProperty.call(action, key)) {
         /* eslint-disable no-param-reassign */
         // eslint-disable-next-line prefer-destructuring
         const days = action[key].params.days;
 
+        item.dataset.id = action[key].params.id;
         name.innerText = key;
 
         if (action[key].params.days === 'everyday') box.innerText = 'Каждый день';
