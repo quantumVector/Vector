@@ -169,6 +169,42 @@ suite((env) => {
         });
       });
     });
+
+    describe('Валидация создания действия в настройках', () => {
+      before(async () => {
+        await driver.get('http://localhost:3000/login');
+        await driver.findElement(By.name('name')).sendKeys('test');
+        await driver.findElement(By.name('password')).sendKeys('123456');
+        await driver.findElement(By.id('btn-login-user')).click();
+      });
+
+      function makeTest(nameTest, nameSend, compare) {
+        it(nameTest, async () => {
+          await driver.get('http://localhost:3000/settings');
+          await driver.findElement(By.name('action')).sendKeys(nameSend);
+          await driver.findElement(By.id('btn-create-action')).click();
+          const errorMsg = await driver.findElement(By.css('.error-msg')).getText();
+          assert.strictEqual(errorMsg, compare);
+        });
+      }
+
+      makeTest('Название не должен быть пустым', '', 'Вы не указали название');
+      makeTest('Название не должено быть более 30 символов',
+        'Сууууууууупер Длинное Назвааааааание',
+        'Название должно состоять от 1 до 30 символов');
+      makeTest('Название должно состоять только из допустимых символов',
+        '№:?@ .,\\вайвай',
+        'Название должно содержать только цифры, латиницу, кириллицу, нижнее подчеркивание, тире, пробел');
+
+      it('Должен быть выбран минимум один день при выборе определённого дня периода', async () => {
+        await driver.get('http://localhost:3000/settings');
+        await driver.findElement(By.name('action')).sendKeys('Action Cross Test');
+        await driver.findElement(By.id('everyday')).click();
+        await driver.findElement(By.id('btn-create-action')).click();
+        const errorMsg = await driver.findElement(By.css('.error-msg')).getText();
+        assert.strictEqual(errorMsg, 'Должен быть указан минимум один день');
+      });
+    });
   });
 
 });
