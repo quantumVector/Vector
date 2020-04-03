@@ -12,7 +12,7 @@ const schema = new Schema({
   actions: [{
     name: { type: String },
     days: [],
-    dabt: { type: Number },
+    debt: { type: Boolean, default: false },
     status: { type: Boolean, default: true },
   }],
 });
