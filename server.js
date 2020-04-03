@@ -30,6 +30,7 @@ app.use(session({
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   const { userId } = req.session;

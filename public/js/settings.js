@@ -39,6 +39,7 @@ class Settings {
         const box = document.createElement('div');
         const boxTitle = document.createElement('h3');
         const debt = document.createElement('p');
+        const deleteBtn = document.createElement('button');
 
         container.appendChild(item);
         item.classList.add('action-item');
@@ -50,6 +51,9 @@ class Settings {
         box.classList.add('action-days');
         item.appendChild(debt);
         debt.classList.add('action-debt');
+        deleteBtn.classList.add('delete-action');
+        deleteBtn.innerText = 'Удалить';
+        item.appendChild(deleteBtn);
 
         this.constructor.embedData(item, action, name, box, debt);
       }
@@ -63,11 +67,11 @@ class Settings {
   }
 
   static embedData(item, action, name, box, debt) {
-    for (const key in action) {
-      if ({}.hasOwnProperty.call(action, key)) {
+    /* for (const key in action) {
+      if ({}.hasOwnProperty.call(action, key)) { */
         /* eslint-disable no-param-reassign */
         // eslint-disable-next-line prefer-destructuring
-        const days = action[key].params.days;
+        /* const days = action[key].params.days;
 
         item.dataset.id = action[key].params.id;
         name.innerText = key;
@@ -80,7 +84,34 @@ class Settings {
           debt.innerText = 'Без учёта долгов';
         }
       }
+    } */
+
+    /* eslint-disable no-param-reassign */
+    // eslint-disable-next-line prefer-destructuring
+    const days = action.days;
+
+    item.dataset.id = action._id;
+    name.innerText = action.name;
+
+    if (action.days === 'everyday') box.innerText = 'Каждый день';
+    if (Array.isArray(action.days)) box.innerText = days.join(', ');
+    if (action.debt) {
+      debt.innerText = 'Долги учитываются';
+    } else {
+      debt.innerText = 'Без учёта долгов';
     }
+  }
+
+  static async deleteAction(actionId) {
+    const obj = { actionId };
+
+    const response = await fetch('/delete-action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(obj),
+    });
   }
 }
 
@@ -90,4 +121,12 @@ settings.renderActions(document.getElementsByClassName('actions-box')[0]);
 
 everyday.addEventListener('click', () => {
   settings.constructor.togglePeriod();
+});
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.delete-action')) {
+    const actionId = e.target.closest('.action-item').getAttribute('data-id');
+
+    settings.constructor.deleteAction(actionId);
+  }
 });
