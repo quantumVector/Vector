@@ -32,8 +32,8 @@ class Settings {
   async renderActions(container) {
     await this.getData();
 
-    if (this.data.length) {
-      for (const action of this.data) {
+    for (const action of this.data) {
+      if (action.status) {
         const item = document.createElement('div');
         const name = document.createElement('h2');
         const box = document.createElement('div');
@@ -57,7 +57,9 @@ class Settings {
 
         this.constructor.embedData(item, action, name, box, debt);
       }
-    } else {
+    }
+
+    if (!container.children.length) {
       const emptyMsg = document.createElement('p');
 
       emptyMsg.classList.add('empty-msg');
@@ -67,29 +69,11 @@ class Settings {
   }
 
   static embedData(item, action, name, box, debt) {
-    /* for (const key in action) {
-      if ({}.hasOwnProperty.call(action, key)) { */
-        /* eslint-disable no-param-reassign */
-        // eslint-disable-next-line prefer-destructuring
-        /* const days = action[key].params.days;
-
-        item.dataset.id = action[key].params.id;
-        name.innerText = key;
-
-        if (action[key].params.days === 'everyday') box.innerText = 'Каждый день';
-        if (Array.isArray(action[key].params.days)) box.innerText = days.join(', ');
-        if (action[key].params.debt) {
-          debt.innerText = 'Долги учитываются';
-        } else {
-          debt.innerText = 'Без учёта долгов';
-        }
-      }
-    } */
-
     /* eslint-disable no-param-reassign */
     // eslint-disable-next-line prefer-destructuring
     const days = action.days;
 
+    // eslint-disable-next-line no-underscore-dangle
     item.dataset.id = action._id;
     name.innerText = action.name;
 
@@ -102,9 +86,8 @@ class Settings {
     }
   }
 
-  static async deleteAction(actionId) {
+  async deleteAction(actionId, container) {
     const obj = { actionId };
-
     const response = await fetch('/delete-action', {
       method: 'POST',
       headers: {
@@ -112,12 +95,29 @@ class Settings {
       },
       body: JSON.stringify(obj),
     });
+
+    if (response.ok) {
+      const elems = document.getElementsByClassName('action-item');
+
+      [].forEach.call(elems, (elem) => {
+        const itemId = elem.getAttribute('data-id');
+
+        if (itemId === actionId) {
+          console.dir(this);
+          elem.remove();
+          this.renderActions(container);
+        }
+      });
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
   }
 }
 
+const container = document.getElementsByClassName('actions-box')[0];
 const settings = new Settings();
 
-settings.renderActions(document.getElementsByClassName('actions-box')[0]);
+settings.renderActions(container);
 
 everyday.addEventListener('click', () => {
   settings.constructor.togglePeriod();
@@ -127,6 +127,6 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('.delete-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
-    settings.constructor.deleteAction(actionId);
+    settings.deleteAction(actionId, container);
   }
 });

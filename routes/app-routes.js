@@ -252,29 +252,12 @@ router.post('/delete-action', async (req, res) => {
   await UserCalendar.findOneAndUpdate(
     { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: actionId } } },
     { $set: { 'actions.$.status': false } },
-    (err, user) => {
-    if (err) throw err;
+    (err) => {
+      if (err) throw err;
 
-    console.log(user);
-    /* for (const action of user.actions) {
-      for (key in action) {
-        if ({}.hasOwnProperty.call(action, key)) {
-          // eslint-disable-next-line eqeqeq
-          if (action[key].params.id == actionId) {
-            console.log(action[key].params);
-          }
-        }
-      }
-    } */
-
-    /* for (key in actions) {
-      if ({}.hasOwnProperty.call(actions, key)) {
-        console.log(key);
-      }
-    } */
-  });
-
-  res.json('Okey');
+      res.json(`${actionId} was deleted`);
+    },
+  );
 });
 
 module.exports = router;
