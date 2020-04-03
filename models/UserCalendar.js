@@ -9,7 +9,12 @@ const schema = new Schema({
     type: String,
     required: true,
   },
-  actions: [],
+  actions: [{
+    name: { type: String },
+    days: [],
+    dabt: { type: Number },
+    status: { type: Boolean, default: true },
+  }],
 });
 
 module.exports = model('UserCalendar', schema);
