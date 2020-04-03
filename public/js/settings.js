@@ -103,8 +103,8 @@ class Settings {
         const itemId = elem.getAttribute('data-id');
 
         if (itemId === actionId) {
-          console.dir(this);
           elem.remove();
+          container.innerHTML = '';
           this.renderActions(container);
         }
       });

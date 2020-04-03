@@ -216,7 +216,7 @@ router.post('/settings', [
       (err) => {
         if (err) throw err;
 
-        res.redirect('/');
+        res.redirect('/settings');
       },
     );
   }
