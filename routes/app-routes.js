@@ -216,7 +216,7 @@ router.post('/settings', [
       (err) => {
         if (err) throw err;
 
-        res.redirect('/');
+        res.redirect('/settings');
       },
     );
   }
@@ -244,6 +244,20 @@ router.get('/getdata-test', async (req, res) => {
   });
 
   res.json(actions);
+});
+
+router.post('/delete-action', async (req, res) => {
+  const { actionId } = req.body;
+
+  await UserCalendar.findOneAndUpdate(
+    { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: actionId } } },
+    { $set: { 'actions.$.status': false } },
+    (err) => {
+      if (err) throw err;
+
+      res.json(`${actionId} was deleted`);
+    },
+  );
 });
 
 module.exports = router;
