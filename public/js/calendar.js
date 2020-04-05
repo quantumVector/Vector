@@ -19,6 +19,7 @@ class CalendarCreator {
     this.renderCalendar(this.leftCalendar[0], this.leftCalendar[1], 'left');
     this.renderCalendar(this.middleCalendar[0], this.middleCalendar[1], 'middle');
     this.renderCalendar(this.rightCalendar[0], this.rightCalendar[1], 'right');
+    this.insertData();
   }
 
   setDates() {
@@ -138,6 +139,77 @@ class CalendarCreator {
     }
 
     table.appendChild(tbody);
+  }
+
+  async insertData() {
+    await this.getData();
+
+    for (const action of this.data) {
+      this.constructor.scanActionActivity(action);
+    }
+  }
+
+  async getData() {
+    const response = await fetch('/getdata');
+
+    if (response.ok) {
+      this.data = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
+  // Данная функция будет вызываться отдельно для каждого действия со статусом true
+  static async scanActionActivity(action) {
+    const currentDate = new Date(); // Получить текущую дату
+    const createdDate = new Date(action.created); // Получить дату создания действия
+    const actionActivity = action.dates; // Получить существующие в бд даты активности
+    const newActivity = []; // контейнер для новых активностей
+    const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
+    let i = 0;
+
+    while (createdDate.getDate() !== currentDate.getDate()) {
+      currentDate.setDate(currentDate.getDate() - i);
+      i = 1;
+      sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+    }
+
+    // сравнение количества существующих дат и фактической их суммы
+    // если есть разница, то добавить новые активности в контейнер
+    if (actionActivity.length !== sumDays.length) {
+      for (let x = 0; x < sumDays.length; x++) {
+        if (!actionActivity[x]) {
+          newActivity.push({
+            year: sumDays[x][0],
+            month: sumDays[x][1],
+            day: sumDays[x][2],
+          });
+        }
+      }
+    }
+
+    // если контейнер не пустой, то отправить данные на сервер
+    if (newActivity.length) {
+      const obj = {
+        // eslint-disable-next-line no-underscore-dangle
+        id: action._id,
+        activities: newActivity,
+      };
+
+      const response = await fetch('/set-new-activities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(obj),
+      });
+
+      if (response.ok) {
+        console.log('Активность обновлена');
+      } else {
+        throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+      }
+    }
   }
 }
 
