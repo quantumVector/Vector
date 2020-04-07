@@ -139,6 +139,7 @@ class CalendarCreator {
     }
 
     table.appendChild(tbody);
+    tbody.setAttribute('data-month', month);
   }
 
   async insertData() {
@@ -147,6 +148,9 @@ class CalendarCreator {
     for (const action of this.data) {
       this.constructor.scanActionActivity(action);
     }
+
+    await this.getData();
+    console.log(this.data);
   }
 
   async getData() {
@@ -171,7 +175,24 @@ class CalendarCreator {
     while (createdDate.getDate() !== currentDate.getDate()) {
       currentDate.setDate(currentDate.getDate() - i);
       i = 1;
-      sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+
+      // учитываем, что если действие имеет конкретный день, то добавлять только его
+      if (action.days[0] !== 'everyday') {
+        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        const number = currentDate.getDay();
+
+        for (let z = 0; z < action.days.length; z++) {
+          if (action.days[z] === days[number]) {
+            sumDays.push([
+              currentDate.getFullYear(),
+              currentDate.getMonth(),
+              currentDate.getDate(),
+            ]);
+          }
+        }
+      } else {
+        sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+      }
     }
 
     // сравнение количества существующих дат и фактической их суммы
@@ -211,6 +232,29 @@ class CalendarCreator {
       }
     }
   }
+
+  async insertMiddleData() {
+    const month = {
+      year: this.middleCalendar[0],
+      month: this.middleCalendar[1],
+    };
+
+    const response = await fetch('/get-month-activity', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(month),
+    });
+
+    if (response.ok) {
+      this.middleCalendarActivity = await response.json();
+      console.log(this.middleCalendarActivity);
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
 }
 
 const calendar = new CalendarCreator(document.getElementsByClassName('calendar')[0]);

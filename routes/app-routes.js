@@ -263,20 +263,27 @@ router.post('/delete-action', async (req, res) => {
 router.post('/set-new-activities', async (req, res) => {
   const { id, activities } = req.body;
 
-  console.log(id);
-  console.log(activities);
-
   await UserCalendar.findOneAndUpdate(
     { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: id } } },
     { $addToSet: { 'actions.$.dates': activities } },
     (err) => {
       if (err) throw err;
 
-      console.log('success');
-
       res.json('success');
     },
   );
 });
+
+/* router.post('/get-month-activity', async (req, res) => {
+  const { year, month } = req.body;
+
+  console.log(year);
+  console.log(month);
+
+  await UserCalendar.find(
+    { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: id } } },
+  );
+});
+ */
 
 module.exports = router;
