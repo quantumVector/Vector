@@ -78,6 +78,13 @@
 
 .calendar table tbody tr td {
   border: 1px solid blue;
+  position: relative;
   font-size: 1.6vw;
   text-align: center;
+}
+
+.calendar table tbody tr td .action {
+  border: 1px solid green;
+  width: 20px;
+  height: 60px;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
 
 'use strict';
@@ -130,7 +131,12 @@ class CalendarCreator {
         dateLine.appendChild(td);
 
         if (renderTdFlag === true) {
-          td.innerText = dateInMounthArray[dateInMounthArray.length - 1];
+          const number = dateInMounthArray[dateInMounthArray.length - 1];
+
+          td.innerText = number;
+          td.setAttribute('data-day', number);
+          td.setAttribute('data-month', month);
+          td.setAttribute('data-year', year);
           dateInMounthArray.pop();
         }
 
@@ -145,12 +151,20 @@ class CalendarCreator {
   async insertData() {
     await this.getData();
 
+    // просканировать активность всех действий за всё время и обновить данные
     for (const action of this.data) {
       this.constructor.scanActionActivity(action);
     }
 
-    await this.getData();
-    console.log(this.data);
+    await this.getData(); // получить обновленные данные
+
+    /* for (const action of this.data) {
+      this.insertDataDays('middle', action);
+    } */
+
+    this.insertDataDays('left');
+    this.insertDataDays('middle');
+    this.insertDataDays('right');
   }
 
   async getData() {
@@ -233,26 +247,51 @@ class CalendarCreator {
     }
   }
 
-  async insertMiddleData() {
-    const month = {
-      year: this.middleCalendar[0],
-      month: this.middleCalendar[1],
-    };
+  insertDataDays(position) {
+    const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
+    const td = calendar.getElementsByTagName('td');
+    const actionActivity = [];
 
-    const response = await fetch('/get-month-activity', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify(month),
+    console.log(actionActivity);
+
+    [].forEach.call(td, (item) => {
+      const day = item.getAttribute('data-day');
+      const month = item.getAttribute('data-month');
+      const year = item.getAttribute('data-year');
+
+      for (const action of this.data) {
+        console.log(action.name);
+
+        for (const date of action.dates) {
+          console.log(date)
+
+          if (date.year == year && date.month == month && date.day == day) {
+            this.constructor.renderAction(action.name, date._id, date.status, item, date.year, date.month, date.day);
+          }
+        }
+
+      }
+
+      /* const actionActivity = [];
+
+      if (day) {
+        for (const activity of actionActivity) {
+          if (activity.day == day) item.setAttribute('data-id', activity._id);
+        }
+      } */
     });
+  }
 
-    if (response.ok) {
-      this.middleCalendarActivity = await response.json();
-      console.log(this.middleCalendarActivity);
-    } else {
-      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
-    }
+  static renderAction(name, id, status, td, year, month, day) {
+    const div = document.createElement('div');
+
+    div.classList.add('action');
+    div.setAttribute('data-action', name);
+    div.setAttribute('data-id', id);
+    div.setAttribute('data-status', status);
+    div.setAttribute('data-date', `${year}-${month}-${day}`);
+
+    td.appendChild(div);
   }
 
 }
