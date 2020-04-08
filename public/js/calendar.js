@@ -256,9 +256,6 @@ class CalendarCreator {
   insertDataDays(position) {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
-    const actionActivity = [];
-
-    console.log(actionActivity);
 
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
@@ -266,38 +263,75 @@ class CalendarCreator {
       const year = item.getAttribute('data-year');
 
       for (const action of this.data) {
-        console.log(action.name);
-
         for (const date of action.dates) {
-          console.log(date)
-
-          if (date.year == year && date.month == month && date.day == day) {
-            this.constructor.renderAction(action.name, date._id, date.status, item,
+          if (date.year === year && date.month === month && date.day === day) {
+            // eslint-disable-next-line no-underscore-dangle
+            this.constructor.renderAction(action.name, action._id, date._id, date.status, item,
               date.year, date.month, date.day);
           }
         }
-
       }
-
     });
   }
 
-  static renderAction(name, id, status, td, year, month, day) {
+  static renderAction(name, actionId, dateId, status, td, year, month, day) {
     const div = document.createElement('div');
     const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
     div.classList.add('action');
     div.setAttribute('data-action', name);
-    div.setAttribute('data-id', id);
+    div.setAttribute('data-action-id', actionId);
+    div.setAttribute('data-id', dateId);
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
+
+    if (status === false) {
+      div.classList.add('action-false');
+    } else {
+      div.classList.add('action-done');
+    }
 
     actionsContainer.appendChild(div);
   }
 
+  static async updateActionStatus(actionId, dateId, status, action) {
+    let obj = {};
+
+    console.log(actionId);
+    console.log(dateId);
+
+    if (status === 'false') {
+      obj = { actionId, dateId, status: true };
+      action.classList.remove('action-false');
+      action.classList.add('action-true');
+      action.setAttribute('data-status', true);
+    } else {
+      obj = { actionId, dateId, status: false };
+      action.classList.remove('action-true');
+      action.classList.add('action-false');
+      action.setAttribute('data-status', false);
+    }
+
+    const response = await fetch('/update-status-action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(obj),
+    });
+
+    if (response.ok) {
+      console.log('Статус действия обновлен');
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
 }
 
-const calendar = new CalendarCreator(document.getElementsByClassName('calendar')[0]);
+
+const container = document.getElementsByClassName('calendar')[0];
+const calendar = new CalendarCreator(container);
 
 calendar.install();
 
@@ -340,4 +374,16 @@ right.addEventListener('click', () => {
   rightCalendar.classList.add('middle-calendar');
 
   calendar.update('right');
+});
+
+container.addEventListener('click', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) {
+    const actionId = target.getAttribute('data-action-id');
+    const id = target.getAttribute('data-id');
+    const status = target.getAttribute('data-status');
+
+    calendar.constructor.updateActionStatus(actionId, id, status, target);
+  }
 });

@@ -274,16 +274,23 @@ router.post('/set-new-activities', async (req, res) => {
   );
 });
 
-/* router.post('/get-month-activity', async (req, res) => {
-  const { year, month } = req.body;
+router.post('/update-status-action', async (req, res) => {
+  const { actionId, dateId, status } = req.body;
 
-  console.log(year);
-  console.log(month);
+  console.log(actionId);
+  console.log(dateId);
+  console.log(status);
 
-  await UserCalendar.find(
-    { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: id } } },
-  );
+  /* await UserCalendar.findOne(
+    { _id: new ObjectId(req.session.userId), actions: { name: 'Walk', statis: true }, dates: { $elemMatch: { _id: dateId } } },
+    { $set: { 'dates.$.status': true } },
+    (err, action) => {
+      if (err) throw err;
+
+      res.json('success');
+    },
+  ); */
 });
- */
+
 
 module.exports = router;

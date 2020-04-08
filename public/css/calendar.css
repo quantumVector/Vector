@@ -97,3 +97,11 @@
   border-radius: 13px;
   cursor: pointer;
 }
+
+.calendar table tbody tr td .actions-container .action-false {
+  background-color: red;
+}
+
+.calendar table tbody tr td .actions-container .action-true {
+  background-color: green;
+}
