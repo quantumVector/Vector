@@ -83,8 +83,17 @@
   text-align: center;
 }
 
-.calendar table tbody tr td .action {
+.calendar table tbody tr td .actions-container {
+  display: flex;
+  justify-content: center;
+  height: 70px;
+}
+
+.calendar table tbody tr td .actions-container .action {
   border: 1px solid green;
-  width: 20px;
+  margin: 5px;
+  width: 10px;
   height: 60px;
+  border-radius: 13px;
+  cursor: pointer;
 }

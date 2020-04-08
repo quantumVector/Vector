@@ -122,6 +122,10 @@ class CalendarCreator {
 
       for (let i = 1; i <= 7; i++) {
         const td = document.createElement('td');
+        const actionsContainer = document.createElement('div');
+
+        actionsContainer.classList.add('actions-container');
+        td.appendChild(actionsContainer);
 
         if (firstDay === i) {
           renderTdFlag = true;
@@ -132,8 +136,10 @@ class CalendarCreator {
 
         if (renderTdFlag === true) {
           const number = dateInMounthArray[dateInMounthArray.length - 1];
+          const div = document.createElement('div');
 
-          td.innerText = number;
+          div.innerText = number;
+          td.prepend(div);
           td.setAttribute('data-day', number);
           td.setAttribute('data-month', month);
           td.setAttribute('data-year', year);
@@ -266,24 +272,19 @@ class CalendarCreator {
           console.log(date)
 
           if (date.year == year && date.month == month && date.day == day) {
-            this.constructor.renderAction(action.name, date._id, date.status, item, date.year, date.month, date.day);
+            this.constructor.renderAction(action.name, date._id, date.status, item,
+              date.year, date.month, date.day);
           }
         }
 
       }
 
-      /* const actionActivity = [];
-
-      if (day) {
-        for (const activity of actionActivity) {
-          if (activity.day == day) item.setAttribute('data-id', activity._id);
-        }
-      } */
     });
   }
 
   static renderAction(name, id, status, td, year, month, day) {
     const div = document.createElement('div');
+    const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
     div.classList.add('action');
     div.setAttribute('data-action', name);
@@ -291,7 +292,7 @@ class CalendarCreator {
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
 
-    td.appendChild(div);
+    actionsContainer.appendChild(div);
   }
 
 }
