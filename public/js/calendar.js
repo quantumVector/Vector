@@ -154,19 +154,34 @@ class CalendarCreator {
     tbody.setAttribute('data-month', month);
   }
 
-  async insertData() {
-    await this.getData();
+  async getActions() {
+    const response = await fetch('/get-data-actions');
 
-    // просканировать активность всех действий за всё время и обновить данные
-    for (const action of this.data) {
-      this.constructor.scanActionActivity(action);
+    if (response.ok) {
+      this.dataActions = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
+  async getDates() {
+    const response = await fetch('/get-data-dates');
+
+    if (response.ok) {
+      this.dataDates = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
+  async insertData() {
+    await this.getActions();
+
+    for (const action of this.dataActions.actions) {
+      this.scanActionActivity(action);
     }
 
-    await this.getData(); // получить обновленные данные
-
-    /* for (const action of this.data) {
-      this.insertDataDays('middle', action);
-    } */
+    await this.getActions(); // получить обновленные данные
 
     this.insertDataDays('left');
     this.insertDataDays('middle');
@@ -184,10 +199,10 @@ class CalendarCreator {
   }
 
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
-  static async scanActionActivity(action) {
+  async scanActionActivity(action) {
     const currentDate = new Date(); // Получить текущую дату
     const createdDate = new Date(action.created); // Получить дату создания действия
-    const actionActivity = action.dates; // Получить существующие в бд даты активности
+    const actionActivity = this.dataActions.dates[action._id]; // Получить существующие в бд даты активности
     const newActivity = []; // контейнер для новых активностей
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
@@ -221,6 +236,8 @@ class CalendarCreator {
       for (let x = 0; x < sumDays.length; x++) {
         if (!actionActivity[x]) {
           newActivity.push({
+            id_action: action._id,
+            action_name: action.name,
             year: sumDays[x][0],
             month: sumDays[x][1],
             day: sumDays[x][2],
@@ -237,7 +254,7 @@ class CalendarCreator {
         activities: newActivity,
       };
 
-      const response = await fetch('/set-new-activities', {
+      const response = await fetch('/set-new-dates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
@@ -262,8 +279,8 @@ class CalendarCreator {
       const month = item.getAttribute('data-month');
       const year = item.getAttribute('data-year');
 
-      for (const action of this.data) {
-        for (const date of action.dates) {
+      for (const action of this.dataActions.actions) {
+        for (const date of this.dataActions.dates[action._id]) {
           if (date.year === year && date.month === month && date.day === day) {
             // eslint-disable-next-line no-underscore-dangle
             this.constructor.renderAction(action.name, action._id, date._id, date.status, item,
@@ -294,25 +311,24 @@ class CalendarCreator {
     actionsContainer.appendChild(div);
   }
 
-  static async updateActionStatus(actionId, dateId, status, action) {
+  static async updateActionStatus(dateId, status, action) {
     let obj = {};
 
-    console.log(actionId);
     console.log(dateId);
 
     if (status === 'false') {
-      obj = { actionId, dateId, status: true };
+      obj = { dateId, status: true };
       action.classList.remove('action-false');
-      action.classList.add('action-true');
+      action.classList.add('action-done');
       action.setAttribute('data-status', true);
     } else {
-      obj = { actionId, dateId, status: false };
-      action.classList.remove('action-true');
+      obj = { dateId, status: false };
+      action.classList.remove('action-done');
       action.classList.add('action-false');
       action.setAttribute('data-status', false);
     }
 
-    const response = await fetch('/update-status-action', {
+    const response = await fetch('/update-action-status', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -380,10 +396,10 @@ container.addEventListener('click', (e) => {
   const target = e.target;
 
   if (target.closest('.action')) {
-    const actionId = target.getAttribute('data-action-id');
+    // const actionId = target.getAttribute('data-action-id');
     const id = target.getAttribute('data-id');
     const status = target.getAttribute('data-status');
 
-    calendar.constructor.updateActionStatus(actionId, id, status, target);
+    calendar.constructor.updateActionStatus(id, status, target);
   }
 });

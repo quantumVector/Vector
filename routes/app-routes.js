@@ -260,12 +260,39 @@ router.post('/delete-action', async (req, res) => {
   );
 });
 
-router.post('/set-new-activities', async (req, res) => {
+router.get('/get-data-actions', async (req, res) => {
+  await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) },
+    (err, user) => {
+      if (err) throw err;
+
+      const actions = [];
+      const dates = {};
+
+      for (const action of user.actions) {
+        if (action.status) {
+          actions.push(action);
+          dates[action._id] = [];
+
+          for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
+            if (action._id == date.id_action) {
+              dates[action._id].push(date);
+            }
+          }
+        }
+      }
+
+      res.json({ actions, dates });
+    });
+});
+
+
+router.post('/set-new-dates', async (req, res) => {
   const { id, activities } = req.body;
 
   await UserCalendar.findOneAndUpdate(
-    { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: id } } },
-    { $addToSet: { 'actions.$.dates': activities } },
+    { _id: new ObjectId(req.session.userId) },
+    { $addToSet: { dates: activities } },
     (err) => {
       if (err) throw err;
 
@@ -274,22 +301,18 @@ router.post('/set-new-activities', async (req, res) => {
   );
 });
 
-router.post('/update-status-action', async (req, res) => {
-  const { actionId, dateId, status } = req.body;
+router.post('/update-action-status', async (req, res) => {
+  const { dateId, status } = req.body;
 
-  console.log(actionId);
-  console.log(dateId);
-  console.log(status);
-
-  /* await UserCalendar.findOne(
-    { _id: new ObjectId(req.session.userId), actions: { name: 'Walk', statis: true }, dates: { $elemMatch: { _id: dateId } } },
-    { $set: { 'dates.$.status': true } },
-    (err, action) => {
+  await UserCalendar.findOneAndUpdate(
+    { _id: new ObjectId(req.session.userId), dates: { $elemMatch: { _id: dateId } } },
+    { $set: { 'dates.$.status': status } },
+    (err) => {
       if (err) throw err;
 
       res.json('success');
     },
-  ); */
+  );
 });
 
 

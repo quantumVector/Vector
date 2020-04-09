@@ -102,6 +102,6 @@
   background-color: red;
 }
 
-.calendar table tbody tr td .actions-container .action-true {
+.calendar table tbody tr td .actions-container .action-done {
   background-color: green;
 }
