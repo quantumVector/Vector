@@ -184,18 +184,30 @@ class CalendarCreator {
 
     await this.getActions(); // получить обновленные данные
 
-    this.insertDataDays('left');
-    this.insertDataDays('middle');
-    this.insertDataDays('right');
+    this.chooseInsertTarget();
   }
 
-  async getData() {
+  /* async getData() {
     const response = await fetch('/getdata');
 
     if (response.ok) {
       this.data = await response.json();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  } */
+
+  chooseInsertTarget(side) {
+    if (!side) {
+      this.insertDataDays('left');
+      this.insertDataDays('middle');
+      this.insertDataDays('right');
+    }
+    if (side === 'left') {
+      this.insertDataDays('left');
+    }
+    if (side === 'right') {
+      this.insertDataDays('right');
     }
   }
 
@@ -332,10 +344,8 @@ class CalendarCreator {
     actionsContainer.appendChild(div);
   }
 
-  static async updateActionStatus(dateId, status, action) {
+  async updateActionStatus(dateId, status, action) {
     let obj = {};
-
-    console.log(dateId);
 
     if (status === 'false') {
       obj = { dateId, status: true };
@@ -359,6 +369,7 @@ class CalendarCreator {
 
     if (response.ok) {
       console.log('Статус действия обновлен');
+      await this.getActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -392,6 +403,7 @@ left.addEventListener('click', () => {
   leftCalendar.classList.add('middle-calendar');
 
   calendar.update('left');
+  calendar.chooseInsertTarget('left');
 });
 
 right.addEventListener('click', () => {
@@ -411,6 +423,7 @@ right.addEventListener('click', () => {
   rightCalendar.classList.add('middle-calendar');
 
   calendar.update('right');
+  calendar.chooseInsertTarget('right');
 });
 
 container.addEventListener('click', (e) => {
@@ -421,6 +434,6 @@ container.addEventListener('click', (e) => {
     const id = target.getAttribute('data-id');
     const status = target.getAttribute('data-status');
 
-    calendar.constructor.updateActionStatus(id, status, target);
+    calendar.updateActionStatus(id, status, target);
   }
 });
