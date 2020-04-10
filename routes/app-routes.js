@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { Router } = require('express');
 const { check, body, validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types.ObjectId;
@@ -259,5 +260,61 @@ router.post('/delete-action', async (req, res) => {
     },
   );
 });
+
+router.get('/get-data-actions', async (req, res) => {
+  await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) },
+    (err, user) => {
+      if (err) throw err;
+
+      const actions = [];
+      const dates = {};
+
+      for (const action of user.actions) {
+        if (action.status) {
+          actions.push(action);
+          dates[action._id] = [];
+
+          for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
+            if (action._id == date.id_action) {
+              dates[action._id].push(date);
+            }
+          }
+        }
+      }
+
+      res.json({ actions, dates });
+    });
+});
+
+
+router.post('/set-new-dates', async (req, res) => {
+  const { activities } = req.body;
+
+  await UserCalendar.findOneAndUpdate(
+    { _id: new ObjectId(req.session.userId) },
+    { $addToSet: { dates: activities } },
+    (err) => {
+      if (err) throw err;
+
+      res.json('success');
+    },
+  );
+});
+
+router.post('/update-action-status', async (req, res) => {
+  const { dateId, status } = req.body;
+
+  await UserCalendar.findOneAndUpdate(
+    { _id: new ObjectId(req.session.userId), dates: { $elemMatch: { _id: dateId } } },
+    { $set: { 'dates.$.status': status } },
+    (err) => {
+      if (err) throw err;
+
+      res.json('success');
+    },
+  );
+});
+
 
 module.exports = router;

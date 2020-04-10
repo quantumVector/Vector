@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
 
 'use strict';
@@ -19,6 +21,7 @@ class CalendarCreator {
     this.renderCalendar(this.leftCalendar[0], this.leftCalendar[1], 'left');
     this.renderCalendar(this.middleCalendar[0], this.middleCalendar[1], 'middle');
     this.renderCalendar(this.rightCalendar[0], this.rightCalendar[1], 'right');
+    this.insertData();
   }
 
   setDates() {
@@ -120,6 +123,10 @@ class CalendarCreator {
 
       for (let i = 1; i <= 7; i++) {
         const td = document.createElement('td');
+        const actionsContainer = document.createElement('div');
+
+        actionsContainer.classList.add('actions-container');
+        td.appendChild(actionsContainer);
 
         if (firstDay === i) {
           renderTdFlag = true;
@@ -129,7 +136,14 @@ class CalendarCreator {
         dateLine.appendChild(td);
 
         if (renderTdFlag === true) {
-          td.innerText = dateInMounthArray[dateInMounthArray.length - 1];
+          const number = dateInMounthArray[dateInMounthArray.length - 1];
+          const div = document.createElement('div');
+
+          div.innerText = number;
+          td.prepend(div);
+          td.setAttribute('data-day', number);
+          td.setAttribute('data-month', month);
+          td.setAttribute('data-year', year);
           dateInMounthArray.pop();
         }
 
@@ -138,10 +152,234 @@ class CalendarCreator {
     }
 
     table.appendChild(tbody);
+    tbody.setAttribute('data-month', month);
   }
+
+  async getActions() {
+    const response = await fetch('/get-data-actions');
+
+    if (response.ok) {
+      this.dataActions = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
+  async getDates() {
+    const response = await fetch('/get-data-dates');
+
+    if (response.ok) {
+      this.dataDates = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
+  async insertData() {
+    await this.getActions();
+
+    for (const action of this.dataActions.actions) {
+      this.scanActionActivity(action);
+    }
+
+    await this.getActions(); // получить обновленные данные
+
+    this.chooseInsertTarget();
+  }
+
+  /* async getData() {
+    const response = await fetch('/getdata');
+
+    if (response.ok) {
+      this.data = await response.json();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  } */
+
+  chooseInsertTarget(side) {
+    if (!side) {
+      this.insertDataDays('left');
+      this.insertDataDays('middle');
+      this.insertDataDays('right');
+    }
+    if (side === 'left') {
+      this.insertDataDays('left');
+    }
+    if (side === 'right') {
+      this.insertDataDays('right');
+    }
+  }
+
+  // Данная функция будет вызываться отдельно для каждого действия со статусом true
+  async scanActionActivity(action) {
+    const currentDate = new Date();
+    const createdDate = new Date(action.created); // Получить дату создания действия
+    const actionActivity = this.dataActions.dates[action._id]; // Получить существующие активности
+    const newActivity = []; // контейнер для новых активностей
+    const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
+    let i = 0;
+
+    while (createdDate.getDate() !== currentDate.getDate()) {
+      currentDate.setDate(currentDate.getDate() - i);
+      i = 1;
+
+      // учитываем, что если действие имеет конкретный день, то добавлять только его
+      if (action.days[0] !== 'everyday') {
+        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        const number = currentDate.getDay();
+
+        for (let z = 0; z < action.days.length; z++) {
+          if (action.days[z] === days[number]) {
+            sumDays.push([
+              currentDate.getFullYear(),
+              currentDate.getMonth(),
+              currentDate.getDate(),
+            ]);
+          }
+        }
+      } else {
+        sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+      }
+    }
+
+    // сравнение количества существующих дат и фактической их суммы
+    // если есть разница, то добавить новые активности в контейнер
+    if (actionActivity.length !== sumDays.length) {
+      // если нет ни одной активности
+      if (!actionActivity.length) {
+        for (let x = 0; x < sumDays.length; x++) {
+          newActivity.push({
+            id_action: action._id,
+            action_name: action.name,
+            year: sumDays[x][0],
+            month: sumDays[x][1],
+            day: sumDays[x][2],
+          });
+        }
+      } else {
+        for (const activity of actionActivity) {
+          for (let y = 0; y < sumDays.length; y++) {
+            if (+activity.year === sumDays[y][0] && +activity.month === sumDays[y][1]
+              && +activity.day === sumDays[y][2]) {
+              sumDays.splice(y, 1);
+            }
+          }
+        }
+
+        for (const day of sumDays) {
+          newActivity.push({
+            id_action: action._id,
+            action_name: action.name,
+            year: day[0],
+            month: day[1],
+            day: day[2],
+          });
+        }
+      }
+    }
+
+    // если контейнер не пустой, то отправить данные на сервер
+    if (newActivity.length) {
+      const obj = {
+        // eslint-disable-next-line no-underscore-dangle
+        id: action._id,
+        activities: newActivity,
+      };
+
+      const response = await fetch('/set-new-dates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(obj),
+      });
+
+      if (response.ok) {
+        console.log('Активность обновлена');
+      } else {
+        throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+      }
+    }
+  }
+
+  insertDataDays(position) {
+    const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
+    const td = calendar.getElementsByTagName('td');
+
+    [].forEach.call(td, (item) => {
+      const day = item.getAttribute('data-day');
+      const month = item.getAttribute('data-month');
+      const year = item.getAttribute('data-year');
+
+      for (const action of this.dataActions.actions) {
+        for (const date of this.dataActions.dates[action._id]) {
+          if (date.year === year && date.month === month && date.day === day) {
+            // eslint-disable-next-line no-underscore-dangle
+            this.constructor.renderAction(action.name, action._id, date._id, date.status, item,
+              date.year, date.month, date.day);
+          }
+        }
+      }
+    });
+  }
+
+  static renderAction(name, actionId, dateId, status, td, year, month, day) {
+    const div = document.createElement('div');
+    const actionsContainer = td.getElementsByClassName('actions-container')[0];
+
+    div.classList.add('action');
+    div.setAttribute('data-action', name);
+    div.setAttribute('data-action-id', actionId);
+    div.setAttribute('data-id', dateId);
+    div.setAttribute('data-status', status);
+    div.setAttribute('data-date', `${year}-${month}-${day}`);
+
+    if (status === false) {
+      div.classList.add('action-false');
+    } else {
+      div.classList.add('action-done');
+    }
+
+    actionsContainer.appendChild(div);
+  }
+
+  async updateActionStatus(dateId, status, action) {
+    let obj = {};
+
+    if (status === 'false') {
+      obj = { dateId, status: true };
+      action.classList.remove('action-false');
+      action.classList.add('action-done');
+      action.setAttribute('data-status', true);
+    } else {
+      obj = { dateId, status: false };
+      action.classList.remove('action-done');
+      action.classList.add('action-false');
+      action.setAttribute('data-status', false);
+    }
+
+    const response = await fetch('/update-action-status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(obj),
+    });
+
+    if (response.ok) {
+      console.log('Статус действия обновлен');
+      await this.getActions();
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
+
 }
 
-const calendar = new CalendarCreator(document.getElementsByClassName('calendar')[0]);
+
+const container = document.getElementsByClassName('calendar')[0];
+const calendar = new CalendarCreator(container);
 
 calendar.install();
 
@@ -165,6 +403,7 @@ left.addEventListener('click', () => {
   leftCalendar.classList.add('middle-calendar');
 
   calendar.update('left');
+  calendar.chooseInsertTarget('left');
 });
 
 right.addEventListener('click', () => {
@@ -184,4 +423,17 @@ right.addEventListener('click', () => {
   rightCalendar.classList.add('middle-calendar');
 
   calendar.update('right');
+  calendar.chooseInsertTarget('right');
+});
+
+container.addEventListener('click', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) {
+    // const actionId = target.getAttribute('data-action-id');
+    const id = target.getAttribute('data-id');
+    const status = target.getAttribute('data-status');
+
+    calendar.updateActionStatus(id, status, target);
+  }
 });
