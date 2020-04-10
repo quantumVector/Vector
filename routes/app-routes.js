@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { Router } = require('express');
 const { check, body, validationResult } = require('express-validator');
 const { ObjectId } = require('mongoose').Types.ObjectId;
@@ -288,7 +289,7 @@ router.get('/get-data-actions', async (req, res) => {
 
 
 router.post('/set-new-dates', async (req, res) => {
-  const { id, activities } = req.body;
+  const { activities } = req.body;
 
   await UserCalendar.findOneAndUpdate(
     { _id: new ObjectId(req.session.userId) },

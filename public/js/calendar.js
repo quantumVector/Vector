@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
 
@@ -200,9 +201,9 @@ class CalendarCreator {
 
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
   async scanActionActivity(action) {
-    const currentDate = new Date(); // Получить текущую дату
+    const currentDate = new Date();
     const createdDate = new Date(action.created); // Получить дату создания действия
-    const actionActivity = this.dataActions.dates[action._id]; // Получить существующие в бд даты активности
+    const actionActivity = this.dataActions.dates[action._id]; // Получить существующие активности
     const newActivity = []; // контейнер для новых активностей
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
@@ -233,14 +234,34 @@ class CalendarCreator {
     // сравнение количества существующих дат и фактической их суммы
     // если есть разница, то добавить новые активности в контейнер
     if (actionActivity.length !== sumDays.length) {
-      for (let x = 0; x < sumDays.length; x++) {
-        if (!actionActivity[x]) {
+      // если нет ни одной активности
+      if (!actionActivity.length) {
+        for (let x = 0; x < sumDays.length; x++) {
           newActivity.push({
             id_action: action._id,
             action_name: action.name,
             year: sumDays[x][0],
             month: sumDays[x][1],
             day: sumDays[x][2],
+          });
+        }
+      } else {
+        for (const activity of actionActivity) {
+          for (let y = 0; y < sumDays.length; y++) {
+            if (+activity.year === sumDays[y][0] && +activity.month === sumDays[y][1]
+              && +activity.day === sumDays[y][2]) {
+              sumDays.splice(y, 1);
+            }
+          }
+        }
+
+        for (const day of sumDays) {
+          newActivity.push({
+            id_action: action._id,
+            action_name: action.name,
+            year: day[0],
+            month: day[1],
+            day: day[2],
           });
         }
       }
