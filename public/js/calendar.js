@@ -184,31 +184,7 @@ class CalendarCreator {
 
     await this.getActions(); // получить обновленные данные
 
-    this.chooseInsertTarget();
-  }
-
-  /* async getData() {
-    const response = await fetch('/getdata');
-
-    if (response.ok) {
-      this.data = await response.json();
-    } else {
-      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
-    }
-  } */
-
-  chooseInsertTarget(side) {
-    if (!side) {
-      this.insertDataDays('left');
-      this.insertDataDays('middle');
-      this.insertDataDays('right');
-    }
-    if (side === 'left') {
-      this.insertDataDays('left');
-    }
-    if (side === 'right') {
-      this.insertDataDays('right');
-    }
+    this.changeInsertTarget();
   }
 
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
@@ -303,6 +279,20 @@ class CalendarCreator {
     }
   }
 
+  changeInsertTarget(side) {
+    if (!side) {
+      this.insertDataDays('left');
+      this.insertDataDays('middle');
+      this.insertDataDays('right');
+    }
+    if (side === 'left') {
+      this.insertDataDays('left');
+    }
+    if (side === 'right') {
+      this.insertDataDays('right');
+    }
+  }
+
   insertDataDays(position) {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
@@ -342,6 +332,21 @@ class CalendarCreator {
     }
 
     actionsContainer.appendChild(div);
+
+    this.setDayStatus(td, actionsContainer);
+  }
+
+  static setDayStatus(td, actions) {
+    let dayStatus = true;
+
+    [].forEach.call(actions.children, (action) => {
+      const actionStatus = action.getAttribute('data-status');
+
+      if (actionStatus === 'false') dayStatus = false;
+    });
+
+    if (dayStatus === true) td.classList.add('completed-day');
+    if (dayStatus === false) td.classList.add('incompleted-day');
   }
 
   async updateActionStatus(dateId, status, action) {
@@ -403,7 +408,7 @@ left.addEventListener('click', () => {
   leftCalendar.classList.add('middle-calendar');
 
   calendar.update('left');
-  calendar.chooseInsertTarget('left');
+  calendar.changeInsertTarget('left');
 });
 
 right.addEventListener('click', () => {
@@ -423,7 +428,7 @@ right.addEventListener('click', () => {
   rightCalendar.classList.add('middle-calendar');
 
   calendar.update('right');
-  calendar.chooseInsertTarget('right');
+  calendar.changeInsertTarget('right');
 });
 
 container.addEventListener('click', (e) => {

@@ -83,6 +83,14 @@
   text-align: center;
 }
 
+.calendar table tbody tr .completed-day {
+  background-color: green;
+}
+
+.calendar table tbody tr .incompleted-day {
+  background-color: red;
+}
+
 .calendar table tbody tr td .actions-container {
   display: flex;
   justify-content: center;
@@ -99,9 +107,11 @@
 }
 
 .calendar table tbody tr td .actions-container .action-false {
-  background-color: red;
+  background-color: #fff;
+  border: 1px solid rgb(63, 63, 97);
 }
 
 .calendar table tbody tr td .actions-container .action-done {
-  background-color: green;
+  background-color: rgb(63, 63, 97);
+  border: 1px solid rgb(63, 63, 97);
 }
