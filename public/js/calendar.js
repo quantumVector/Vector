@@ -337,6 +337,10 @@ class CalendarCreator {
   }
 
   static setDayStatus(day, actions) {
+    const date = new Date();
+    const year = day.getAttribute('data-year');
+    const month = day.getAttribute('data-month');
+    const currentDay = day.getAttribute('data-day');
     let dayStatus = true;
 
     [].forEach.call(actions.children, (action) => {
@@ -349,6 +353,18 @@ class CalendarCreator {
 
     if (dayStatus === true) day.classList.add('completed-day');
     if (dayStatus === false) day.classList.add('incompleted-day');
+
+    if (+year === date.getFullYear() && +month === date.getMonth()
+    && +currentDay === date.getDate()) {
+      day.classList.remove('completed-day', 'incompleted-day');
+      day.classList.add('current-day');
+    }
+
+    if (+year === date.getFullYear() && +month === date.getMonth()
+    && +currentDay === date.getDate() && dayStatus === true) {
+      day.classList.remove('current-day');
+      day.classList.add('completed-day');
+    }
   }
 
   async updateActionStatus(dateId, status, action) {
@@ -383,6 +399,15 @@ class CalendarCreator {
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
+  }
+
+  static showActionInfo(action) {
+    const name = action.getAttribute('data-action');
+    const modal = document.createElement('div');
+    modal.classList.add('action-info');
+    modal.innerText = name;
+
+    action.appendChild(modal);
   }
 
 }
@@ -440,10 +465,25 @@ container.addEventListener('click', (e) => {
   const target = e.target;
 
   if (target.closest('.action')) {
-    // const actionId = target.getAttribute('data-action-id');
     const id = target.getAttribute('data-id');
     const status = target.getAttribute('data-status');
 
     calendar.updateActionStatus(id, status, target);
+  }
+});
+
+container.addEventListener('mouseover', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) calendar.constructor.showActionInfo(target);
+});
+
+container.addEventListener('mouseout', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) {
+    const info = target.getElementsByClassName('action-info')[0];
+
+    info.remove();
   }
 });

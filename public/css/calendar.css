@@ -91,6 +91,10 @@
   background-color: red;
 }
 
+.calendar table tbody tr .current-day {
+  background-color: rgb(188, 188, 211);;
+}
+
 .calendar table tbody tr td .actions-container {
   display: flex;
   justify-content: center;
@@ -98,12 +102,25 @@
 }
 
 .calendar table tbody tr td .actions-container .action {
+  position: relative;
   border: 1px solid green;
   margin: 5px;
   width: 10px;
   height: 60px;
   border-radius: 13px;
   cursor: pointer;
+}
+
+.calendar table tbody tr td .actions-container .action .action-info {
+  position: absolute;
+  width: 200px;
+  padding: 10px;
+  top: 70px;
+  left: -100px;
+  background-color: #fff;
+  border: 1px solid rgb(63, 63, 97);
+  border-radius: 13px;
+  z-index: 1000;
 }
 
 .calendar table tbody tr td .actions-container .action-false {
