@@ -336,7 +336,7 @@ class CalendarCreator {
     this.setDayStatus(td, actionsContainer);
   }
 
-  static setDayStatus(td, actions) {
+  static setDayStatus(day, actions) {
     let dayStatus = true;
 
     [].forEach.call(actions.children, (action) => {
@@ -345,8 +345,10 @@ class CalendarCreator {
       if (actionStatus === 'false') dayStatus = false;
     });
 
-    if (dayStatus === true) td.classList.add('completed-day');
-    if (dayStatus === false) td.classList.add('incompleted-day');
+    day.classList.remove('completed-day', 'incompleted-day');
+
+    if (dayStatus === true) day.classList.add('completed-day');
+    if (dayStatus === false) day.classList.add('incompleted-day');
   }
 
   async updateActionStatus(dateId, status, action) {
@@ -373,7 +375,10 @@ class CalendarCreator {
     });
 
     if (response.ok) {
-      console.log('Статус действия обновлен');
+      const actions = action.parentNode;
+      const day = actions.parentNode;
+
+      this.constructor.setDayStatus(day, actions);
       await this.getActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
