@@ -327,12 +327,15 @@ class CalendarCreator {
           }
         }
 
+        const zeroDateNow = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
         // вставить данные не активных действий
-        for (const action of this.dataActions.notActive) {
-          for (const date of this.dataActions.notActiveDates[action._id]) {
-            if (date.year === year && date.month === month && date.day === day) {
-              this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
-                date.year, date.month, date.day);
+        if (zeroDateNow.getTime() !== tdDate.getTime()) {
+          for (const action of this.dataActions.notActive) {
+            for (const date of this.dataActions.notActiveDates[action._id]) {
+              if (date.year === year && date.month === month && date.day === day) {
+                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                  date.year, date.month, date.day);
+              }
             }
           }
         }
