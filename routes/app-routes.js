@@ -247,7 +247,7 @@ router.get('/getdata-test', async (req, res) => {
   res.json(actions);
 });
 
-router.post('/delete-action', async (req, res) => {
+router.post('/deactivate-action', async (req, res) => {
   const { actionId } = req.body;
 
   await UserCalendar.findOneAndUpdate(
@@ -256,7 +256,7 @@ router.post('/delete-action', async (req, res) => {
     (err) => {
       if (err) throw err;
 
-      res.json(`${actionId} was deleted`);
+      res.json(`${actionId} was deactivated`);
     },
   );
 });

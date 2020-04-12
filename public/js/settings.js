@@ -86,9 +86,9 @@ class Settings {
     }
   }
 
-  async deleteAction(actionId, container) {
+  async deactivateAction(actionId, container) {
     const obj = { actionId };
-    const response = await fetch('/delete-action', {
+    const response = await fetch('/deactivate-action', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -127,6 +127,6 @@ document.addEventListener('click', (e) => {
   if (e.target.closest('.delete-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
-    settings.deleteAction(actionId, container);
+    settings.deactivateAction(actionId, container);
   }
 });
