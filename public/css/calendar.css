@@ -132,3 +132,7 @@
   background-color: rgb(63, 63, 97);
   border: 1px solid rgb(63, 63, 97);
 }
+
+.calendar table tbody tr td .actions-container .action-unused {
+  border: 1px solid rgb(63, 63, 97);
+}

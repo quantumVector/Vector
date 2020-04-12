@@ -296,25 +296,40 @@ class CalendarCreator {
   insertDataDays(position) {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
+    const dateNow = new Date();
 
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
       const month = item.getAttribute('data-month');
       const year = item.getAttribute('data-year');
+      const tdDate = new Date(year, month, day);
 
-      for (const action of this.dataActions.actions) {
-        for (const date of this.dataActions.dates[action._id]) {
-          if (date.year === year && date.month === month && date.day === day) {
-            // eslint-disable-next-line no-underscore-dangle
-            this.constructor.renderAction(action.name, action._id, date._id, date.status, item,
-              date.year, date.month, date.day);
+      // если td не пустой
+      if (day) {
+        for (const action of this.dataActions.actions) {
+          if (tdDate <= dateNow) {
+            for (const date of this.dataActions.dates[action._id]) {
+              if (date.year === year && date.month === month && date.day === day) {
+                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                  date.year, date.month, date.day);
+              }
+            }
+          } else if (action.days[0] === 'everyday') {
+            this.constructor.renderAction(item, action.name, action._id, 'unused');
+          } else {
+            const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            const tdDay = tdDate.getDay();
+
+            if (action.days.indexOf(daysName[tdDay]) >= 0) {
+              this.constructor.renderAction(item, action.name, action._id, 'unused');
+            }
           }
         }
       }
     });
   }
 
-  static renderAction(name, actionId, dateId, status, td, year, month, day) {
+  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0) {
     const div = document.createElement('div');
     const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
@@ -325,10 +340,17 @@ class CalendarCreator {
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
 
-    if (status === false) {
-      div.classList.add('action-false');
-    } else {
-      div.classList.add('action-done');
+    switch (status) {
+      case 'unused':
+        div.classList.add('action-unused');
+        break;
+      case false:
+        div.classList.add('action-false');
+        break;
+      case true:
+        div.classList.add('action-done');
+        break;
+      // no default
     }
 
     actionsContainer.appendChild(div);
@@ -347,10 +369,12 @@ class CalendarCreator {
       const actionStatus = action.getAttribute('data-status');
 
       if (actionStatus === 'false') dayStatus = false;
+      if (actionStatus === 'unused') dayStatus = 'unused';
     });
 
     day.classList.remove('completed-day', 'incompleted-day');
 
+    if (dayStatus === 'unused') day.classList.add('unused-day');
     if (dayStatus === true) day.classList.add('completed-day');
     if (dayStatus === false) day.classList.add('incompleted-day');
 
@@ -464,7 +488,7 @@ right.addEventListener('click', () => {
 container.addEventListener('click', (e) => {
   const target = e.target;
 
-  if (target.closest('.action')) {
+  if (target.closest('.action') && !target.closest('.action-unused')) {
     const id = target.getAttribute('data-id');
     const status = target.getAttribute('data-status');
 
