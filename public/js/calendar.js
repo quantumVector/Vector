@@ -306,6 +306,7 @@ class CalendarCreator {
 
       // если td не пустой
       if (day) {
+        // вставить данные текущих действий
         for (const action of this.dataActions.actions) {
           if (tdDate <= dateNow) {
             for (const date of this.dataActions.dates[action._id]) {
@@ -322,6 +323,16 @@ class CalendarCreator {
 
             if (action.days.indexOf(daysName[tdDay]) >= 0) {
               this.constructor.renderAction(item, action.name, action._id, 'unused');
+            }
+          }
+        }
+
+        // вставить данные не активных действий
+        for (const action of this.dataActions.notActive) {
+          for (const date of this.dataActions.notActiveDates[action._id]) {
+            if (date.year === year && date.month === month && date.day === day) {
+              this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                date.year, date.month, date.day);
             }
           }
         }

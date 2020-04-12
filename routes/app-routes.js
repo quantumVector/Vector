@@ -267,7 +267,9 @@ router.get('/get-data-actions', async (req, res) => {
       if (err) throw err;
 
       const actions = [];
+      const notActive = [];
       const dates = {};
+      const notActiveDates = {};
 
       for (const action of user.actions) {
         if (action.status) {
@@ -275,15 +277,24 @@ router.get('/get-data-actions', async (req, res) => {
           dates[action._id] = [];
 
           for (const date of user.dates) {
-            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               dates[action._id].push(date);
+            }
+          }
+        } else {
+          notActive.push(action);
+          notActiveDates[action._id] = [];
+
+          for (const date of user.dates) {
+            if (action._id == date.id_action) {
+              notActiveDates[action._id].push(date);
             }
           }
         }
       }
 
-      res.json({ actions, dates });
+      // eslint-disable-next-line object-curly-newline
+      res.json({ actions, dates, notActive, notActiveDates });
     });
 });
 
