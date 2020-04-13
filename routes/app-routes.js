@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
 const { Router } = require('express');
 const { check, body, validationResult } = require('express-validator');
@@ -288,6 +289,11 @@ router.get('/get-data-actions', async (req, res) => {
       const notActive = [];
       const dates = {};
       const notActiveDates = {};
+      const debts = [];
+      const dateNow = new Date();
+      const yearNow = dateNow.getFullYear();
+      const monthNow = dateNow.getMonth();
+      const dayNow = dateNow.getDate();
 
       for (const action of user.actions) {
         if (action.status) {
@@ -295,8 +301,17 @@ router.get('/get-data-actions', async (req, res) => {
           dates[action._id] = [];
 
           for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               dates[action._id].push(date);
+
+              if (action.debt) {
+                if (!date.status) {
+                  if (+date.year === yearNow && +date.month === monthNow
+                    && +date.day === dayNow) continue;
+                  debts.push(date);
+                }
+              }
             }
           }
         } else {
@@ -304,6 +319,7 @@ router.get('/get-data-actions', async (req, res) => {
           notActiveDates[action._id] = [];
 
           for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               notActiveDates[action._id].push(date);
             }
@@ -312,7 +328,7 @@ router.get('/get-data-actions', async (req, res) => {
       }
 
       // eslint-disable-next-line object-curly-newline
-      res.json({ actions, dates, notActive, notActiveDates });
+      res.json({ actions, dates, notActive, notActiveDates, debts });
     });
 });
 

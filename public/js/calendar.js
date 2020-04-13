@@ -185,6 +185,8 @@ class CalendarCreator {
 
     await this.getActions(); // получить обновленные данные
 
+    console.log(this.dataActions)
+
     this.changeInsertTarget();
   }
 
