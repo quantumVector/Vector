@@ -1,6 +1,10 @@
 <section class="calendar">
-  <div id="left"></div>
-  <div id="right"></div>
+  {{#if message}}
+    <h1>{{message}}</h1>
+  {{/if}}
+  {{#if script}}
+    <div id="left"></div>
+    <div id="right"></div>
+    <script src="{{script}}" ></script>
+  {{/if}}
 </section>
-
-<script src="js/calendar.js"></script>

@@ -86,7 +86,7 @@ class Settings {
     btn.innerText = btnName;
     item.appendChild(btn);
 
-    this.constructor.embedData(item, action, name, box, debt);
+    this.constructor.insertData(item, action, name, box, debt);
   }
 
   static renderEmptyMessage(box, boxType) {
@@ -98,7 +98,7 @@ class Settings {
     box.appendChild(emptyMsg);
   }
 
-  static embedData(item, action, name, box, debt) {
+  static insertData(item, action, name, box, debt) {
     /* eslint-disable no-param-reassign */
     // eslint-disable-next-line prefer-destructuring
     const days = action.days;
@@ -126,17 +126,26 @@ class Settings {
     });
 
     if (response.ok) {
-      const elems = document.getElementsByClassName('action-item');
+      container.innerHTML = '';
+      this.renderActions(container);
+    } else {
+      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+    }
+  }
 
-      [].forEach.call(elems, (elem) => {
-        const itemId = elem.getAttribute('data-id');
+  async deleteAction(actionId, container) {
+    const obj = { actionId };
+    const response = await fetch('/delete-action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(obj),
+    });
 
-        if (itemId === actionId) {
-          elem.remove();
-          container.innerHTML = '';
-          this.renderActions(container);
-        }
-      });
+    if (response.ok) {
+      container.innerHTML = '';
+      this.renderActions(container);
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -152,10 +161,16 @@ everyday.addEventListener('click', () => {
   settings.constructor.togglePeriod();
 });
 
-document.addEventListener('click', (e) => {
+container.addEventListener('click', (e) => {
   if (e.target.closest('.deactivate-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
     settings.deactivateAction(actionId, container);
+  }
+
+  if (e.target.closest('.delete-action')) {
+    const actionId = e.target.closest('.action-item').getAttribute('data-id');
+
+    settings.deleteAction(actionId, container);
   }
 });

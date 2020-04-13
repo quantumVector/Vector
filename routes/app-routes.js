@@ -10,20 +10,22 @@ const router = Router();
 router.get('/', async (req, res) => {
   console.log(req.session);
 
-  let calendar;
+  let message;
+  let script;
 
   if (req.session.userId) {
     await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
-      calendar = user.name;
+      script = 'js/calendar.js';
     });
   } else {
-    calendar = 'Авторизуйтесь, чтобы начать управление календарем';
+    message = 'Авторизуйтесь, чтобы начать управление календарем';
   }
 
   res.render('index', {
     title: 'Goals Calendar',
-    calendar,
+    message,
     style: 'css/calendar.css',
+    script,
     pageTestScript: 'page-tests/tests-calendar.js',
   });
 });
@@ -255,6 +257,22 @@ router.post('/deactivate-action', async (req, res) => {
     { $set: { 'actions.$.status': false } },
     (err) => {
       if (err) throw err;
+
+      res.json(`${actionId} was deactivated`);
+    },
+  );
+});
+
+router.post('/delete-action', async (req, res) => {
+  const { actionId } = req.body;
+
+  await UserCalendar.findOne(
+    { _id: new ObjectId(req.session.userId) },
+    (err, user) => {
+      if (err) throw err;
+
+      user.actions.id(actionId).remove();
+      user.save();
 
       res.json(`${actionId} was deactivated`);
     },
