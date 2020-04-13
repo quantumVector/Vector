@@ -10,20 +10,22 @@ const router = Router();
 router.get('/', async (req, res) => {
   console.log(req.session);
 
-  let calendar;
+  let message;
+  let script;
 
   if (req.session.userId) {
     await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
-      calendar = user.name;
+      script = 'js/calendar.js';
     });
   } else {
-    calendar = 'Авторизуйтесь, чтобы начать управление календарем';
+    message = 'Авторизуйтесь, чтобы начать управление календарем';
   }
 
   res.render('index', {
     title: 'Goals Calendar',
-    calendar,
+    message,
     style: 'css/calendar.css',
+    script,
     pageTestScript: 'page-tests/tests-calendar.js',
   });
 });
@@ -209,11 +211,11 @@ router.post('/settings', [
       errors: result.array({ onlyFirstError: true })[0],
     });
   } else {
-    const { action, period, debt } = req.body;
+    const { action, period, end, debt } = req.body;
 
     UserCalendar.findOneAndUpdate(
       { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt) } },
+      { $push: { actions: UserActions.addAction(action, period, debt, end) } },
       (err) => {
         if (err) throw err;
 
@@ -247,7 +249,7 @@ router.get('/getdata-test', async (req, res) => {
   res.json(actions);
 });
 
-router.post('/delete-action', async (req, res) => {
+router.post('/deactivate-action', async (req, res) => {
   const { actionId } = req.body;
 
   await UserCalendar.findOneAndUpdate(
@@ -256,7 +258,23 @@ router.post('/delete-action', async (req, res) => {
     (err) => {
       if (err) throw err;
 
-      res.json(`${actionId} was deleted`);
+      res.json(`${actionId} was deactivated`);
+    },
+  );
+});
+
+router.post('/delete-action', async (req, res) => {
+  const { actionId } = req.body;
+
+  await UserCalendar.findOne(
+    { _id: new ObjectId(req.session.userId) },
+    (err, user) => {
+      if (err) throw err;
+
+      user.actions.id(actionId).remove();
+      user.save();
+
+      res.json(`${actionId} was deactivated`);
     },
   );
 });
@@ -267,7 +285,9 @@ router.get('/get-data-actions', async (req, res) => {
       if (err) throw err;
 
       const actions = [];
+      const notActive = [];
       const dates = {};
+      const notActiveDates = {};
 
       for (const action of user.actions) {
         if (action.status) {
@@ -275,15 +295,24 @@ router.get('/get-data-actions', async (req, res) => {
           dates[action._id] = [];
 
           for (const date of user.dates) {
-            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               dates[action._id].push(date);
+            }
+          }
+        } else {
+          notActive.push(action);
+          notActiveDates[action._id] = [];
+
+          for (const date of user.dates) {
+            if (action._id == date.id_action) {
+              notActiveDates[action._id].push(date);
             }
           }
         }
       }
 
-      res.json({ actions, dates });
+      // eslint-disable-next-line object-curly-newline
+      res.json({ actions, dates, notActive, notActiveDates });
     });
 });
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
@@ -184,31 +185,7 @@ class CalendarCreator {
 
     await this.getActions(); // получить обновленные данные
 
-    this.chooseInsertTarget();
-  }
-
-  /* async getData() {
-    const response = await fetch('/getdata');
-
-    if (response.ok) {
-      this.data = await response.json();
-    } else {
-      throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
-    }
-  } */
-
-  chooseInsertTarget(side) {
-    if (!side) {
-      this.insertDataDays('left');
-      this.insertDataDays('middle');
-      this.insertDataDays('right');
-    }
-    if (side === 'left') {
-      this.insertDataDays('left');
-    }
-    if (side === 'right') {
-      this.insertDataDays('right');
-    }
+    this.changeInsertTarget();
   }
 
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
@@ -303,28 +280,77 @@ class CalendarCreator {
     }
   }
 
+  changeInsertTarget(side) {
+    if (!side) {
+      this.insertDataDays('left');
+      this.insertDataDays('middle');
+      this.insertDataDays('right');
+    }
+    if (side === 'left') {
+      this.insertDataDays('left');
+    }
+    if (side === 'right') {
+      this.insertDataDays('right');
+    }
+  }
+
   insertDataDays(position) {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
+    const dateNow = new Date();
 
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
       const month = item.getAttribute('data-month');
       const year = item.getAttribute('data-year');
+      const tdDate = new Date(year, month, day);
 
-      for (const action of this.dataActions.actions) {
-        for (const date of this.dataActions.dates[action._id]) {
-          if (date.year === year && date.month === month && date.day === day) {
-            // eslint-disable-next-line no-underscore-dangle
-            this.constructor.renderAction(action.name, action._id, date._id, date.status, item,
-              date.year, date.month, date.day);
+      // если td не пустой
+      if (day) {
+        // вставить данные текущих действий
+        for (const action of this.dataActions.actions) {
+          let endDate;
+
+          if (action.end) endDate = new Date(action.end);
+
+          if (tdDate <= dateNow) {
+            for (const date of this.dataActions.dates[action._id]) {
+              if (date.year === year && date.month === month && date.day === day) {
+                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                  date.year, date.month, date.day);
+              }
+            }
+          } else if (action.days[0] === 'everyday') {
+            if (tdDate > endDate) continue;
+            this.constructor.renderAction(item, action.name, action._id, 'unused');
+          } else {
+            if (tdDate > endDate) continue;
+            const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            const tdDay = tdDate.getDay();
+
+            if (action.days.indexOf(daysName[tdDay]) >= 0) {
+              this.constructor.renderAction(item, action.name, action._id, 'unused');
+            }
+          }
+        }
+
+        const zeroDateNow = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
+        // вставить данные не активных действий
+        if (zeroDateNow.getTime() !== tdDate.getTime()) {
+          for (const action of this.dataActions.notActive) {
+            for (const date of this.dataActions.notActiveDates[action._id]) {
+              if (date.year === year && date.month === month && date.day === day) {
+                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                  date.year, date.month, date.day);
+              }
+            }
           }
         }
       }
     });
   }
 
-  static renderAction(name, actionId, dateId, status, td, year, month, day) {
+  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0) {
     const div = document.createElement('div');
     const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
@@ -335,13 +361,55 @@ class CalendarCreator {
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
 
-    if (status === false) {
-      div.classList.add('action-false');
-    } else {
-      div.classList.add('action-done');
+    switch (status) {
+      case 'unused':
+        div.classList.add('action-unused');
+        break;
+      case false:
+        div.classList.add('action-false');
+        break;
+      case true:
+        div.classList.add('action-done');
+        break;
+      // no default
     }
 
     actionsContainer.appendChild(div);
+
+    this.setDayStatus(td, actionsContainer);
+  }
+
+  static setDayStatus(day, actions) {
+    const date = new Date();
+    const year = day.getAttribute('data-year');
+    const month = day.getAttribute('data-month');
+    const currentDay = day.getAttribute('data-day');
+    let dayStatus = true;
+
+    [].forEach.call(actions.children, (action) => {
+      const actionStatus = action.getAttribute('data-status');
+
+      if (actionStatus === 'false') dayStatus = false;
+      if (actionStatus === 'unused') dayStatus = 'unused';
+    });
+
+    day.classList.remove('completed-day', 'incompleted-day');
+
+    if (dayStatus === 'unused') day.classList.add('unused-day');
+    if (dayStatus === true) day.classList.add('completed-day');
+    if (dayStatus === false) day.classList.add('incompleted-day');
+
+    if (+year === date.getFullYear() && +month === date.getMonth()
+    && +currentDay === date.getDate()) {
+      day.classList.remove('completed-day', 'incompleted-day');
+      day.classList.add('current-day');
+    }
+
+    if (+year === date.getFullYear() && +month === date.getMonth()
+    && +currentDay === date.getDate() && dayStatus === true) {
+      day.classList.remove('current-day');
+      day.classList.add('completed-day');
+    }
   }
 
   async updateActionStatus(dateId, status, action) {
@@ -368,13 +436,24 @@ class CalendarCreator {
     });
 
     if (response.ok) {
-      console.log('Статус действия обновлен');
+      const actions = action.parentNode;
+      const day = actions.parentNode;
+
+      this.constructor.setDayStatus(day, actions);
       await this.getActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
   }
 
+  static showActionInfo(action) {
+    const name = action.getAttribute('data-action');
+    const modal = document.createElement('div');
+    modal.classList.add('action-info');
+    modal.innerText = name;
+
+    action.appendChild(modal);
+  }
 }
 
 
@@ -403,7 +482,7 @@ left.addEventListener('click', () => {
   leftCalendar.classList.add('middle-calendar');
 
   calendar.update('left');
-  calendar.chooseInsertTarget('left');
+  calendar.changeInsertTarget('left');
 });
 
 right.addEventListener('click', () => {
@@ -423,17 +502,32 @@ right.addEventListener('click', () => {
   rightCalendar.classList.add('middle-calendar');
 
   calendar.update('right');
-  calendar.chooseInsertTarget('right');
+  calendar.changeInsertTarget('right');
 });
 
 container.addEventListener('click', (e) => {
   const target = e.target;
 
-  if (target.closest('.action')) {
-    // const actionId = target.getAttribute('data-action-id');
+  if (target.closest('.action') && !target.closest('.action-unused')) {
     const id = target.getAttribute('data-id');
     const status = target.getAttribute('data-status');
 
     calendar.updateActionStatus(id, status, target);
+  }
+});
+
+container.addEventListener('mouseover', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) calendar.constructor.showActionInfo(target);
+});
+
+container.addEventListener('mouseout', (e) => {
+  const target = e.target;
+
+  if (target.closest('.action')) {
+    const info = target.getElementsByClassName('action-info')[0];
+
+    info.remove();
   }
 });
