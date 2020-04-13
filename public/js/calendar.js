@@ -447,7 +447,6 @@ class CalendarCreator {
 
     action.appendChild(modal);
   }
-
 }
 
 
