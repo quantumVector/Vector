@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-undef */
@@ -308,6 +309,10 @@ class CalendarCreator {
       if (day) {
         // вставить данные текущих действий
         for (const action of this.dataActions.actions) {
+          let endDate;
+
+          if (action.end) endDate = new Date(action.end);
+
           if (tdDate <= dateNow) {
             for (const date of this.dataActions.dates[action._id]) {
               if (date.year === year && date.month === month && date.day === day) {
@@ -316,8 +321,10 @@ class CalendarCreator {
               }
             }
           } else if (action.days[0] === 'everyday') {
+            if (tdDate > endDate) continue;
             this.constructor.renderAction(item, action.name, action._id, 'unused');
           } else {
+            if (tdDate > endDate) continue;
             const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
             const tdDay = tdDate.getDay();
 
