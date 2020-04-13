@@ -211,11 +211,11 @@ router.post('/settings', [
       errors: result.array({ onlyFirstError: true })[0],
     });
   } else {
-    const { action, period, debt } = req.body;
+    const { action, period, end, debt } = req.body;
 
     UserCalendar.findOneAndUpdate(
       { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt) } },
+      { $push: { actions: UserActions.addAction(action, period, debt, end) } },
       (err) => {
         if (err) throw err;
 

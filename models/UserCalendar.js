@@ -39,6 +39,7 @@ const schema = new Schema({
     debt: { type: Boolean, default: false },
     created: { type: Date, default: '2020-03-16' },
     status: { type: Boolean, default: true },
+    end: { type: Date },
   }],
   dates: [{
     id_action: { type: String },

@@ -20,6 +20,17 @@ class Settings {
     }
   }
 
+  static toggleEndDate() {
+    const endDay = document.getElementById('end-day');
+    const endDate = document.getElementById('end-date');
+
+    if (endDay.checked) {
+      endDate.disabled = 0;
+    } else {
+      endDate.disabled = 1;
+    }
+  }
+
   async getData() {
     const response = await fetch('/getdata');
 
@@ -173,4 +184,10 @@ container.addEventListener('click', (e) => {
 
     settings.deleteAction(actionId, container);
   }
+});
+
+const endDay = document.getElementById('end-day');
+
+endDay.addEventListener('click', () => {
+  settings.constructor.toggleEndDate();
 });
