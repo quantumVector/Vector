@@ -300,6 +300,9 @@ class CalendarCreator {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
     const dateNow = new Date();
+    const yearNow = dateNow.getFullYear();
+    const monthNow = dateNow.getMonth();
+    const dayNow = dateNow.getDate();
 
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
@@ -319,7 +322,7 @@ class CalendarCreator {
             for (const date of this.dataActions.dates[action._id]) {
               if (date.year === year && date.month === month && date.day === day) {
                 this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
-                  date.year, date.month, date.day);
+                  date.year, date.month, date.day, action.debt);
               }
             }
           } else if (action.days[0] === 'everyday') {
@@ -336,7 +339,7 @@ class CalendarCreator {
           }
         }
 
-        const zeroDateNow = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
+        const zeroDateNow = new Date(yearNow, monthNow, dayNow);
         // вставить данные не активных действий
         if (zeroDateNow.getTime() !== tdDate.getTime()) {
           for (const action of this.dataActions.notActive) {
@@ -348,11 +351,21 @@ class CalendarCreator {
             }
           }
         }
+
+        // есть есть долги, то вставить их в текущий день
+        if (this.dataActions.debts.length > 0) {
+          if (tdDate.getTime() === zeroDateNow.getTime()) {
+            for (const date of this.dataActions.debts) {
+              this.constructor.renderAction(item, date.action_name, date.action_id, 'debt', date._id,
+                date.year, date.month, date.day);
+            }
+          }
+        }
       }
-    });
+    }); // end forEach
   }
 
-  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0) {
+  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0, debt) {
     const div = document.createElement('div');
     const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
@@ -363,9 +376,14 @@ class CalendarCreator {
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
 
+    if (debt) div.id = `debt-${dateId}`;
+
     switch (status) {
       case 'unused':
         div.classList.add('action-unused');
+        break;
+      case 'debt':
+        div.classList.add('action-debt');
         break;
       case false:
         div.classList.add('action-false');
@@ -417,7 +435,7 @@ class CalendarCreator {
   async updateActionStatus(dateId, status, action) {
     let obj = {};
 
-    if (status === 'false') {
+    if (status === 'false' || status === 'debt') {
       obj = { dateId, status: true };
       action.classList.remove('action-false');
       action.classList.add('action-done');
@@ -438,11 +456,29 @@ class CalendarCreator {
     });
 
     if (response.ok) {
-      const actions = action.parentNode;
-      const day = actions.parentNode;
+      if (status === 'debt') {
+        const debtDay = document.getElementById(`debt-${dateId}`);
 
-      this.constructor.setDayStatus(day, actions);
-      await this.getActions();
+        if (debtDay) {
+          debtDay.classList.remove('action-false');
+          debtDay.classList.add('action-done');
+          debtDay.setAttribute('data-status', true);
+
+          const actionsBox = debtDay.parentNode;
+          const day = actionsBox.parentNode;
+
+          this.constructor.setDayStatus(day, actionsBox);
+          await this.getActions();
+        }
+
+        action.remove();
+      } else {
+        const actionsBox = action.parentNode;
+        const day = actionsBox.parentNode;
+
+        this.constructor.setDayStatus(day, actionsBox);
+        await this.getActions();
+      }
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }

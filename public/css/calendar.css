@@ -136,3 +136,8 @@
 .calendar table tbody tr td .actions-container .action-unused {
   border: 1px solid rgb(63, 63, 97);
 }
+
+.calendar table tbody tr td .actions-container .action-debt {
+  border: 1px solid rgb(55, 8, 70);
+  background-color: rgb(151, 42, 97);
+}
