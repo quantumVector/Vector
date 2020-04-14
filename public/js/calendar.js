@@ -490,6 +490,13 @@ class CalendarCreator {
     modal.classList.add('action-info');
     modal.innerText = name;
 
+    if (action.closest('.action-debt')) {
+      const debtInfo = document.createElement('div');
+
+      debtInfo.innerText = `Дата долга: ${action.getAttribute('data-date')}`;
+      modal.appendChild(debtInfo);
+    }
+
     action.appendChild(modal);
   }
 }
