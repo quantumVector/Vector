@@ -1,5 +1,5 @@
 <section class="settings">
-  <form action="/settings" method="POST" class="create-action">
+  <form action="/create-action" method="POST" class="create-action">
     {{#if errors}}
       <p class="error-msg">{{errors}}</p>
     {{/if}}
@@ -16,8 +16,9 @@
         <div>Воскресенье <input type="checkbox" name="period" value="Вс" disabled></div>
       </div>
     </p>
+    <p>Укажите дату начала: <input type="date" name="start"></p>
     <p>Назначить дату завершения? <input type="checkbox" id="end-day"></p>
-    <p>Дата завершения: <input type="date" name="end" id="end-date" disabled></p>
+    <p>Укаэите дату завершения: <input type="date" name="end" id="end-date" disabled></p>
     <p>Учитывать долги <input type="checkbox" name="debt" value="true"></p>
     <button id="btn-create-action" type="submit">Создать действие</button>
   </form>

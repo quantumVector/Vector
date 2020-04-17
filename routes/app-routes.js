@@ -187,7 +187,7 @@ router.post('/register', [
 });
 // ------------------------------ Register user end ----------------------------------
 
-router.post('/settings', [
+router.post('/create-action', [
   check('action', 'Название должно состоять от 1 до 30 символов и содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел')
     .not().isEmpty()
     .withMessage('Вы не указали название')
@@ -199,6 +199,7 @@ router.post('/settings', [
   body('name').trim(),
 
   check('period').not().isEmpty().withMessage('Должен быть указан минимум один день'),
+  check('start').not().isEmpty().withMessage('Укажите дату начала с которой действие будет применено'),
 ], (req, res) => {
   const errorFormatter = ({ msg }) => msg;
   const result = validationResult(req).formatWith(errorFormatter);
@@ -212,11 +213,11 @@ router.post('/settings', [
       errors: result.array({ onlyFirstError: true })[0],
     });
   } else {
-    const { action, period, end, debt } = req.body;
+    const { action, period, start, end, debt } = req.body;
 
     UserCalendar.findOneAndUpdate(
       { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt, end) } },
+      { $push: { actions: UserActions.addAction(action, period, debt, start, end) } },
       (err) => {
         if (err) throw err;
 

@@ -164,6 +164,7 @@ class Settings {
 }
 
 const container = document.getElementsByClassName('actions')[0];
+const endDay = document.getElementById('end-day');
 const settings = new Settings();
 
 settings.renderActions(container);
@@ -171,6 +172,11 @@ settings.renderActions(container);
 everyday.addEventListener('click', () => {
   settings.constructor.togglePeriod();
 });
+
+endDay.addEventListener('click', () => {
+  settings.constructor.toggleEndDate();
+});
+
 
 container.addEventListener('click', (e) => {
   if (e.target.closest('.deactivate-action')) {
@@ -184,10 +190,4 @@ container.addEventListener('click', (e) => {
 
     settings.deleteAction(actionId, container);
   }
-});
-
-const endDay = document.getElementById('end-day');
-
-endDay.addEventListener('click', () => {
-  settings.constructor.toggleEndDate();
 });
