@@ -452,13 +452,13 @@ class CalendarCreator {
     if (dayStatus === false) day.classList.add('incompleted-day');
 
     if (+year === date.getFullYear() && +month === date.getMonth()
-    && +currentDay === date.getDate()) {
+      && +currentDay === date.getDate()) {
       day.classList.remove('completed-day', 'incompleted-day');
       day.classList.add('current-day');
     }
 
     if (+year === date.getFullYear() && +month === date.getMonth()
-    && +currentDay === date.getDate() && dayStatus === true) {
+      && +currentDay === date.getDate() && dayStatus === true) {
       day.classList.remove('current-day');
       day.classList.add('completed-day');
     }
@@ -531,6 +531,41 @@ class CalendarCreator {
 
     action.appendChild(modal);
   }
+
+  clickDirection(direction) {
+    const leftCalendar = document.getElementsByClassName('left-calendar')[0];
+    const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
+    const rightCalendar = document.getElementsByClassName('right-calendar')[0];
+
+    if (direction === 'left') {
+      middleCalendar.style.left = '100%';
+      leftCalendar.style.left = '0';
+
+      rightCalendar.remove();
+
+      middleCalendar.classList.remove('middle-calendar');
+      middleCalendar.classList.add('right-calendar');
+
+      leftCalendar.classList.remove('left-calendar');
+      leftCalendar.classList.add('middle-calendar');
+    }
+
+    if (direction === 'right') {
+      middleCalendar.style.left = '-100%';
+      rightCalendar.style.left = '0';
+
+      leftCalendar.remove();
+
+      middleCalendar.classList.remove('middle-calendar');
+      middleCalendar.classList.add('left-calendar');
+
+      rightCalendar.classList.remove('right-calendar');
+      rightCalendar.classList.add('middle-calendar');
+    }
+
+    this.update(direction);
+    this.changeInsertTarget(direction);
+  }
 }
 
 
@@ -543,43 +578,11 @@ const left = document.getElementById('left');
 const right = document.getElementById('right');
 
 left.addEventListener('click', () => {
-  const leftCalendar = document.getElementsByClassName('left-calendar')[0];
-  const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
-  const rightCalendar = document.getElementsByClassName('right-calendar')[0];
-
-  middleCalendar.style.left = '100%';
-  leftCalendar.style.left = '0';
-
-  rightCalendar.remove();
-
-  middleCalendar.classList.remove('middle-calendar');
-  middleCalendar.classList.add('right-calendar');
-
-  leftCalendar.classList.remove('left-calendar');
-  leftCalendar.classList.add('middle-calendar');
-
-  calendar.update('left');
-  calendar.changeInsertTarget('left');
+  calendar.clickDirection('left');
 });
 
 right.addEventListener('click', () => {
-  const leftCalendar = document.getElementsByClassName('left-calendar')[0];
-  const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
-  const rightCalendar = document.getElementsByClassName('right-calendar')[0];
-
-  middleCalendar.style.left = '-100%';
-  rightCalendar.style.left = '0';
-
-  leftCalendar.remove();
-
-  middleCalendar.classList.remove('middle-calendar');
-  middleCalendar.classList.add('left-calendar');
-
-  rightCalendar.classList.remove('right-calendar');
-  rightCalendar.classList.add('middle-calendar');
-
-  calendar.update('right');
-  calendar.changeInsertTarget('right');
+  calendar.clickDirection('right');
 });
 
 container.addEventListener('click', (e) => {
