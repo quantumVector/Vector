@@ -199,6 +199,8 @@ class CalendarCreator {
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
 
+    if (createdDate.getDate() > currentDate.getDate()) return;
+
     if (createdDate.getDate() === currentDate.getDate()) {
       this.constructor.setSumDays(action, currentDate, sumDays);
     } else {
