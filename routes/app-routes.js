@@ -274,8 +274,12 @@ router.post('/delete-action', async (req, res) => {
       if (err) throw err;
 
       user.actions.id(actionId).remove();
-      user.save();
 
+      for (let i = user.dates.length - 1; i >= 0; i--) {
+        if (user.dates[i].id_action === actionId) user.dates[i].remove();
+      }
+
+      user.save();
       res.json(`${actionId} was deactivated`);
     },
   );
