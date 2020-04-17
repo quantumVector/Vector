@@ -42,6 +42,12 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.locals.errors = req.session.errors;
+  delete req.session.errors;
+  next();
+});
+
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {

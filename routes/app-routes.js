@@ -110,10 +110,9 @@ router.post('/login', [
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('register', {
-      title: 'Регистрация',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
     const { name, password } = req.body;
 
@@ -168,10 +167,9 @@ router.post('/register', [
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('register', {
-      title: 'Регистрация',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
     const { name, password } = req.body;
 
@@ -205,13 +203,9 @@ router.post('/create-action', [
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('settings', {
-      title: 'Настройки',
-      isSettings: true,
-      style: 'css/settings.css',
-      pageTestScript: 'page-tests/tests-settings.js',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
     const { action, period, start, end, debt } = req.body;
 
@@ -221,7 +215,7 @@ router.post('/create-action', [
       (err) => {
         if (err) throw err;
 
-        res.redirect('/settings');
+        res.redirect('back');
       },
     );
   }
