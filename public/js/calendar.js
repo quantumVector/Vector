@@ -193,23 +193,38 @@ class CalendarCreator {
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
   async scanActionActivity(action) {
     const currentDate = new Date();
+    const zeroCurrentDate = new Date(currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate());
+
     const createdDate = new Date(action.created); // Получить дату создания действия
+    const zeroCreatedDate = new Date(createdDate.getFullYear(),
+      createdDate.getMonth(),
+      createdDate.getDate());
+
+    const currentMs = zeroCurrentDate.getTime();
+    const createdMs = zeroCreatedDate.getTime();
+
     const actionActivity = this.dataActions.dates[action._id]; // Получить существующие активности
     const newActivity = []; // контейнер для новых активностей
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
 
-    if (createdDate.getDate() > currentDate.getDate()) return;
+    if (createdMs > currentMs) return;
 
-    if (createdDate.getDate() === currentDate.getDate()) {
+    if (createdMs === currentMs) {
       this.constructor.setSumDays(action, currentDate, sumDays);
-    } else {
-      while (createdDate.getDate() !== currentDate.getDate()) {
-        currentDate.setDate(currentDate.getDate() - i);
-        i = 1;
+    }
+
+    if (createdMs < currentMs) {
+      let currentMsInCikle = currentMs;
+
+      while (createdMs !== currentMsInCikle) {
+        currentMsInCikle -= i;
+        i = 86400000;
 
         // учитываем, что если действие имеет конкретный день, то добавлять только его
-        this.constructor.setSumDays(action, currentDate, sumDays);
+        this.constructor.setSumDays(action, new Date(currentMsInCikle), sumDays);
       }
     }
 
