@@ -324,7 +324,14 @@ class CalendarCreator {
       if (day) {
         // вставить данные текущих действий
         for (const action of this.dataActions.actions) {
+          const createdDate = new Date(action.created);
+          const createdYear = createdDate.getFullYear();
+          const createdMonth = createdDate.getMonth();
+          const createdDay = createdDate.getDate();
+          const zeroCreatedDate = new Date(createdYear, createdMonth, createdDay);
           let endDate;
+
+          if (zeroCreatedDate > tdDate) continue;
 
           if (action.end) endDate = new Date(action.end);
 
