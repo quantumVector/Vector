@@ -199,26 +199,15 @@ class CalendarCreator {
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
 
-    while (createdDate.getDate() !== currentDate.getDate()) {
-      currentDate.setDate(currentDate.getDate() - i);
-      i = 1;
+    if (createdDate.getDate() === currentDate.getDate()) {
+      this.constructor.setSumDays(action, currentDate, sumDays);
+    } else {
+      while (createdDate.getDate() !== currentDate.getDate()) {
+        currentDate.setDate(currentDate.getDate() - i);
+        i = 1;
 
-      // учитываем, что если действие имеет конкретный день, то добавлять только его
-      if (action.days[0] !== 'everyday') {
-        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-        const number = currentDate.getDay();
-
-        for (let z = 0; z < action.days.length; z++) {
-          if (action.days[z] === days[number]) {
-            sumDays.push([
-              currentDate.getFullYear(),
-              currentDate.getMonth(),
-              currentDate.getDate(),
-            ]);
-          }
-        }
-      } else {
-        sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+        // учитываем, что если действие имеет конкретный день, то добавлять только его
+        this.constructor.setSumDays(action, currentDate, sumDays);
       }
     }
 
@@ -279,6 +268,25 @@ class CalendarCreator {
       } else {
         throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
       }
+    }
+  }
+
+  static setSumDays(action, currentDate, sumDays) {
+    if (action.days[0] !== 'everyday') {
+      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const number = currentDate.getDay();
+
+      for (let z = 0; z < action.days.length; z++) {
+        if (action.days[z] === days[number]) {
+          sumDays.push([
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate(),
+          ]);
+        }
+      }
+    } else {
+      sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
     }
   }
 
