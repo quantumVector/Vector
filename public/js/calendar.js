@@ -179,11 +179,18 @@ class CalendarCreator {
   async insertData() {
     await this.getActions();
 
+    if (!this.dataActions.actions.length) {
+      this.showModalEmpty();
+      return;
+    }
+
     for (const action of this.dataActions.actions) {
       this.scanActionActivity(action);
     }
 
     await this.getActions(); // получить обновленные данные
+
+    console.log(this.dataActions)
 
     this.changeInsertTarget();
   }
@@ -191,32 +198,38 @@ class CalendarCreator {
   // Данная функция будет вызываться отдельно для каждого действия со статусом true
   async scanActionActivity(action) {
     const currentDate = new Date();
+    const zeroCurrentDate = new Date(currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate());
+
     const createdDate = new Date(action.created); // Получить дату создания действия
+    const zeroCreatedDate = new Date(createdDate.getFullYear(),
+      createdDate.getMonth(),
+      createdDate.getDate());
+
+    const currentMs = zeroCurrentDate.getTime();
+    const createdMs = zeroCreatedDate.getTime();
+
     const actionActivity = this.dataActions.dates[action._id]; // Получить существующие активности
     const newActivity = []; // контейнер для новых активностей
     const sumDays = []; // общее кол-во дней, включая текущий, с момента создания действия
     let i = 0;
 
-    while (createdDate.getDate() !== currentDate.getDate()) {
-      currentDate.setDate(currentDate.getDate() - i);
-      i = 1;
+    if (createdMs > currentMs) return;
 
-      // учитываем, что если действие имеет конкретный день, то добавлять только его
-      if (action.days[0] !== 'everyday') {
-        const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-        const number = currentDate.getDay();
+    if (createdMs === currentMs) {
+      this.constructor.setSumDays(action, currentDate, sumDays);
+    }
 
-        for (let z = 0; z < action.days.length; z++) {
-          if (action.days[z] === days[number]) {
-            sumDays.push([
-              currentDate.getFullYear(),
-              currentDate.getMonth(),
-              currentDate.getDate(),
-            ]);
-          }
-        }
-      } else {
-        sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+    if (createdMs < currentMs) {
+      let currentMsInCikle = currentMs;
+
+      while (createdMs !== currentMsInCikle) {
+        currentMsInCikle -= i;
+        i = 86400000;
+
+        // учитываем, что если действие имеет конкретный день, то добавлять только его
+        this.constructor.setSumDays(action, new Date(currentMsInCikle), sumDays);
       }
     }
 
@@ -280,6 +293,25 @@ class CalendarCreator {
     }
   }
 
+  static setSumDays(action, currentDate, sumDays) {
+    if (action.days[0] !== 'everyday') {
+      const days = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+      const number = currentDate.getDay();
+
+      for (let z = 0; z < action.days.length; z++) {
+        if (action.days[z] === days[number]) {
+          sumDays.push([
+            currentDate.getFullYear(),
+            currentDate.getMonth(),
+            currentDate.getDate(),
+          ]);
+        }
+      }
+    } else {
+      sumDays.push([currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()]);
+    }
+  }
+
   changeInsertTarget(side) {
     if (!side) {
       this.insertDataDays('left');
@@ -298,6 +330,9 @@ class CalendarCreator {
     const calendar = this.container.getElementsByClassName(`${position}-calendar`)[0];
     const td = calendar.getElementsByTagName('td');
     const dateNow = new Date();
+    const yearNow = dateNow.getFullYear();
+    const monthNow = dateNow.getMonth();
+    const dayNow = dateNow.getDate();
 
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
@@ -309,7 +344,14 @@ class CalendarCreator {
       if (day) {
         // вставить данные текущих действий
         for (const action of this.dataActions.actions) {
+          const createdDate = new Date(action.created);
+          const createdYear = createdDate.getFullYear();
+          const createdMonth = createdDate.getMonth();
+          const createdDay = createdDate.getDate();
+          const zeroCreatedDate = new Date(createdYear, createdMonth, createdDay);
           let endDate;
+
+          if (zeroCreatedDate > tdDate) continue;
 
           if (action.end) endDate = new Date(action.end);
 
@@ -317,7 +359,7 @@ class CalendarCreator {
             for (const date of this.dataActions.dates[action._id]) {
               if (date.year === year && date.month === month && date.day === day) {
                 this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
-                  date.year, date.month, date.day);
+                  date.year, date.month, date.day, action.debt);
               }
             }
           } else if (action.days[0] === 'everyday') {
@@ -334,7 +376,7 @@ class CalendarCreator {
           }
         }
 
-        const zeroDateNow = new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate());
+        const zeroDateNow = new Date(yearNow, monthNow, dayNow);
         // вставить данные не активных действий
         if (zeroDateNow.getTime() !== tdDate.getTime()) {
           for (const action of this.dataActions.notActive) {
@@ -346,11 +388,21 @@ class CalendarCreator {
             }
           }
         }
+
+        // есть есть долги, то вставить их в текущий день
+        if (this.dataActions.debts.length > 0) {
+          if (tdDate.getTime() === zeroDateNow.getTime()) {
+            for (const date of this.dataActions.debts) {
+              this.constructor.renderAction(item, date.action_name, date.action_id, 'debt', date._id,
+                date.year, date.month, date.day);
+            }
+          }
+        }
       }
-    });
+    }); // end forEach
   }
 
-  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0) {
+  static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0, debt) {
     const div = document.createElement('div');
     const actionsContainer = td.getElementsByClassName('actions-container')[0];
 
@@ -361,9 +413,14 @@ class CalendarCreator {
     div.setAttribute('data-status', status);
     div.setAttribute('data-date', `${year}-${month}-${day}`);
 
+    if (debt) div.id = `debt-${dateId}`;
+
     switch (status) {
       case 'unused':
         div.classList.add('action-unused');
+        break;
+      case 'debt':
+        div.classList.add('action-debt');
         break;
       case false:
         div.classList.add('action-false');
@@ -400,13 +457,13 @@ class CalendarCreator {
     if (dayStatus === false) day.classList.add('incompleted-day');
 
     if (+year === date.getFullYear() && +month === date.getMonth()
-    && +currentDay === date.getDate()) {
+      && +currentDay === date.getDate()) {
       day.classList.remove('completed-day', 'incompleted-day');
       day.classList.add('current-day');
     }
 
     if (+year === date.getFullYear() && +month === date.getMonth()
-    && +currentDay === date.getDate() && dayStatus === true) {
+      && +currentDay === date.getDate() && dayStatus === true) {
       day.classList.remove('current-day');
       day.classList.add('completed-day');
     }
@@ -415,7 +472,7 @@ class CalendarCreator {
   async updateActionStatus(dateId, status, action) {
     let obj = {};
 
-    if (status === 'false') {
+    if (status === 'false' || status === 'debt') {
       obj = { dateId, status: true };
       action.classList.remove('action-false');
       action.classList.add('action-done');
@@ -436,11 +493,29 @@ class CalendarCreator {
     });
 
     if (response.ok) {
-      const actions = action.parentNode;
-      const day = actions.parentNode;
+      if (status === 'debt') {
+        const debtDay = document.getElementById(`debt-${dateId}`);
 
-      this.constructor.setDayStatus(day, actions);
-      await this.getActions();
+        if (debtDay) {
+          debtDay.classList.remove('action-false');
+          debtDay.classList.add('action-done');
+          debtDay.setAttribute('data-status', true);
+
+          const actionsBox = debtDay.parentNode;
+          const day = actionsBox.parentNode;
+
+          this.constructor.setDayStatus(day, actionsBox);
+          await this.getActions();
+        }
+
+        action.remove();
+      } else {
+        const actionsBox = action.parentNode;
+        const day = actionsBox.parentNode;
+
+        this.constructor.setDayStatus(day, actionsBox);
+        await this.getActions();
+      }
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -452,7 +527,58 @@ class CalendarCreator {
     modal.classList.add('action-info');
     modal.innerText = name;
 
+    if (action.closest('.action-debt')) {
+      const debtInfo = document.createElement('div');
+
+      debtInfo.innerText = `Дата долга: ${action.getAttribute('data-date')}`;
+      modal.appendChild(debtInfo);
+    }
+
     action.appendChild(modal);
+  }
+
+  clickDirection(direction) {
+    const leftCalendar = document.getElementsByClassName('left-calendar')[0];
+    const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
+    const rightCalendar = document.getElementsByClassName('right-calendar')[0];
+
+    if (direction === 'left') {
+      middleCalendar.style.left = '100%';
+      leftCalendar.style.left = '0';
+
+      rightCalendar.remove();
+
+      middleCalendar.classList.remove('middle-calendar');
+      middleCalendar.classList.add('right-calendar');
+
+      leftCalendar.classList.remove('left-calendar');
+      leftCalendar.classList.add('middle-calendar');
+    }
+
+    if (direction === 'right') {
+      middleCalendar.style.left = '-100%';
+      rightCalendar.style.left = '0';
+
+      leftCalendar.remove();
+
+      middleCalendar.classList.remove('middle-calendar');
+      middleCalendar.classList.add('left-calendar');
+
+      rightCalendar.classList.remove('right-calendar');
+      rightCalendar.classList.add('middle-calendar');
+    }
+
+    this.update(direction);
+    this.changeInsertTarget(direction);
+  }
+
+  showModalEmpty() {
+    const modal = document.createElement('div');
+
+    modal.classList.add('modal-empty-calendar');
+    modal.innerText = 'Вы ещё не создали ни одного действия';
+
+    this.container.appendChild(modal);
   }
 }
 
@@ -466,43 +592,11 @@ const left = document.getElementById('left');
 const right = document.getElementById('right');
 
 left.addEventListener('click', () => {
-  const leftCalendar = document.getElementsByClassName('left-calendar')[0];
-  const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
-  const rightCalendar = document.getElementsByClassName('right-calendar')[0];
-
-  middleCalendar.style.left = '100%';
-  leftCalendar.style.left = '0';
-
-  rightCalendar.remove();
-
-  middleCalendar.classList.remove('middle-calendar');
-  middleCalendar.classList.add('right-calendar');
-
-  leftCalendar.classList.remove('left-calendar');
-  leftCalendar.classList.add('middle-calendar');
-
-  calendar.update('left');
-  calendar.changeInsertTarget('left');
+  calendar.clickDirection('left');
 });
 
 right.addEventListener('click', () => {
-  const leftCalendar = document.getElementsByClassName('left-calendar')[0];
-  const middleCalendar = document.getElementsByClassName('middle-calendar')[0];
-  const rightCalendar = document.getElementsByClassName('right-calendar')[0];
-
-  middleCalendar.style.left = '-100%';
-  rightCalendar.style.left = '0';
-
-  leftCalendar.remove();
-
-  middleCalendar.classList.remove('middle-calendar');
-  middleCalendar.classList.add('left-calendar');
-
-  rightCalendar.classList.remove('right-calendar');
-  rightCalendar.classList.add('middle-calendar');
-
-  calendar.update('right');
-  calendar.changeInsertTarget('right');
+  calendar.clickDirection('right');
 });
 
 container.addEventListener('click', (e) => {

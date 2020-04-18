@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-underscore-dangle */
 const { Router } = require('express');
 const { check, body, validationResult } = require('express-validator');
@@ -30,13 +31,13 @@ router.get('/', async (req, res) => {
   });
 });
 
-router.get('/settings', async (req, res) => {
+router.get('/actions', async (req, res) => {
   if (req.session.userId) {
-    res.render('settings', {
+    res.render('actions', {
       title: 'Настройки',
       isSettings: true,
-      style: 'css/settings.css',
-      pageTestScript: 'page-tests/tests-settings.js',
+      style: 'css/actions.css',
+      pageTestScript: 'page-tests/tests-actions.js',
     });
   } else {
     res.redirect('/login');
@@ -109,10 +110,9 @@ router.post('/login', [
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('register', {
-      title: 'Регистрация',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
     const { name, password } = req.body;
 
@@ -167,10 +167,9 @@ router.post('/register', [
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('register', {
-      title: 'Регистрация',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
     const { name, password } = req.body;
 
@@ -186,7 +185,7 @@ router.post('/register', [
 });
 // ------------------------------ Register user end ----------------------------------
 
-router.post('/settings', [
+router.post('/create-action', [
   check('action', 'Название должно состоять от 1 до 30 символов и содержать только цифры, латиницу, нижнее подчеркивание, тире, пробел')
     .not().isEmpty()
     .withMessage('Вы не указали название')
@@ -198,28 +197,25 @@ router.post('/settings', [
   body('name').trim(),
 
   check('period').not().isEmpty().withMessage('Должен быть указан минимум один день'),
+  check('start').not().isEmpty().withMessage('Укажите дату начала с которой действие будет применено'),
 ], (req, res) => {
   const errorFormatter = ({ msg }) => msg;
   const result = validationResult(req).formatWith(errorFormatter);
 
   if (!result.isEmpty()) {
-    res.render('settings', {
-      title: 'Настройки',
-      isSettings: true,
-      style: 'css/settings.css',
-      pageTestScript: 'page-tests/tests-settings.js',
-      errors: result.array({ onlyFirstError: true })[0],
-    });
+    // eslint-disable-next-line prefer-destructuring
+    req.session.errors = result.array({ onlyFirstError: true })[0];
+    res.redirect('back');
   } else {
-    const { action, period, end, debt } = req.body;
+    const { action, period, start, end, debt } = req.body;
 
     UserCalendar.findOneAndUpdate(
       { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt, end) } },
+      { $push: { actions: UserActions.addAction(action, period, debt, start, end) } },
       (err) => {
         if (err) throw err;
 
-        res.redirect('/settings');
+        res.redirect('back');
       },
     );
   }
@@ -272,8 +268,12 @@ router.post('/delete-action', async (req, res) => {
       if (err) throw err;
 
       user.actions.id(actionId).remove();
-      user.save();
 
+      for (let i = user.dates.length - 1; i >= 0; i--) {
+        if (user.dates[i].id_action === actionId) user.dates[i].remove();
+      }
+
+      user.save();
       res.json(`${actionId} was deactivated`);
     },
   );
@@ -288,6 +288,11 @@ router.get('/get-data-actions', async (req, res) => {
       const notActive = [];
       const dates = {};
       const notActiveDates = {};
+      const debts = [];
+      const dateNow = new Date();
+      const yearNow = dateNow.getFullYear();
+      const monthNow = dateNow.getMonth();
+      const dayNow = dateNow.getDate();
 
       for (const action of user.actions) {
         if (action.status) {
@@ -295,8 +300,17 @@ router.get('/get-data-actions', async (req, res) => {
           dates[action._id] = [];
 
           for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               dates[action._id].push(date);
+
+              if (action.debt) {
+                if (!date.status) {
+                  if (+date.year === yearNow && +date.month === monthNow
+                    && +date.day === dayNow) continue;
+                  debts.push(date);
+                }
+              }
             }
           }
         } else {
@@ -304,6 +318,7 @@ router.get('/get-data-actions', async (req, res) => {
           notActiveDates[action._id] = [];
 
           for (const date of user.dates) {
+            // eslint-disable-next-line eqeqeq
             if (action._id == date.id_action) {
               notActiveDates[action._id].push(date);
             }
@@ -312,7 +327,7 @@ router.get('/get-data-actions', async (req, res) => {
       }
 
       // eslint-disable-next-line object-curly-newline
-      res.json({ actions, dates, notActive, notActiveDates });
+      res.json({ actions, dates, notActive, notActiveDates, debts });
     });
 });
 
