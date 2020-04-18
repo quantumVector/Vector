@@ -5,6 +5,18 @@
   overflow: hidden;
 }
 
+.calendar .modal-empty-calendar {
+  border: 1px solid red;
+  position: absolute;
+  top: 13px;
+  left: 12%;
+  width: 22%;
+  padding: 10px;
+  font-size: 1.3vw;
+  background-color: rgba(143, 143, 143, 0.486);
+  z-index: 1000;
+}
+
 .calendar .left-calendar, .calendar .middle-calendar, .calendar .right-calendar {
   border: 1px solid green;
   position: absolute;

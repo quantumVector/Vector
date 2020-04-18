@@ -179,6 +179,11 @@ class CalendarCreator {
   async insertData() {
     await this.getActions();
 
+    if (!this.dataActions.actions.length) {
+      this.showModalEmpty();
+      return;
+    }
+
     for (const action of this.dataActions.actions) {
       this.scanActionActivity(action);
     }
@@ -565,6 +570,15 @@ class CalendarCreator {
 
     this.update(direction);
     this.changeInsertTarget(direction);
+  }
+
+  showModalEmpty() {
+    const modal = document.createElement('div');
+
+    modal.classList.add('modal-empty-calendar');
+    modal.innerText = 'Вы ещё не создали ни одного действия';
+
+    this.container.appendChild(modal);
   }
 }
 
