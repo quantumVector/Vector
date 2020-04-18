@@ -1,22 +1,22 @@
-.settings {
+.create-actions {
   border: 1px solid blue;
   display: flex;
   justify-content: center;
   padding: 20px 0;
 }
 
-.settings .create-action {
+.create-actions .create-action {
   border: 1px solid green;
   width: 80%;
 }
 
-.settings .create-action .days-action {
+.create-actions .create-action .days-action {
   border: 1px solid purple;
   display: flex;
   padding: 0 20px;
 }
 
-.settings .create-action .days-action div {
+.create-actions .create-action .days-action div {
   margin-right: 20px;
 }
 

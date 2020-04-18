@@ -3,7 +3,7 @@
 
 'use strict';
 
-class Settings {
+class ActionsCreater {
   static togglePeriod() {
     const everyday = document.getElementById('everyday');
     const certainDays = document.getElementsByName('period');
@@ -165,16 +165,16 @@ class Settings {
 
 const container = document.getElementsByClassName('actions')[0];
 const endDay = document.getElementById('end-day');
-const settings = new Settings();
+const actions = new ActionsCreater();
 
-settings.renderActions(container);
+actions.renderActions(container);
 
 everyday.addEventListener('click', () => {
-  settings.constructor.togglePeriod();
+  actions.constructor.togglePeriod();
 });
 
 endDay.addEventListener('click', () => {
-  settings.constructor.toggleEndDate();
+  actions.constructor.toggleEndDate();
 });
 
 
@@ -182,12 +182,12 @@ container.addEventListener('click', (e) => {
   if (e.target.closest('.deactivate-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
-    settings.deactivateAction(actionId, container);
+    actions.deactivateAction(actionId, container);
   }
 
   if (e.target.closest('.delete-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
-    settings.deleteAction(actionId, container);
+    actions.deleteAction(actionId, container);
   }
 });

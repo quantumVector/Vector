@@ -31,13 +31,13 @@ router.get('/', async (req, res) => {
   });
 });
 
-router.get('/settings', async (req, res) => {
+router.get('/actions', async (req, res) => {
   if (req.session.userId) {
-    res.render('settings', {
+    res.render('actions', {
       title: 'Настройки',
       isSettings: true,
-      style: 'css/settings.css',
-      pageTestScript: 'page-tests/tests-settings.js',
+      style: 'css/actions.css',
+      pageTestScript: 'page-tests/tests-actions.js',
     });
   } else {
     res.redirect('/login');
