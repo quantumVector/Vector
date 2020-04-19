@@ -64,13 +64,17 @@
 .actions .active-actions-box, .actions .inactive-actions-box {
   border: 1px solid red;
   display: flex;
-  justify-content: center;
+  justify-content: start;
+  flex-wrap: wrap;
+  padding: 0 8%;
+  width: 100%;
 }
 
 .actions .action-item, .inactive-actions .action-item {
   border: 1px solid green;
   min-width: 20%;
   margin-right: 20px;
+  margin-bottom: 20px;
 }
 
 .actions .action-name, .inactive-actions .action-name {
