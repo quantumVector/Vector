@@ -4,6 +4,15 @@
 'use strict';
 
 class ActionsCreater {
+  constructor() {
+    this.dragFlag = false;
+    this.elemBelow = null;
+    this.dragStartPos = {
+      x: 0,
+      y: 0,
+    };
+  }
+
   static togglePeriod() {
     const everyday = document.getElementById('everyday');
     const certainDays = document.getElementsByName('period');
@@ -82,6 +91,7 @@ class ActionsCreater {
     const boxTitle = document.createElement('h3');
     const debt = document.createElement('p');
     const btn = document.createElement('button');
+    const dnd = document.createElement('div');
 
     actionsBox.appendChild(item);
     item.classList.add('action-item');
@@ -96,6 +106,8 @@ class ActionsCreater {
     btn.classList.add(`${btnClassName}-action`);
     btn.innerText = btnName;
     item.appendChild(btn);
+    dnd.classList.add('dnd-action');
+    item.appendChild(dnd);
 
     this.constructor.insertData(item, action, name, box, debt);
   }
@@ -161,6 +173,86 @@ class ActionsCreater {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
   }
+
+  static dragAction(event, action, classThis) {
+    let closeSibling = action.nextSibling;
+    const stub = action.cloneNode(true);
+    const shiftX = event.clientX - action.getBoundingClientRect().left;
+    const shiftY = event.clientY - action.getBoundingClientRect().top;
+    const parentAction = action.parentNode;
+
+    if (!closeSibling) closeSibling = action.previousSibling;
+
+    stub.classList.remove('action-item');
+    stub.classList.add('stub');
+    action.style.position = 'absolute';
+    action.style.zIndex = 1000;
+    parentAction.classList.add('active-actions-box-drag');
+    parentAction.append(action);
+    closeSibling.before(stub);
+
+    function moveAt(pageX, pageY) {
+      const styleAction = getComputedStyle(action);
+      const styleParent = getComputedStyle(parentAction);
+      const maxLeft = parseInt(styleParent.width, 10) - parseInt(styleAction.width, 10);
+      const maxTop = parentAction.offsetTop;
+      const maxBottom = maxTop + parseInt(styleParent.height, 10)
+      - parseInt(styleAction.height, 10);
+
+      action.style.left = `${pageX - shiftX}px`;
+      action.style.top = `${pageY - shiftY}px`;
+
+      if (parseInt(styleAction.left, 10) < 0) action.style.left = '0px';
+      if (parseInt(styleAction.left, 10) > maxLeft) action.style.left = `${maxLeft}px`;
+      if (parseInt(styleAction.top, 10) < maxTop) action.style.top = `${maxTop}px`;
+      if (parseInt(styleAction.top, 10) > maxBottom) action.style.top = `${maxBottom}px`;
+    }
+
+    moveAt(event.pageX, event.pageY);
+
+    // eslint-disable-next-line no-shadow
+    function onMouseMove(event) {
+      moveAt(event.pageX, event.pageY);
+
+      action.hidden = true;
+      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      action.hidden = false;
+
+      elemBelow = elemBelow.closest('.action-item') || null;
+
+      if (elemBelow) {
+        if (!classThis.elemBelow) {
+          classThis.elemBelow = elemBelow;
+
+          if (event.clientX > classThis.dragStartPos.x) {
+            stub.remove();
+            elemBelow.after(stub);
+            classThis.dragStartPos.x = event.clientX;
+            classThis.dragStartPos.y = event.clientY;
+          }
+          if (event.clientX < classThis.dragStartPos.x) {
+            stub.remove();
+            elemBelow.before(stub);
+            classThis.dragStartPos.x = event.clientX;
+            classThis.dragStartPos.y = event.clientY;
+          }
+        }
+      } else {
+        classThis.elemBelow = null;
+      }
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+
+    action.onmouseup = () => {
+      action.remove();
+      stub.classList.remove('stub');
+      stub.classList.add('action-item');
+      parentAction.classList.remove('active-actions-box-drag');
+      document.removeEventListener('mousemove', onMouseMove);
+      action.onmouseup = null;
+    };
+  }
 }
 
 const container = document.getElementsByClassName('actions')[0];
@@ -189,5 +281,11 @@ container.addEventListener('click', (e) => {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
 
     actions.deleteAction(actionId, container);
+  }
+});
+
+container.addEventListener('mousedown', (e) => {
+  if (e.target.closest('.dnd-action')) {
+    actions.constructor.dragAction(e, e.target.parentNode, actions);
   }
 });

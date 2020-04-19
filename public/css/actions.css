@@ -27,13 +27,47 @@
   text-align: center;
 }
 
+.actions .active-actions-box {
+  transition: 0.3s;
+}
+
+.actions .active-actions-box-drag {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+}
+
+.action-item {
+  border: 1px solid green;
+  position: relative;
+  width: 380px;
+}
+
+.stub {
+  border: 1px solid rgb(22, 120, 177);
+  position: relative;
+  width: 400px;
+  opacity: 0;
+}
+
+.action-item .dnd-action {
+  border: 1px solid blue;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
 .actions .active-actions-box, .actions .inactive-actions-box {
   border: 1px solid red;
   display: flex;
   justify-content: center;
 }
 
-.actions .action-item, .inactive-actions .action-item{
+.actions .action-item, .inactive-actions .action-item {
   border: 1px solid green;
   min-width: 20%;
   margin-right: 20px;
