@@ -4,15 +4,6 @@
 'use strict';
 
 class ActionsCreater {
-  constructor() {
-    this.dragFlag = false;
-    this.elemBelow = null;
-    this.dragStartPos = {
-      x: 0,
-      y: 0,
-    };
-  }
-
   static togglePeriod() {
     const everyday = document.getElementById('everyday');
     const certainDays = document.getElementsByName('period');
@@ -45,6 +36,8 @@ class ActionsCreater {
 
     if (response.ok) {
       this.data = await response.json();
+
+      if (!this.data) console.log('Надо перезагрузить страницу');
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -127,6 +120,7 @@ class ActionsCreater {
     const days = action.days;
 
     item.dataset.id = action._id;
+    item.id = action._id;
     name.innerText = action.name;
 
     if (action.days === 'everyday') box.innerText = 'Каждый день';
@@ -174,14 +168,12 @@ class ActionsCreater {
     }
   }
 
-  static dragAction(event, action, classThis) {
+  static dragAction(event, action) {
     let closeSibling = action.nextSibling;
     const stub = action.cloneNode(true);
     const shiftX = event.clientX - action.getBoundingClientRect().left;
     const shiftY = event.clientY - action.getBoundingClientRect().top;
     const parentAction = action.parentNode;
-
-    if (!closeSibling) closeSibling = action.previousSibling;
 
     stub.classList.remove('action-item');
     stub.classList.add('stub');
@@ -189,7 +181,14 @@ class ActionsCreater {
     action.style.zIndex = 1000;
     parentAction.classList.add('active-actions-box-drag');
     parentAction.append(action);
-    closeSibling.before(stub);
+
+    // если курсор был нажат на последнем действии
+    if (!closeSibling) {
+      closeSibling = action.previousSibling;
+      closeSibling.after(stub);
+    } else {
+      closeSibling.before(stub);
+    }
 
     function moveAt(pageX, pageY) {
       const styleAction = getComputedStyle(action);
@@ -210,35 +209,86 @@ class ActionsCreater {
 
     moveAt(event.pageX, event.pageY);
 
+    let saveActionBelow = null;
+    let dragStartPosX = event.pageX;
+
     // eslint-disable-next-line no-shadow
     function onMouseMove(event) {
       moveAt(event.pageX, event.pageY);
 
       action.hidden = true;
-      let elemBelow = document.elementFromPoint(event.clientX, event.clientY);
+      const elemBelow = document.elementFromPoint(event.clientX, event.clientY);
       action.hidden = false;
 
-      elemBelow = elemBelow.closest('.action-item') || null;
+      let actionBelow;
 
-      if (elemBelow) {
-        if (!classThis.elemBelow) {
-          classThis.elemBelow = elemBelow;
+      // если курсор за пределами окна
+      if (!elemBelow) {
+        actionBelow = null;
+      } else {
+        actionBelow = elemBelow.closest('.action-item');
+      }
 
-          if (event.clientX > classThis.dragStartPos.x) {
-            stub.remove();
-            elemBelow.after(stub);
-            classThis.dragStartPos.x = event.clientX;
-            classThis.dragStartPos.y = event.clientY;
+      if (actionBelow) {
+        if (!saveActionBelow) {
+          saveActionBelow = actionBelow;
+
+          const elemId = actionBelow.getAttribute('data-id');
+          const item = document.getElementById(elemId);
+
+          // элемент над курсором является соседом заглушки
+          if (stub.nextSibling === actionBelow || stub.previousSibling === actionBelow) {
+            if (event.pageX > dragStartPosX) {
+              stub.remove();
+              item.after(stub);
+
+              dragStartPosX = event.pageX;
+            } else {
+              stub.remove();
+              item.before(stub);
+
+              dragStartPosX = event.pageX;
+            }
+
+            return;
           }
-          if (event.clientX < classThis.dragStartPos.x) {
-            stub.remove();
-            elemBelow.before(stub);
-            classThis.dragStartPos.x = event.clientX;
-            classThis.dragStartPos.y = event.clientY;
+
+          // элемент над курсором не является соседом заглушки + заглушка не имеет соседа слева
+          if (stub.nextSibling !== actionBelow && stub.previousSibling !== actionBelow
+            && !stub.previousSibling) {
+            const rightSiblingStub = stub.nextSibling;
+            const leftSiblingItem = item.previousSibling;
+
+            rightSiblingStub.before(item);
+            leftSiblingItem.after(stub);
+
+            return;
+          }
+
+          // элемент над курсором не является соседом заглушки + эелемент не имеет соседа слева
+          if (stub.nextSibling !== actionBelow && stub.previousSibling !== actionBelow
+            && !item.previousSibling) {
+            const rightSiblingStub = stub.nextSibling;
+            const rightSiblingItem = item.nextSibling;
+
+            rightSiblingStub.before(item);
+            rightSiblingItem.before(stub);
+
+            return;
+          }
+
+          // элемент над курсором не является соседом заглушки + заглушка имеет соседа слева
+          if (stub.nextSibling !== actionBelow && stub.previousSibling !== actionBelow
+            && stub.previousSibling) {
+            const leftSiblingStub = stub.previousSibling;
+            const leftSiblingItem = item.previousSibling;
+
+            leftSiblingStub.after(item);
+            leftSiblingItem.after(stub);
           }
         }
       } else {
-        classThis.elemBelow = null;
+        saveActionBelow = null;
       }
     }
 
@@ -286,6 +336,6 @@ container.addEventListener('click', (e) => {
 
 container.addEventListener('mousedown', (e) => {
   if (e.target.closest('.dnd-action')) {
-    actions.constructor.dragAction(e, e.target.parentNode, actions);
+    actions.constructor.dragAction(e, e.target.parentNode);
   }
 });
