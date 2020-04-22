@@ -35,9 +35,11 @@ class ActionsCreater {
     const response = await fetch('/getdata');
 
     if (response.ok) {
-      this.data = await response.json();
-
-      if (!this.data) console.log('Надо перезагрузить страницу');
+      try {
+        this.data = await response.json();
+      } catch (e) {
+        window.location.reload();
+      }
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }

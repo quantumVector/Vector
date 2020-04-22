@@ -16,6 +16,7 @@ const schema = new Schema({
     created: { type: Date },
     status: { type: Boolean, default: true },
     end: { type: Date },
+    position: { type: Number },
   }],
   dates: [{
     id_action: { type: String },

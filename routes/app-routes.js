@@ -198,7 +198,7 @@ router.post('/create-action', [
 
   check('period').not().isEmpty().withMessage('Должен быть указан минимум один день'),
   check('start').not().isEmpty().withMessage('Укажите дату начала с которой действие будет применено'),
-], (req, res) => {
+], async (req, res) => {
   const errorFormatter = ({ msg }) => msg;
   const result = validationResult(req).formatWith(errorFormatter);
 
@@ -208,10 +208,29 @@ router.post('/create-action', [
     res.redirect('back');
   } else {
     const { action, period, start, end, debt } = req.body;
+    let position;
 
+    // найти и узнать последний порядковый номер действия
+    await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
+      if (err) throw err;
+
+      if (!user.actions.length) {
+        position = 1;
+      } else {
+        const posArr = [];
+
+        for (const act of user.actions) {
+          posArr.push(act.position);
+        }
+
+        position = Math.max(...posArr) + 1;
+      }
+    });
+
+    // если сделать async, то push будет происходить два раза
     UserCalendar.findOneAndUpdate(
       { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt, start, end) } },
+      { $push: { actions: UserActions.addAction(action, period, debt, position, start, end) } },
       (err) => {
         if (err) throw err;
 
