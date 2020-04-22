@@ -76,6 +76,7 @@ class ActionsCreater {
 
     if (activeActionsLength > 0) {
       for (let i = 1; i <= activeActionsLength; i++) {
+        console.log(activeActionsObj[i])
         this.renderActionItem(activeActionsBox, 'deactivate', 'Деактивировать', activeActionsObj[i]);
       }
     }
@@ -144,8 +145,8 @@ class ActionsCreater {
     }
   }
 
-  async deactivateAction(actionId, container) {
-    const obj = { actionId };
+  async deactivateAction(actionId, position, container) {
+    const obj = { actionId, position };
     const response = await fetch('/deactivate-action', {
       method: 'POST',
       headers: {
@@ -335,8 +336,9 @@ endDay.addEventListener('click', () => {
 container.addEventListener('click', (e) => {
   if (e.target.closest('.deactivate-action')) {
     const actionId = e.target.closest('.action-item').getAttribute('data-id');
+    const position = e.target.closest('.action-item').getAttribute('data-position');
 
-    actions.deactivateAction(actionId, container);
+    actions.deactivateAction(actionId, position, container);
   }
 
   if (e.target.closest('.delete-action')) {

@@ -265,13 +265,19 @@ router.get('/getdata-test', async (req, res) => {
 });
 
 router.post('/deactivate-action', async (req, res) => {
-  const { actionId } = req.body;
+  const { actionId, position } = req.body;
 
   await UserCalendar.findOneAndUpdate(
     { _id: new ObjectId(req.session.userId), actions: { $elemMatch: { _id: actionId } } },
-    { $set: { 'actions.$.status': false } },
-    (err) => {
+    { $set: { 'actions.$.status': false, 'actions.$.position': 0 } },
+    (err, user) => {
       if (err) throw err;
+
+      for (const action of user.actions) {
+        if (action.position > position) action.position -= 1;
+      }
+
+      user.save();
 
       res.json(`${actionId} was deactivated`);
     },
@@ -293,7 +299,7 @@ router.post('/delete-action', async (req, res) => {
       }
 
       user.save();
-      res.json(`${actionId} was deactivated`);
+      res.json(`${actionId} was deleted`);
     },
   );
 });
