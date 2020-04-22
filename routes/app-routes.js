@@ -220,7 +220,7 @@ router.post('/create-action', [
         const posArr = [];
 
         for (const act of user.actions) {
-          posArr.push(act.position);
+          if (act.status) posArr.push(act.position);
         }
 
         position = Math.max(...posArr) + 1;
