@@ -50,6 +50,8 @@ class ActionsCreater {
     const activeActionsBox = document.createElement('div');
     const titleInactiveBox = document.createElement('h2');
     const inactiveActionsBox = document.createElement('div');
+    const activeActionsObj = {};
+    let activeActionsLength = 0;
 
     titleActiveBox.innerText = 'Текущие действия';
     activeActionsBox.classList.add('active-actions-box');
@@ -65,9 +67,16 @@ class ActionsCreater {
 
     for (const action of this.data) {
       if (action.status) {
-        this.renderActionItem(activeActionsBox, 'deactivate', 'Деактивировать', action);
+        activeActionsObj[action.position] = action;
+        activeActionsLength += 1;
       } else {
         this.renderActionItem(inactiveActionsBox, 'delete', 'Удалить', action);
+      }
+    }
+
+    if (activeActionsLength > 0) {
+      for (let i = 1; i <= activeActionsLength; i++) {
+        this.renderActionItem(activeActionsBox, 'deactivate', 'Деактивировать', activeActionsObj[i]);
       }
     }
 
@@ -122,6 +131,7 @@ class ActionsCreater {
     const days = action.days;
 
     item.dataset.id = action._id;
+    item.dataset.position = action.position;
     item.id = action._id;
     name.innerText = action.name;
 
