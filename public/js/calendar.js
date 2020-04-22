@@ -334,6 +334,7 @@ class CalendarCreator {
     const monthNow = dateNow.getMonth();
     const dayNow = dateNow.getDate();
 
+    // перебрать все дни в календаре
     [].forEach.call(td, (item) => {
       const day = item.getAttribute('data-day');
       const month = item.getAttribute('data-month');
@@ -342,36 +343,49 @@ class CalendarCreator {
 
       // если td не пустой
       if (day) {
-        // вставить данные текущих действий
+        const activeActions = {};
+        let activeActionsLength = 0;
+
         for (const action of this.dataActions.actions) {
-          const createdDate = new Date(action.created);
-          const createdYear = createdDate.getFullYear();
-          const createdMonth = createdDate.getMonth();
-          const createdDay = createdDate.getDate();
-          const zeroCreatedDate = new Date(createdYear, createdMonth, createdDay);
-          let endDate;
+          activeActions[action.position] = action;
+          activeActionsLength += 1;
+        }
 
-          if (zeroCreatedDate > tdDate) continue;
+        if (activeActionsLength > 0) {
+          // вставить данные текущих действий
+          for (let i = 1; i <= activeActionsLength; i++) {
+            const createdDate = new Date(activeActions[i].created);
+            const createdYear = createdDate.getFullYear();
+            const createdMonth = createdDate.getMonth();
+            const createdDay = createdDate.getDate();
+            const zeroCreatedDate = new Date(createdYear, createdMonth, createdDay);
+            let endDate;
 
-          if (action.end) endDate = new Date(action.end);
+            // если дейсвтие было создано позже, то пропустить день
+            if (zeroCreatedDate > tdDate) continue;
 
-          if (tdDate <= dateNow) {
-            for (const date of this.dataActions.dates[action._id]) {
-              if (date.year === year && date.month === month && date.day === day) {
-                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
-                  date.year, date.month, date.day, action.debt);
+            if (activeActions[i].end) endDate = new Date(activeActions[i].end);
+
+            // если дата td меньше или равна текущему дню
+            if (tdDate <= dateNow) {
+              for (const date of this.dataActions.dates[activeActions[i]._id]) {
+                if (date.year === year && date.month === month && date.day === day) {
+                  this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id, date.status, date._id,
+                    date.year, date.month, date.day, activeActions[i].debt);
+                }
               }
-            }
-          } else if (action.days[0] === 'everyday') {
-            if (tdDate > endDate) continue;
-            this.constructor.renderAction(item, action.name, action._id, 'unused');
-          } else {
-            if (tdDate > endDate) continue;
-            const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-            const tdDay = tdDate.getDay();
+              // а если дата td больше текущего дня, то рендерить неиспользуемую ячейку действия
+            } else if (activeActions[i].days[0] === 'everyday') { // рендерить действия каждый день
+              if (tdDate > endDate) continue;
+              this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id, 'unused');
+            } else { // а если у действия есть опредлённые дни, то рендерить действие только в эти дни
+              if (tdDate > endDate) continue;
+              const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+              const tdDay = tdDate.getDay();
 
-            if (action.days.indexOf(daysName[tdDay]) >= 0) {
-              this.constructor.renderAction(item, action.name, action._id, 'unused');
+              if (activeActions[i].days.indexOf(daysName[tdDay]) >= 0) {
+                this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id, 'unused');
+              }
             }
           }
         }
@@ -399,7 +413,7 @@ class CalendarCreator {
           }
         }
       }
-    }); // end forEach
+    }); // end forEach td
   }
 
   static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0, debt) {
