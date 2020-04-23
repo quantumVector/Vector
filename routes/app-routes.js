@@ -385,5 +385,25 @@ router.post('/update-action-status', async (req, res) => {
   );
 });
 
+router.post('/set-position-action', async (req, res) => {
+  const actionsId = req.body;
+
+  await UserCalendar.findOne(
+    { _id: new ObjectId(req.session.userId) },
+    (err, user) => {
+      if (err) throw err;
+
+      for (let i = 0; i < actionsId.length; i++) {
+        const action = user.actions.id(actionsId[i]);
+
+        action.position = i + 1;
+      }
+
+      user.save();
+      res.json('success');
+    },
+  );
+});
+
 
 module.exports = router;

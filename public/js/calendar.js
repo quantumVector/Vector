@@ -370,15 +370,17 @@ class CalendarCreator {
             if (tdDate <= dateNow) {
               for (const date of this.dataActions.dates[activeActions[i]._id]) {
                 if (date.year === year && date.month === month && date.day === day) {
-                  this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id, date.status, date._id,
-                    date.year, date.month, date.day, activeActions[i].debt);
+                  this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id,
+                    date.status, date._id, date.year, date.month, date.day, activeActions[i].debt);
                 }
               }
-              // а если дата td больше текущего дня, то рендерить неиспользуемую ячейку действия
+              // а если дата td больше текущего дня,
+              // то рендерить неиспользуемую ячейку действия
             } else if (activeActions[i].days[0] === 'everyday') { // рендерить действия каждый день
               if (tdDate > endDate) continue;
               this.constructor.renderAction(item, activeActions[i].name, activeActions[i]._id, 'unused');
-            } else { // а если у действия есть опредлённые дни, то рендерить действие только в эти дни
+              // а если у действия есть опредлённые дни, то рендерить действие только в эти дни
+            } else {
               if (tdDate > endDate) continue;
               const daysName = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
               const tdDay = tdDate.getDay();

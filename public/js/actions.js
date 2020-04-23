@@ -209,7 +209,7 @@ class ActionsCreater {
       const maxLeft = parseInt(styleParent.width, 10) - parseInt(styleAction.width, 10);
       const maxTop = parentAction.offsetTop;
       const maxBottom = maxTop + parseInt(styleParent.height, 10)
-      - parseInt(styleAction.height, 10);
+        - parseInt(styleAction.height, 10);
 
       action.style.left = `${pageX - shiftX}px`;
       action.style.top = `${pageY - shiftY}px`;
@@ -307,13 +307,37 @@ class ActionsCreater {
 
     document.addEventListener('mousemove', onMouseMove);
 
-    action.onmouseup = () => {
+    action.onmouseup = async () => {
       action.remove();
       stub.classList.remove('stub');
       stub.classList.add('action-item');
       parentAction.classList.remove('active-actions-box-drag');
       document.removeEventListener('mousemove', onMouseMove);
       action.onmouseup = null;
+
+      const actionsId = [];
+
+      // так как forEach перебирает элементы по порядку,
+      // то их порядковый номер будет равен индексу массива + 1
+      [].forEach.call(parentAction.children, (item) => {
+        const actionId = item.getAttribute('data-id');
+
+        actionsId.push(actionId);
+      });
+
+      const response = await fetch('/set-position-action', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+        body: JSON.stringify(actionsId),
+      });
+
+      if (response.ok) {
+        console.log('Порядок действий обновлён');
+      } else {
+        throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
+      }
     };
   }
 }
