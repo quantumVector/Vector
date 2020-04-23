@@ -447,7 +447,52 @@ class CalendarCreator {
       // no default
     }
 
-    actionsContainer.appendChild(div);
+    const parentTd = actionsContainer.parentNode;
+
+    // если действий меньше 10 то рендерить в одну строчку, если больше то в несколько
+    if (actionsContainer.children.length < 10) {
+      actionsContainer.appendChild(div);
+    } else if (!parentTd.children[2]
+      || (parentTd.children[2] && parentTd.children[2].children.length < 10)) {
+      const newContainer = document.createElement('div');
+
+      if (parentTd.children.length === 3) {
+        div.classList.add('action-level-2');
+        parentTd.children[2].appendChild(div);
+      }
+
+      if (parentTd.children.length === 2) {
+        newContainer.classList.add('actions-container');
+        parentTd.appendChild(newContainer);
+        div.classList.add('action-level-2');
+        newContainer.appendChild(div);
+
+        [].forEach.call(parentTd.children[1].children, (item) => {
+          item.classList.add('action-level-2');
+        });
+      }
+    } else {
+      const newContainer = document.createElement('div');
+
+      if (parentTd.children.length === 4) {
+        div.classList.add('action-level-3');
+        parentTd.children[3].appendChild(div);
+      }
+
+      if (parentTd.children.length === 3) {
+        newContainer.classList.add('actions-container');
+        parentTd.appendChild(newContainer);
+        div.classList.add('action-level-3');
+        newContainer.appendChild(div);
+
+        [].forEach.call(parentTd.children[1].children, (item) => {
+          item.classList.add('action-level-3');
+        });
+        [].forEach.call(parentTd.children[2].children, (item) => {
+          item.classList.add('action-level-3');
+        });
+      }
+    }
 
     this.setDayStatus(td, actionsContainer);
   }
