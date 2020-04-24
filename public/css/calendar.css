@@ -92,6 +92,7 @@
   border: 1px solid blue;
   position: relative;
   max-width: 217px;
+  height: 115px;
   font-size: 1.6vw;
   text-align: center;
 }

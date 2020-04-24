@@ -502,14 +502,21 @@ class CalendarCreator {
     const year = day.getAttribute('data-year');
     const month = day.getAttribute('data-month');
     const currentDay = day.getAttribute('data-day');
+    const otherBoxes = actions.parentNode.getElementsByClassName('actions-container');
     let dayStatus = true;
 
-    [].forEach.call(actions.children, (action) => {
-      const actionStatus = action.getAttribute('data-status');
+    function checkStatus(i) {
+      [].forEach.call(otherBoxes[i].children, (action) => {
+        const actionStatus = action.getAttribute('data-status');
 
-      if (actionStatus === 'false') dayStatus = false;
-      if (actionStatus === 'unused') dayStatus = 'unused';
-    });
+        if (actionStatus === 'false') dayStatus = false;
+        if (actionStatus === 'unused') dayStatus = 'unused';
+      });
+    }
+
+    for (let i = 0; i < otherBoxes.length; i++) {
+      checkStatus(i);
+    }
 
     day.classList.remove('completed-day', 'incompleted-day');
 
