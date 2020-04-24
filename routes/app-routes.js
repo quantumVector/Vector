@@ -202,42 +202,49 @@ router.post('/create-action', [
   const errorFormatter = ({ msg }) => msg;
   const result = validationResult(req).formatWith(errorFormatter);
 
-  if (!result.isEmpty()) {
-    // eslint-disable-next-line prefer-destructuring
-    req.session.errors = result.array({ onlyFirstError: true })[0];
-    res.redirect('back');
-  } else {
-    const { action, period, start, end, debt } = req.body;
-    let position;
+  await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, async (err, user) => {
+    if (err) throw err;
 
-    // найти и узнать последний порядковый номер действия
-    await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
-      if (err) throw err;
+    if (user.actions.length === 30) {
+      req.session.errors = 'У вас уже максимальное число созданных действий';
+      res.redirect('back');
+    } else if (!result.isEmpty()) {
+      // eslint-disable-next-line prefer-destructuring
+      req.session.errors = result.array({ onlyFirstError: true })[0];
+      res.redirect('back');
+    } else {
+      const { action, period, start, end, debt } = req.body;
+      let position;
 
-      if (!user.actions.length) {
-        position = 1;
-      } else {
-        const posArr = [];
-
-        for (const act of user.actions) {
-          if (act.status) posArr.push(act.position);
-        }
-
-        position = Math.max(...posArr) + 1;
-      }
-    });
-
-    // если сделать async, то push будет происходить два раза
-    UserCalendar.findOneAndUpdate(
-      { _id: new ObjectId(req.session.userId) },
-      { $push: { actions: UserActions.addAction(action, period, debt, position, start, end) } },
-      (err) => {
+      // найти и узнать последний порядковый номер действия
+      await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
         if (err) throw err;
 
-        res.redirect('back');
-      },
-    );
-  }
+        if (!user.actions.length) {
+          position = 1;
+        } else {
+          const posArr = [];
+
+          for (const act of user.actions) {
+            if (act.status) posArr.push(act.position);
+          }
+
+          position = Math.max(...posArr) + 1;
+        }
+      });
+
+      // если сделать async, то push будет происходить два раза
+      UserCalendar.findOneAndUpdate(
+        { _id: new ObjectId(req.session.userId) },
+        { $push: { actions: UserActions.addAction(action, period, debt, position, start, end) } },
+        (err) => {
+          if (err) throw err;
+
+          res.redirect('back');
+        },
+      );
+    }
+  });
 });
 
 router.get('/getdata', async (req, res) => {
