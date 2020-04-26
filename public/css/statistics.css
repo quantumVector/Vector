@@ -1,0 +1,25 @@
+.statistics {
+  padding: 0 20px;
+}
+
+.statistics .wrapper {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 50px;
+  border: 1px solid blue;
+  display: grid;
+  grid-template-columns: repeat(53, 20px);
+  grid-template-rows: repeat(8, 20px);
+  grid-auto-flow: column;
+  grid-gap: 5px;
+}
+
+.statistics .wrapper .month {
+  font-size: 13px;
+}
+
+.statistics .wrapper .day {
+  border: 1px solid green;
+  width: 20px;
+  height: 20px;
+}

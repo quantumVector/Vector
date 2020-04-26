@@ -49,6 +49,8 @@ router.get('/statistics', (req, res) => {
     res.render('statistics', {
       title: 'Статистика',
       isStatistics: true,
+      style: 'css/statistics.css',
+      script: 'js/statistics.js',
     });
   } else {
     res.redirect('/login');
