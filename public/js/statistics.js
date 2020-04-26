@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 /* eslint-disable no-undef */
 
 'use strict';
@@ -7,7 +8,8 @@ class StatisticsCreator {
     this.container = container;
   }
 
-  install() {
+  async install() {
+    await this.getActions();
     this.renderDays();
   }
 
@@ -25,20 +27,7 @@ class StatisticsCreator {
     const dateNow = new Date();
     // узнать кол-во дней в текущем году
     const totalDays = (new Date(dateNow.getFullYear(), 11, 31)
-    - new Date(dateNow.getFullYear(), 0, 0)) / 86400000;
-
-    await this.getActions();
-
-    const allDates = [];
-
-    for (const key in this.dataActions.dates) {
-      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
-
-        for (const date of this.dataActions.dates[key]) {
-          allDates.push(new Date(date.year, date.month, date.day).getTime());
-        }
-      }
-    }
+      - new Date(dateNow.getFullYear(), 0, 0)) / 86400000;
 
     for (let i = 2; i <= 8; i++) {
       const dayName = document.createElement('div');
@@ -51,7 +40,7 @@ class StatisticsCreator {
       this.container.append(dayName);
     }
 
-    const startingDay = new Date(Math.min(...allDates));
+    const startingDay = new Date(this.getMinDates());
     let column = 2;
 
     for (let i = 1; i <= totalDays; i++) {
@@ -81,7 +70,7 @@ class StatisticsCreator {
       }
 
       day.classList.add('day', `day-${i}`);
-      day.setAttribute('data-date', `${startingDay.getFullYear()}-${startingDay.getMonth()}-${startingDay.getDate()}`);
+      day.id = `date-${startingDay.getFullYear()}-${startingDay.getMonth()}-${startingDay.getDate()}`;
       day.style.gridColumn = column;
 
       if (currentDate > 0) day.style.gridRow = startingDay.getDay() + 1;
@@ -93,6 +82,40 @@ class StatisticsCreator {
       this.container.append(day);
 
       startingDay.setDate(startingDay.getDate() + 1);
+    }
+
+    this.checkDay();
+  }
+
+  getMinDates() {
+    const allDates = [];
+
+    for (const key in this.dataActions.dates) {
+      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
+        for (const date of this.dataActions.dates[key]) {
+          allDates.push(new Date(date.year, date.month, date.day).getTime());
+        }
+      }
+    }
+
+    return Math.min(...allDates);
+  }
+
+  checkDay() {
+    const dateNow = new Date();
+
+    for (const key in this.dataActions.dates) {
+      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
+        for (const date of this.dataActions.dates[key]) {
+          const day = document.getElementById(`date-${date.year}-${date.month}-${date.day}`);
+
+          if (+date.year === dateNow.getFullYear() && +date.month === dateNow.getMonth()
+          && +date.day === dateNow.getDate()) continue;
+          if (day.closest('.day-failed')) continue;
+          if (date.status) day.classList.add('day-done');
+          if (!date.status) day.classList.add('day-failed');
+        }
+      }
     }
   }
 }

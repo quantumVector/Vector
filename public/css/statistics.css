@@ -19,7 +19,15 @@
 }
 
 .statistics .wrapper .day {
-  border: 1px solid green;
   width: 20px;
   height: 20px;
+  background-color: rgb(194, 194, 194);
+}
+
+.statistics .wrapper .day-done {
+  background-color: green;
+}
+
+.statistics .wrapper .day-failed {
+  background-color: red;
 }
