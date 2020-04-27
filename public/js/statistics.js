@@ -11,6 +11,7 @@ class StatisticsCreator {
   async install() {
     await this.getActions();
     this.renderDays();
+    this.setEvents();
   }
 
   async getActions() {
@@ -116,6 +117,97 @@ class StatisticsCreator {
           if (!date.status) day.classList.add('day-failed');
         }
       }
+    }
+  }
+
+  setEvents() {
+    this.setTooltips();
+
+    this.container.addEventListener('mouseover', (e) => {
+      const { target } = e;
+
+      this.showTooltip(target);
+    });
+
+    this.container.addEventListener('mouseout', (e) => {
+      const { target } = e;
+
+      if (target.closest('.day')) {
+        document.getElementsByClassName('tooltip')[0].remove();
+      }
+    });
+  }
+
+  setTooltips() {
+    const tooltips = {};
+
+    for (const key in this.dataActions.dates) {
+      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
+        for (const date of this.dataActions.dates[key]) {
+          const dateId = `date-${date.year}-${date.month}-${date.day}`;
+
+          if (!Object.prototype.hasOwnProperty.call(tooltips, dateId)) {
+            tooltips[dateId] = [];
+          }
+
+          tooltips[dateId].push({
+            name: date.action_name,
+            status: date.status,
+          });
+        }
+      }
+    }
+
+    this.tooltips = tooltips;
+  }
+
+  showTooltip(target) {
+    if (target.closest('.day')) {
+      const tooltip = document.createElement('div');
+      const triangle = document.createElement('div');
+      const actionDate = document.createElement('p');
+      const monthsArr = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+
+      tooltip.classList.add('tooltip');
+      target.append(tooltip);
+      triangle.classList.add('triangle-down');
+      tooltip.append(triangle);
+
+      const regexp = /\d+/g;
+      regexp.lastIndex = 5;
+      const year = regexp.exec(target.id)[0];
+      regexp.lastIndex = 10;
+      const month = monthsArr[regexp.exec(target.id)[0]];
+      regexp.lastIndex = 12;
+      const day = regexp.exec(target.id)[0];
+
+      actionDate.innerText = `${month} ${day}, ${year}`;
+      tooltip.append(actionDate);
+
+      if (this.tooltips[target.id]) {
+        const actionWrapper = document.createElement('div');
+
+        tooltip.append(actionWrapper);
+
+        for (const action of this.tooltips[target.id]) {
+          const actionName = document.createElement('p');
+
+          actionName.innerText = action.name;
+          if (!action.status) actionName.style.color = 'red';
+
+          actionWrapper.append(actionName);
+        }
+      }
+
+      const tooltipStyle = getComputedStyle(tooltip);
+      const targetStyle = getComputedStyle(target);
+      const leftValue = (parseInt(tooltipStyle.width, 10) / 2
+      - parseInt(targetStyle.width, 10) / 2) * -1;
+      const topValue = (parseInt(tooltipStyle.height, 10)
+      + parseInt(targetStyle.height, 10) / 2) * -1;
+
+      tooltip.style.left = `${leftValue}px`;
+      tooltip.style.top = `${topValue}px`;
     }
   }
 }

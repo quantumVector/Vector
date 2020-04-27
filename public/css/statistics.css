@@ -19,6 +19,7 @@
 }
 
 .statistics .wrapper .day {
+  position: relative;
   width: 20px;
   height: 20px;
   background-color: rgb(194, 194, 194);
@@ -30,4 +31,36 @@
 
 .statistics .wrapper .day-failed {
   background-color: red;
+}
+
+.statistics .wrapper .tooltip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  width: auto;
+  height: auto;
+  top: -40px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.89);
+  z-index: 999;
+}
+
+.statistics .wrapper .tooltip .triangle-down {
+  position: absolute;
+	width: 0;
+  height: 0;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.89);
+  z-index: 998;
+}
+
+.statistics .wrapper .tooltip p {
+  margin: 10px;
+  white-space: nowrap;
 }
