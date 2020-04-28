@@ -179,7 +179,7 @@ class CalendarCreator {
   async insertData() {
     await this.getActions();
 
-    if (!this.dataActions.actions.length) {
+    if (!this.dataActions.actions.length && !this.dataActions.notActive.length) {
       this.showModalEmpty();
       return;
     }
@@ -392,18 +392,13 @@ class CalendarCreator {
           }
         }
 
+        // если активных действий нет, то просто отобразить текущий день без действий
+        if (!activeActionsLength && +year === yearNow && +month === monthNow && +day === dayNow) {
+          item.classList.add('current-day');
+        }
+
         const zeroDateNow = new Date(yearNow, monthNow, dayNow);
         // вставить данные не активных действий
-        /* if (zeroDateNow.getTime() !== tdDate.getTime()) {
-          for (const action of this.dataActions.notActive) {
-            for (const date of this.dataActions.notActiveDates[action._id]) {
-              if (date.year === year && date.month === month && date.day === day) {
-                this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
-                  date.year, date.month, date.day);
-              }
-            }
-          }
-        } */
         for (const action of this.dataActions.notActive) {
           for (const date of this.dataActions.notActiveDates[action._id]) {
             if (date.year === year && date.month === month && date.day === day) {
