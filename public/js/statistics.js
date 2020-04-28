@@ -92,8 +92,15 @@ class StatisticsCreator {
   getMinDates() {
     const allDates = [];
 
-    for (const date of this.dataActions.dates) {
-      allDates.push(new Date(date.year, date.month, date.day).getTime());
+    if (this.dataActions.dates.length) {
+      for (const date of this.dataActions.dates) {
+        allDates.push(new Date(date.year, date.month, date.day).getTime());
+      }
+    } else {
+      const dateNow = new Date();
+
+      allDates.push(new Date(dateNow.getFullYear(), dateNow.getMonth(), dateNow.getDate())
+        .getTime());
     }
 
     return Math.min(...allDates);
