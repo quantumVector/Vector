@@ -207,7 +207,8 @@ router.post('/create-action', [
   await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, async (err, user) => {
     if (err) throw err;
 
-    if (user.actions.length === 30) {
+    // максимальное число можно увеличить до 30
+    if (user.actions.length === 10) {
       req.session.errors = 'У вас уже максимальное число созданных действий';
       res.redirect('back');
     } else if (!result.isEmpty()) {
