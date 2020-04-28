@@ -223,7 +223,17 @@ router.post('/create-action', [
       await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
         if (err) throw err;
 
-        if (!user.actions.length) {
+        let presenceActiv = false;
+
+        // проверить наличие активных действий
+        if (user.actions.length) {
+          for (const act of user.actions) {
+            if (act.status) presenceActiv = true;
+          }
+        }
+
+        // если действий нет или есть только завершенные действия, то установить позицию 1
+        if (!user.actions.length || !presenceActiv) {
           position = 1;
         } else {
           const posArr = [];
