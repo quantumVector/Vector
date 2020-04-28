@@ -58,7 +58,7 @@ class ActionsCreater {
     container.appendChild(titleActiveBox);
     container.appendChild(activeActionsBox);
 
-    titleInactiveBox.innerText = 'Неактивные действия';
+    titleInactiveBox.innerText = 'Завершенные действия';
     inactiveActionsBox.classList.add('inactive-actions-box');
     container.appendChild(titleInactiveBox);
     container.appendChild(inactiveActionsBox);
@@ -77,7 +77,7 @@ class ActionsCreater {
     if (activeActionsLength > 0) {
       for (let i = 1; i <= activeActionsLength; i++) {
         console.log(activeActionsObj[i])
-        this.renderActionItem(activeActionsBox, 'deactivate', 'Деактивировать', activeActionsObj[i]);
+        this.renderActionItem(activeActionsBox, 'deactivate', 'Завершить', activeActionsObj[i]);
       }
     }
 
