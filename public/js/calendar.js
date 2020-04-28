@@ -394,13 +394,24 @@ class CalendarCreator {
 
         const zeroDateNow = new Date(yearNow, monthNow, dayNow);
         // вставить данные не активных действий
-        if (zeroDateNow.getTime() !== tdDate.getTime()) {
+        /* if (zeroDateNow.getTime() !== tdDate.getTime()) {
           for (const action of this.dataActions.notActive) {
             for (const date of this.dataActions.notActiveDates[action._id]) {
               if (date.year === year && date.month === month && date.day === day) {
                 this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
                   date.year, date.month, date.day);
               }
+            }
+          }
+        } */
+        for (const action of this.dataActions.notActive) {
+          for (const date of this.dataActions.notActiveDates[action._id]) {
+            if (date.year === year && date.month === month && date.day === day) {
+              // если в сегодняшнеми дне действие не было отмечено до завершения, то не рендерить
+              if (zeroDateNow.getTime() === tdDate.getTime() && !date.status) continue;
+
+              this.constructor.renderAction(item, action.name, action._id, date.status, date._id,
+                date.year, date.month, date.day);
             }
           }
         }
