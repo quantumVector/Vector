@@ -37,8 +37,6 @@
   position: absolute;
   display: flex;
   align-items: center;
-  width: auto;
-  height: auto;
   top: -40px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.89);
@@ -63,4 +61,12 @@
 .statistics .wrapper .tooltip p {
   margin: 10px;
   white-space: nowrap;
+}
+
+.statistics .wrapper .tooltip .action-wrapper {
+  display: flex;
+  border: 1px solid red;
+  flex-wrap: wrap;
+  min-width: 300px;
+  max-width: 1000px;
 }

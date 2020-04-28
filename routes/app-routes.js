@@ -415,5 +415,18 @@ router.post('/set-position-action', async (req, res) => {
   );
 });
 
+router.get('/get-data-statistics', async (req, res) => {
+  const data = {};
+
+  await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
+    if (err) throw err;
+
+    data.actions = user.actions;
+    data.dates = user.dates;
+  });
+
+  res.json(data);
+});
+
 
 module.exports = router;

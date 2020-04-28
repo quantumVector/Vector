@@ -15,10 +15,11 @@ class StatisticsCreator {
   }
 
   async getActions() {
-    const response = await fetch('/get-data-actions');
+    const response = await fetch('/get-data-statistics');
 
     if (response.ok) {
       this.dataActions = await response.json();
+      console.log(this.dataActions)
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -91,12 +92,8 @@ class StatisticsCreator {
   getMinDates() {
     const allDates = [];
 
-    for (const key in this.dataActions.dates) {
-      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
-        for (const date of this.dataActions.dates[key]) {
-          allDates.push(new Date(date.year, date.month, date.day).getTime());
-        }
-      }
+    for (const date of this.dataActions.dates) {
+      allDates.push(new Date(date.year, date.month, date.day).getTime());
     }
 
     return Math.min(...allDates);
@@ -105,18 +102,14 @@ class StatisticsCreator {
   checkDay() {
     const dateNow = new Date();
 
-    for (const key in this.dataActions.dates) {
-      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
-        for (const date of this.dataActions.dates[key]) {
-          const day = document.getElementById(`date-${date.year}-${date.month}-${date.day}`);
+    for (const date of this.dataActions.dates) {
+      const day = document.getElementById(`date-${date.year}-${date.month}-${date.day}`);
 
-          if (+date.year === dateNow.getFullYear() && +date.month === dateNow.getMonth()
-          && +date.day === dateNow.getDate()) continue;
-          if (day.closest('.day-failed')) continue;
-          if (date.status) day.classList.add('day-done');
-          if (!date.status) day.classList.add('day-failed');
-        }
-      }
+      if (+date.year === dateNow.getFullYear() && +date.month === dateNow.getMonth()
+      && +date.day === dateNow.getDate()) continue;
+      if (day.closest('.day-failed')) continue;
+      if (date.status) day.classList.add('day-done');
+      if (!date.status) day.classList.add('day-failed');
     }
   }
 
@@ -141,21 +134,17 @@ class StatisticsCreator {
   setTooltips() {
     const tooltips = {};
 
-    for (const key in this.dataActions.dates) {
-      if ({}.hasOwnProperty.call(this.dataActions.dates, key)) {
-        for (const date of this.dataActions.dates[key]) {
-          const dateId = `date-${date.year}-${date.month}-${date.day}`;
+    for (const date of this.dataActions.dates) {
+      const dateId = `date-${date.year}-${date.month}-${date.day}`;
 
-          if (!Object.prototype.hasOwnProperty.call(tooltips, dateId)) {
-            tooltips[dateId] = [];
-          }
-
-          tooltips[dateId].push({
-            name: date.action_name,
-            status: date.status,
-          });
-        }
+      if (!Object.prototype.hasOwnProperty.call(tooltips, dateId)) {
+        tooltips[dateId] = [];
       }
+
+      tooltips[dateId].push({
+        name: date.action_name,
+        status: date.status,
+      });
     }
 
     this.tooltips = tooltips;
@@ -187,6 +176,7 @@ class StatisticsCreator {
       if (this.tooltips[target.id]) {
         const actionWrapper = document.createElement('div');
 
+        actionWrapper.classList.add('action-wrapper');
         tooltip.append(actionWrapper);
 
         for (const action of this.tooltips[target.id]) {
