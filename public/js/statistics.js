@@ -17,6 +17,7 @@ class StatisticsCreator {
     this.renderDaysOfTheYear();
     this.setEvents();
     this.checkDay();
+    this.setSuccessDaysInMonth();
   }
 
   async getActions() {
@@ -254,13 +255,51 @@ class StatisticsCreator {
       const tooltipStyle = getComputedStyle(tooltip);
       const targetStyle = getComputedStyle(target);
       const leftValue = (parseInt(tooltipStyle.width, 10) / 2
-      - parseInt(targetStyle.width, 10) / 2) * -1;
+        - parseInt(targetStyle.width, 10) / 2) * -1;
       const topValue = (parseInt(tooltipStyle.height, 10)
-      + parseInt(targetStyle.height, 10) / 2) * -1;
+        + parseInt(targetStyle.height, 10) / 2) * -1;
 
       tooltip.style.left = `${leftValue}px`;
       tooltip.style.top = `${topValue}px`;
     }
+  }
+
+  setSuccessDaysInMonth() {
+    const dateNow = new Date();
+    const monthNow = dateNow.getMonth();
+    const dayNow = dateNow.getDate();
+    const succesDays = [];
+    const failedDays = [];
+    const allDaysInMonth = [];
+
+    for (const date of this.dates[this.activeYear]) {
+      const indexSucces = succesDays.indexOf(date.day);
+      const indexFailed = failedDays.indexOf(date.day);
+      const indexAllDays = allDaysInMonth.indexOf(date.day);
+
+      if (+date.month === monthNow) {
+        if (date.status && indexSucces < 0) {
+          succesDays.push(date.day);
+        }
+        if (!date.status && indexSucces > -1) {
+          succesDays.splice(indexSucces, 1);
+        }
+        if (!date.status && indexFailed < 0 && +date.day < dayNow) {
+          failedDays.push(date.day);
+        }
+        if (indexAllDays < 0) {
+          allDaysInMonth.push(date.day);
+        }
+      }
+    }
+
+    const percentSuccess = (succesDays.length * 100) / allDaysInMonth.length;
+    const percentFailed = (failedDays.length * 100) / allDaysInMonth.length;
+
+    document.getElementById('success-days-in-month').innerText = succesDays.length;
+    document.getElementById('percent-success-days-in-month').innerText = `${Math.floor(percentSuccess)}%`;
+    document.getElementById('all-failed-days-in-month').innerText = failedDays.length;
+    document.getElementById('percent-failed-days-in-month').innerText = `${Math.floor(percentFailed)}%`;
   }
 }
 
