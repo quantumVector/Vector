@@ -4,14 +4,19 @@
 'use strict';
 
 class StatisticsCreator {
-  constructor(container) {
+  constructor(container, btnBox) {
     this.container = container;
+    this.btnBox = btnBox;
   }
 
   async install() {
     await this.getActions();
-    this.renderDays();
+    this.sortDataByYear();
+    this.setYearButtons();
+    this.renderDaysName();
+    this.renderDaysOfTheYear();
     this.setEvents();
+    this.checkDay();
   }
 
   async getActions() {
@@ -25,73 +30,11 @@ class StatisticsCreator {
     }
   }
 
-  async renderDays() {
-    const dateNow = new Date();
-    // узнать кол-во дней в текущем году
-    const totalDays = (new Date(dateNow.getFullYear(), 11, 31)
-      - new Date(dateNow.getFullYear(), 0, 0)) / 86400000;
-
-    for (let i = 2; i <= 8; i++) {
-      const dayName = document.createElement('div');
-      const dayArr = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-
-      dayName.innerText = dayArr[i - 2];
-      dayName.style.gridRow = i;
-      dayName.style.gridColumn = 1;
-
-      this.container.append(dayName);
-    }
-
-    const startingDay = new Date(this.getMinDates());
-    let column = 2;
-
-    for (let i = 1; i <= totalDays; i++) {
-      const currentDate = startingDay.getDay();
-      const day = document.createElement('div');
-      const monthsArr = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
-      const monthName = document.createElement('div');
-      monthName.classList.add('month');
-
-      if (i === 1) {
-        monthName.innerText = monthsArr[startingDay.getMonth()];
-        monthName.style.gridRow = 1;
-        monthName.style.gridColumn = 2;
-        this.container.append(monthName);
-      }
-      if (startingDay.getDay() === 1 && startingDay.getDate() === 1) {
-        monthName.innerText = monthsArr[startingDay.getMonth()];
-        monthName.style.gridRow = 1;
-        monthName.style.gridColumn = column;
-        this.container.append(monthName);
-      }
-      if (startingDay.getDay() !== 1 && startingDay.getDate() === 1) {
-        monthName.innerText = monthsArr[startingDay.getMonth()];
-        monthName.style.gridRow = 1;
-        monthName.style.gridColumn = column + 1;
-        this.container.append(monthName);
-      }
-
-      day.classList.add('day', `day-${i}`);
-      day.id = `date-${startingDay.getFullYear()}-${startingDay.getMonth()}-${startingDay.getDate()}`;
-      day.style.gridColumn = column;
-
-      if (currentDate > 0) day.style.gridRow = startingDay.getDay() + 1;
-      if (currentDate === 0) {
-        day.style.gridRow = 8;
-        column += 1;
-      }
-
-      this.container.append(day);
-
-      startingDay.setDate(startingDay.getDate() + 1);
-    }
-
-    this.checkDay();
-  }
-
-  getMinDates() {
+  sortDataByYear() {
+    const year = {};
     const allDates = [];
 
+    // добавить в массив все даты действий в миллисекундах
     if (this.dataActions.dates.length) {
       for (const date of this.dataActions.dates) {
         allDates.push(new Date(date.year, date.month, date.day).getTime());
@@ -103,17 +46,112 @@ class StatisticsCreator {
         .getTime());
     }
 
-    return Math.min(...allDates);
+    // вычеслить дату и год первого существующего действия и последнего
+    const startingDate = new Date(Math.min(...allDates));
+    const startingYear = startingDate.getFullYear();
+    const lastDate = new Date(Math.max(...allDates));
+    const lastYear = lastDate.getFullYear();
+
+    // рассортировать даты по годам
+    for (let i = startingYear; i <= lastYear; i++) {
+      year[i] = [];
+
+      for (const date of this.dataActions.dates) {
+        if (+date.year === i) year[i].push(date);
+      }
+    }
+
+    this.dates = year;
+    this.activeYear = lastYear;
+  }
+
+  setYearButtons() {
+    for (const key in this.dates) {
+      if (Object.prototype.hasOwnProperty.call(this.dates, key)) {
+        const btn = document.createElement('div');
+
+        btn.classList.add('btn-year');
+        btn.setAttribute('data-year', key);
+        btn.innerText = key;
+        this.btnBox.append(btn);
+
+        if (this.activeYear === +key) btn.classList.add('active');
+      }
+    }
+  }
+
+  renderDaysName() {
+    for (let i = 2; i <= 8; i++) {
+      const dayName = document.createElement('div');
+      const dayArr = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+      dayName.innerText = dayArr[i - 2];
+      dayName.style.gridRow = i;
+      dayName.style.gridColumn = 1;
+
+      this.container.append(dayName);
+    }
+  }
+
+  renderDaysOfTheYear() {
+    const nextYear = this.activeYear + 1;
+    const firstDate = new Date(this.activeYear, 0, 1);
+    const lastDate = new Date(nextYear, 0, 1);
+    let column = 2;
+
+    for (let i = firstDate; i < lastDate;) {
+      const day = document.createElement('div');
+
+      day.classList.add('day');
+      day.id = `date-${firstDate.getFullYear()}-${firstDate.getMonth()}-${firstDate.getDate()}`;
+      day.style.gridRow = firstDate.getDay() + 1;
+      day.style.gridColumn = column;
+
+      if (firstDate.getDay() === 0) day.style.gridRow = 8;
+
+      this.container.append(day);
+
+      this.renderMonthName(firstDate.getMonth(), firstDate.getDay(), firstDate.getDate(), column);
+
+      firstDate.setDate(firstDate.getDate() + 1);
+
+      if (firstDate.getDay() === 1) column += 1;
+    }
+  }
+
+  renderMonthName(month, day, date, column) {
+    const monthsArr = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+    const monthName = document.createElement('div');
+    monthName.classList.add('month');
+
+    if (date === 1) {
+      monthName.innerText = monthsArr[month];
+      monthName.style.gridRow = 1;
+      monthName.style.gridColumn = 2;
+      this.container.append(monthName);
+    }
+    if (day === 1 && date === 1) {
+      monthName.innerText = monthsArr[month];
+      monthName.style.gridRow = 1;
+      monthName.style.gridColumn = column;
+      this.container.append(monthName);
+    }
+    if (day !== 1 && date === 1) {
+      monthName.innerText = monthsArr[month];
+      monthName.style.gridRow = 1;
+      monthName.style.gridColumn = column + 1;
+      this.container.append(monthName);
+    }
   }
 
   checkDay() {
     const dateNow = new Date();
 
-    for (const date of this.dataActions.dates) {
+    for (const date of this.dates[this.activeYear]) {
       const day = document.getElementById(`date-${date.year}-${date.month}-${date.day}`);
 
       if (+date.year === dateNow.getFullYear() && +date.month === dateNow.getMonth()
-      && +date.day === dateNow.getDate()) continue;
+        && +date.day === dateNow.getDate()) continue;
       if (day.closest('.day-failed')) continue;
       if (date.status) day.classList.add('day-done');
       if (!date.status) day.classList.add('day-failed');
@@ -121,6 +159,23 @@ class StatisticsCreator {
   }
 
   setEvents() {
+    this.btnBox.addEventListener('click', (e) => {
+      const { target } = e;
+
+      if (target.closest('.btn-year')) {
+        const active = this.btnBox.getElementsByClassName('active')[0];
+
+        active.classList.remove('active');
+        this.activeYear = +target.getAttribute('data-year');
+        target.classList.add('active');
+        this.container.innerHTML = '';
+        this.renderDaysName();
+        this.renderDaysOfTheYear();
+        this.checkDay();
+        this.setTooltips();
+      }
+    });
+
     this.setTooltips();
 
     this.container.addEventListener('mouseover', (e) => {
@@ -141,7 +196,7 @@ class StatisticsCreator {
   setTooltips() {
     const tooltips = {};
 
-    for (const date of this.dataActions.dates) {
+    for (const date of this.dates[this.activeYear]) {
       const dateId = `date-${date.year}-${date.month}-${date.day}`;
 
       if (!Object.prototype.hasOwnProperty.call(tooltips, dateId)) {
@@ -210,6 +265,7 @@ class StatisticsCreator {
 }
 
 const container = document.getElementsByClassName('wrapper')[0];
-const statistics = new StatisticsCreator(container);
+const btnBox = document.getElementsByClassName('btn-box')[0];
+const statistics = new StatisticsCreator(container, btnBox);
 
 statistics.install();

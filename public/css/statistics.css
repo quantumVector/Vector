@@ -8,7 +8,7 @@
   margin-top: 50px;
   border: 1px solid blue;
   display: grid;
-  grid-template-columns: repeat(53, 20px);
+  grid-template-columns: repeat(55, 20px);
   grid-template-rows: repeat(8, 20px);
   grid-auto-flow: column;
   grid-gap: 5px;
@@ -69,4 +69,20 @@
   flex-wrap: wrap;
   min-width: 300px;
   max-width: 1000px;
+}
+
+.statistics .btn-box {
+  border: 1px solid green;
+  display: flex;
+  justify-content: center;
+}
+
+.statistics .btn-box .btn-year {
+  border: 1px solid purple;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.statistics .btn-box .active {
+  background-color: rgb(101, 136, 231);
 }
