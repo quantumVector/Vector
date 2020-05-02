@@ -300,7 +300,10 @@ class StatisticsCreator {
         && (`${date.month}-${date.day}` !== `${monthNow}-${dayNow}`)) {
         allFailedDays.push(`${date.year}-${date.month}-${date.day}`);
       }
-      if (indexInYear < 0) allDaysInYear.push(`${date.year}-${date.month}-${date.day}`);
+      if (indexInYear < 0
+        && (`${date.month}-${date.day}` !== `${monthNow}-${dayNow}`)) {
+        allDaysInYear.push(`${date.year}-${date.month}-${date.day}`);
+      }
     }
 
     const percentSuccessInMonth = (succesDays.length * 100) / daysInMonth;
