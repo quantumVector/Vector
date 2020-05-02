@@ -270,7 +270,7 @@ class StatisticsCreator {
     const dayNow = dateNow.getDate();
     const succesDays = [];
     const failedDays = [];
-    const daysInMonth = [];
+    const daysInMonth = new Date(dateNow.getFullYear(), monthNow + 1, 0).getDate();
     const allSuccesDays = [];
     const allFailedDays = [];
     const allDaysInYear = [];
@@ -279,7 +279,6 @@ class StatisticsCreator {
     for (const date of this.dates[this.activeYear]) {
       const indexSucces = succesDays.indexOf(date.day);
       const indexFailed = failedDays.indexOf(date.day);
-      const indexInMonth = daysInMonth.indexOf(date.day);
       const indexAllSuccessDays = allSuccesDays.indexOf(`${date.year}-${date.month}-${date.day}`);
       const indexAllFailedDays = allFailedDays.indexOf(`${date.year}-${date.month}-${date.day}`);
       const indexInYear = allDaysInYear.indexOf(`${date.year}-${date.month}-${date.day}`);
@@ -288,7 +287,6 @@ class StatisticsCreator {
         if (date.status && indexSucces < 0) succesDays.push(date.day);
         if (!date.status && indexSucces > -1) succesDays.splice(indexSucces, 1);
         if (!date.status && indexFailed < 0 && +date.day < dayNow) failedDays.push(date.day);
-        if (indexInMonth < 0) daysInMonth.push(date.day);
       }
 
       if (date.status && indexAllSuccessDays < 0) {
@@ -302,14 +300,13 @@ class StatisticsCreator {
       if (indexInYear < 0) allDaysInYear.push(`${date.year}-${date.month}-${date.day}`);
     }
 
-    const percentSuccessInMonth = (succesDays.length * 100) / daysInMonth.length;
-    const percentFailedInMonth = (failedDays.length * 100) / daysInMonth.length;
+    const percentSuccessInMonth = (succesDays.length * 100) / daysInMonth;
+    const percentFailedInMonth = (failedDays.length * 100) / daysInMonth;
     const percentSuccessInYear = (allSuccesDays.length * 100) / allDaysInYear.length;
     const percentFailedInYear = (allFailedDays.length * 100) / allDaysInYear.length;
 
     for (const year in this.dates) {
       if (Object.prototype.hasOwnProperty.call(this.dates, year)) {
-        console.log(year)
         for (const date of this.dates[year]) {
           const indexTotal = totalDays.indexOf(`${date.year}-${date.month}-${date.day}`);
 
@@ -317,8 +314,6 @@ class StatisticsCreator {
         }
       }
     }
-
-    console.log(totalDays)
 
     document.getElementById('success-days-in-month').innerText = succesDays.length;
     document.getElementById('percent-success-days-in-month').innerText = `${Math.floor(percentSuccessInMonth)}%`;
