@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-continue */
 /* eslint-disable no-undef */
 
@@ -275,6 +276,8 @@ class StatisticsCreator {
     const allFailedDays = [];
     const allDaysInYear = [];
     const totalDays = [];
+    const actionsWithDebts = [];
+    const debts = [];
 
     for (const date of this.dates[this.activeYear]) {
       const indexSucces = succesDays.indexOf(date.day);
@@ -305,12 +308,23 @@ class StatisticsCreator {
     const percentSuccessInYear = (allSuccesDays.length * 100) / allDaysInYear.length;
     const percentFailedInYear = (allFailedDays.length * 100) / allDaysInYear.length;
 
+    for (const action of this.dataActions.actions) {
+      if (action.debt) actionsWithDebts.push(action);
+    }
+
     for (const year in this.dates) {
       if (Object.prototype.hasOwnProperty.call(this.dates, year)) {
         for (const date of this.dates[year]) {
           const indexTotal = totalDays.indexOf(`${date.year}-${date.month}-${date.day}`);
 
           if (indexTotal < 0) totalDays.push(`${date.year}-${date.month}-${date.day}`);
+
+          for (const action of actionsWithDebts) {
+            if (action._id === date.id_action && !date.status
+              && (`${date.year}-${date.month}-${date.day}` !== `${dateNow.getFullYear()}-${monthNow}-${dayNow}`)) {
+              debts.push(date);
+            }
+          }
         }
       }
     }
@@ -324,6 +338,7 @@ class StatisticsCreator {
     document.getElementById('all-failed-days').innerText = allFailedDays.length;
     document.getElementById('percent-failed-days').innerText = `${Math.floor(percentFailedInYear)}%`;
     document.getElementById('total-days').innerText = totalDays.length;
+    document.getElementById('debts').innerText = debts.length;
   }
 }
 
