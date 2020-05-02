@@ -1,23 +1,30 @@
 <nav class="header">
-  <a href="/">Календарь</a>
   <ul>
     {{#if displayLink}}
+      {{#if isCalendar}}
+        <li class="active"><a href="/">Календарь</a></li>
+      {{else}}
+        <li><a href="/">Календарь</a></li>
+      {{/if}}
+
       {{#if isSettings}}
         <li class="active"><a href="/actions">Действия</a></li>
       {{else}}
         <li><a href="/actions">Действия</a></li>
       {{/if}}
+
       {{#if isStatistics}}
         <li class="active"><a href="/statistics">Статистика</a></li>
       {{else}}
         <li><a href="/statistics">Статистика</a></li>
       {{/if}}
-    {{/if}}
-      {{#if isManual}}
-        <li class="active"><a href="/manual">Руководство</a></li>
-      {{else}}
-        <li><a href="/manual">Руководство</a></li>
-    {{/if}}
+
+      {{/if}}
+        {{#if isManual}}
+          <li class="active"><a href="/manual">Руководство</a></li>
+        {{else}}
+          <li><a href="/manual">Руководство</a></li>
+      {{/if}}
   </ul>
   {{#unless displayLink}}
     <a href="/login">Войти</a>

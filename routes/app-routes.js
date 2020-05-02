@@ -24,6 +24,7 @@ router.get('/', async (req, res) => {
 
   res.render('index', {
     title: 'Goals Calendar',
+    isCalendar: true,
     message,
     style: 'css/calendar.css',
     script,
