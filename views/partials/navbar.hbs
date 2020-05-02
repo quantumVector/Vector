@@ -1,5 +1,5 @@
-<nav>
-  <a href="/">Goals Calendar</a>
+<nav class="header">
+  <a href="/">Календарь</a>
   <ul>
     {{#if displayLink}}
       {{#if isSettings}}
@@ -11,11 +11,6 @@
         <li class="active"><a href="/statistics">Статистика</a></li>
       {{else}}
         <li><a href="/statistics">Статистика</a></li>
-      {{/if}}
-      {{#if isAchievements}}
-        <li class="active"><a href="/achievements">Достижения</a></li>
-      {{else}}
-        <li><a href="/achievements">Достижения</a></li>
       {{/if}}
     {{/if}}
       {{#if isManual}}

@@ -64,17 +64,6 @@ router.get('/manual', (req, res) => {
   });
 });
 
-router.get('/achievements', (req, res) => {
-  if (req.session.userId) {
-    res.render('achievements', {
-      title: 'Достижения',
-      isAchievements: true,
-    });
-  } else {
-    res.redirect('/login');
-  }
-});
-
 router.get('/login', (req, res) => {
   res.render('login', {
     title: 'Авторизация',
