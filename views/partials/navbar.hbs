@@ -1,6 +1,7 @@
 <nav class="header">
-  <ul>
-    {{#if displayLink}}
+  <a href="/" class="label">Goals Calendar</a>
+  {{#if displayLink}}
+    <ul>
       {{#if isCalendar}}
         <li class="active"><a href="/">Календарь</a></li>
       {{else}}
@@ -19,18 +20,20 @@
         <li><a href="/statistics">Статистика</a></li>
       {{/if}}
 
+      {{#if isManual}}
+        <li class="active"><a href="/manual">Руководство</a></li>
+      {{else}}
+        <li><a href="/manual">Руководство</a></li>
       {{/if}}
-        {{#if isManual}}
-          <li class="active"><a href="/manual">Руководство</a></li>
-        {{else}}
-          <li><a href="/manual">Руководство</a></li>
-      {{/if}}
-  </ul>
+    </ul>
+  {{/if}}
   {{#unless displayLink}}
-    <a href="/login">Войти</a>
-    <a href="/register">Регистрация</a>
+    <div class="access-box">
+      <a href="/login" class="logout">Войти</a>
+      <a href="/register" class="reg">Регистрация</a>
+    </div>
   {{/unless}}
   {{#if displayLink}}
-    <a href="/logout" class="logout">Выйти</a>
+    <span class="user-name">{{userName}}</span> <a href="/logout" class="logout">Выйти</a>
   {{/if}}
 </nav>

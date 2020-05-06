@@ -33,12 +33,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
-  const { userId } = req.session;
+  const { userId, userName } = req.session;
+
   if (userId) {
-    res.locals = { displayLink: true };
+    res.locals = {
+      displayLink: true,
+      userName,
+    };
   } else {
     res.locals = { displayLink: false };
   }
+
   next();
 });
 

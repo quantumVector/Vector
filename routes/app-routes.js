@@ -9,9 +9,7 @@ const UserActions = require('../lib/user-actions');
 const router = Router();
 
 router.get('/', async (req, res) => {
-  console.log(req.session);
-
-  let message;
+  /* let message;
   let script;
 
   if (req.session.userId) {
@@ -29,7 +27,18 @@ router.get('/', async (req, res) => {
     style: 'css/calendar.css',
     script,
     pageTestScript: 'page-tests/tests-calendar.js',
-  });
+  }); */
+  if (req.session.userId) {
+    res.render('index', {
+      title: 'Goals Calendar',
+      isCalendar: true,
+      style: 'css/calendar.css',
+      script: 'js/calendar.js',
+      pageTestScript: 'page-tests/tests-calendar.js',
+    });
+  } else {
+    res.redirect('/manual');
+  }
 });
 
 router.get('/actions', async (req, res) => {
@@ -112,6 +121,7 @@ router.post('/login', [
       if (user) {
         if (password === user.password) {
           req.session.userId = user._id;
+          req.session.userName = user.name;
           res.redirect('/');
         } else {
           res.redirect('/login');

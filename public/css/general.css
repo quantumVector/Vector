@@ -67,26 +67,55 @@ html, body {
 
 .header {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  height: 50px;
   background-color: rgb(39, 90, 184);
 }
 
-.header a {
-  text-decoration: none;
-  color: #fff;
-  font-family: MyriadProSemiBold;
+.access-box {
+  display: flex;
 }
 
 .header ul {
   display: flex;
   list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  height: 100%;
 }
 
-.header ul li {
-  margin-left: 20px;
+.header ul li a, .header .label, .header .user-name, .header .logout, .header .reg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  height: 100%;
+  text-decoration: none;
+  font-family: MyriadProSemiBold;
+  font-size: 18px;
+  color: #fff;
 }
+
+.header .label {
+  margin-left: 10px;
+}
+
+.header ul li a:hover, .header .logout:hover, .header .reg:hover  {
+  background-color: rgb(30, 30, 119);
+}
+
+@media only screen and (max-width : 1024px) {
+  .header {
+    height: 30px;
+  }
+
+  .header ul li a, .header .label, .header .user-name, .header .logout, .header .reg {
+    font-size: 13px;
+  }
+}
+
+@media only screen and (max-width : 768px) {
 
 #mocha {
   position: absolute;
