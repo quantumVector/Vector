@@ -1,8 +1,10 @@
 .calendar {
   position: relative;
   width: 100%;
-  height: 93%;
+  height: 94%;
   overflow: hidden;
+  font-family: MyriadProSemiBold;
+  color: rgb(56, 56, 56);
 }
 
 .calendar .modal-empty-calendar {
@@ -18,7 +20,6 @@
 }
 
 .calendar .left-calendar, .calendar .middle-calendar, .calendar .right-calendar {
-  border: 1px solid green;
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -41,7 +42,6 @@
 }
 
 .calendar #left, .calendar #right {
-  border: 1px solid purple;
   position: absolute;
   display: flex;
   justify-content: center;
@@ -50,63 +50,87 @@
   bottom: 0;
   width: 10%;
   font-size: 3vw;
-  background-color: #fff;
+  background-color: rgb(243, 243, 243);
   cursor: pointer;
   z-index: 999;
+  transition: 0.1s;
 }
 
 .calendar #left {
   left: 0;
+  background-image: url('/img/arrow-left.png');
+  background-repeat: no-repeat;
+  background-position: center center;
 }
-.calendar #left:after {
-  content: '<';
+
+.calendar #left:hover {
+  background-image: url('/img/arrow-left-hover.png');
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
 .calendar #right {
   right: 0;
-}
-.calendar #right:after {
-  content: '>';
+  background-image: url('/img/arrow-right.png');
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
+.calendar #right:hover {
+  background-image: url('/img/arrow-right-hover.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+
 .calendar .calendar-title {
-  padding: 20px 0;
-  font-size: 1.5vw;
+  padding: 15px 0;
+  font-size: 1.2vw;
   text-transform: uppercase;
   font-weight: bold;
 }
 
 .calendar table {
-  border: 1px solid red;
   width: 80%;
   height: 90%;
+  border-spacing: 10px;
 }
 
 .calendar table thead tr th {
   width: 14.28%;
-  font-size: 1.5vw;
+  font-size: 1vw;
   text-transform: uppercase;
 }
 
 .calendar table tbody tr td {
-  border: 1px solid blue;
   position: relative;
   max-width: 217px;
   height: 115px;
   font-size: 1.6vw;
   text-align: center;
+  border-radius: 10px;
+  box-shadow: -3px 3px 8px rgba(39, 39, 156, 0.664);
 }
 
 .calendar table tbody tr .completed-day {
-  background-color: green;
+  border: 2px solid rgb(26, 119, 26);
+  background: linear-gradient(to bottom right, rgb(26, 119, 26), rgb(64, 214, 71));
+  box-shadow: -3px 3px 8px rgba(26, 119, 26, 0.664);
+  color: #fff;
 }
 
 .calendar table tbody tr .incompleted-day {
-  background-color: red;
+  border: 2px solid rgba(124, 124, 124, 0.863);
+  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
+  color: #fff;
 }
 
 .calendar table tbody tr .current-day {
-  background-color: rgb(188, 188, 211);;
+  border: 2px solid rgba(5, 185, 230, 0.863);
+  background: linear-gradient(to bottom right, rgb(5, 185, 230), rgb(206, 240, 248));
+  box-shadow: -3px 3px 8px rgba(5, 185, 230, 0.664);
+  color: #fff;
 }
 
 .calendar table tbody tr td .actions-container {
@@ -117,12 +141,13 @@
 
 .calendar table tbody tr td .actions-container .action {
   position: relative;
-  border: 1px solid green;
   margin: 5px;
   min-width: 10px;
   height: 60px;
   border-radius: 13px;
   cursor: pointer;
+  transition: 0.1s;
+  box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.514);
 }
 
 .calendar table tbody tr td .actions-container .action-level-2 {
@@ -141,7 +166,9 @@
   padding: 10px;
   top: 70px;
   left: -100px;
+  font-size: 1.1vw;
   background-color: #fff;
+  color: rgb(56, 56, 56);
   border: 1px solid rgb(63, 63, 97);
   border-radius: 13px;
   z-index: 1000;
@@ -149,19 +176,23 @@
 
 .calendar table tbody tr td .actions-container .action-false {
   background-color: #fff;
-  border: 1px solid rgb(63, 63, 97);
+  border: 1px solid rgba(63, 63, 97, 0.651);
 }
 
 .calendar table tbody tr td .actions-container .action-done {
-  background-color: rgb(63, 63, 97);
-  border: 1px solid rgb(63, 63, 97);
+  background: linear-gradient(to bottom, rgb(229, 255, 0),rgb(153, 163, 10));
+  border: 1px solid rgba(63, 63, 97, 0.651);
 }
 
 .calendar table tbody tr td .actions-container .action-unused {
-  border: 1px solid rgb(63, 63, 97);
+  /* border: 1px solid rgb(63, 63, 97); */
 }
 
 .calendar table tbody tr td .actions-container .action-debt {
-  border: 1px solid rgb(55, 8, 70);
-  background-color: rgb(151, 42, 97);
+  border: 1px solid rgba(63, 63, 97, 0.651);
+  background: linear-gradient(to bottom, rgb(105, 23, 94),rgb(192, 39, 179));
+}
+
+.calendar table tbody tr td .actions-container .action:hover:not(.action-unused) {
+  box-shadow: 0px 0px 8px rgb(251, 255, 0);
 }
