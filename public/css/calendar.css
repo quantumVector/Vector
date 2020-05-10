@@ -105,7 +105,7 @@
 .calendar table tbody tr td {
   position: relative;
   max-width: 217px;
-  height: 115px;
+  height: 3vw;
   font-size: 1.6vw;
   text-align: center;
   border-radius: 10px;
@@ -136,14 +136,13 @@
 .calendar table tbody tr td .actions-container {
   display: flex;
   justify-content: center;
-  height: auto;
 }
 
 .calendar table tbody tr td .actions-container .action {
   position: relative;
   margin: 5px;
-  min-width: 10px;
-  height: 60px;
+  width: 5%;
+  height: 3vw;
   border-radius: 13px;
   cursor: pointer;
   transition: 0.1s;
@@ -151,13 +150,13 @@
 }
 
 .calendar table tbody tr td .actions-container .action-level-2 {
-  height: 30px;
+  height: 1.3vw;
   margin: 4px;
 }
 
 .calendar table tbody tr td .actions-container .action-level-3 {
-  height: 10px;
-  margin: 4px;
+  height: 0.7vw;
+  margin: 2px;
 }
 
 .calendar table tbody tr td .actions-container .action .action-info {

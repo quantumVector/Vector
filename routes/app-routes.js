@@ -9,30 +9,15 @@ const UserActions = require('../lib/user-actions');
 const router = Router();
 
 router.get('/', async (req, res) => {
-  /* let message;
-  let script;
-
-  if (req.session.userId) {
-    await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, (err, user) => {
-      script = 'js/calendar.js';
-    });
-  } else {
-    message = 'Авторизуйтесь, чтобы начать управление календарем';
-  }
-
-  res.render('index', {
-    title: 'Goals Calendar',
-    isCalendar: true,
-    message,
-    style: 'css/calendar.css',
-    script,
-    pageTestScript: 'page-tests/tests-calendar.js',
-  }); */
   if (req.session.userId) {
     res.render('index', {
       title: 'Goals Calendar',
       isCalendar: true,
-      style: 'css/calendar.css',
+      style: {
+        desk: 'css/calendar.css',
+        mob: 'css/calendar-mob.css',
+      },
+      styleMob: 'css/calendar-mob.css',
       script: 'js/calendar.js',
       pageTestScript: 'page-tests/tests-calendar.js',
     });
@@ -46,7 +31,10 @@ router.get('/actions', async (req, res) => {
     res.render('actions', {
       title: 'Настройки',
       isSettings: true,
-      style: 'css/actions.css',
+      style: {
+        desk: 'css/actions.css',
+        mob: 'css/actions-mob.css',
+      },
       pageTestScript: 'page-tests/tests-actions.js',
     });
   } else {
@@ -59,7 +47,10 @@ router.get('/statistics', (req, res) => {
     res.render('statistics', {
       title: 'Статистика',
       isStatistics: true,
-      style: 'css/statistics.css',
+      style: {
+        desk: 'css/statistics.css',
+        mob: 'css/statistics-mob.css',
+      },
       script: 'js/statistics.js',
     });
   } else {
