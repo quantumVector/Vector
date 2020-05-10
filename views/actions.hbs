@@ -1,4 +1,4 @@
-<section class="create-actions">
+{{!-- <section class="create-actions">
   <form action="/create-action" method="POST" class="create-action">
     {{#if errors}}
       <p class="error-msg">{{errors}}</p>
@@ -20,6 +20,67 @@
     <p>Назначить дату завершения? <input type="checkbox" id="end-day"></p>
     <p>Укажите дату завершения: <input type="date" name="end" id="end-date" disabled></p>
     <p>Учитывать долги <input type="checkbox" name="debt" value="true"></p>
+    <button id="btn-create-action" type="submit">Создать действие</button>
+  </form>
+</section>
+
+<section class="actions">
+</section>
+
+<script src="js/actions.js" defer></script> --}}
+
+<section class="create-actions">
+  <form action="/create-action" method="POST" class="create-action">
+    {{#if errors}}
+      <p class="error-msg">{{errors}}</p>
+    {{/if}}
+    <label>Название действия <input name="action" type="text" placeholder="Введите название действия"></label><br>
+    <div>
+      <input type="checkbox" class="custom-radio" id="everyday" name="period" value="everyday" checked>
+      <label for="everyday">Каждый день</label>
+    </div>
+    <p>В определённые дни:
+      <div class="days-action">
+        <div>
+          <input type="checkbox" id="day-1" class="custom-radio" name="period" value="Пн" disabled>
+          <label for="day-1">Понедельник</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-2" class="custom-radio" name="period" value="Вт" disabled>
+          <label for="day-2">Вторник</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-3" class="custom-radio" name="period" value="Ср" disabled>
+          <label for="day-3">Среда</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-4" class="custom-radio" name="period" value="Чт" disabled>
+          <label for="day-4">Четверг</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-5" class="custom-radio" name="period" value="Пт" disabled>
+          <label for="day-5">Пятница</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-6" class="custom-radio" name="period" value="Сб" disabled>
+          <label for="day-6">Суббота</label>
+        </div>
+        <div>
+          <input type="checkbox" id="day-7" class="custom-radio" name="period" value="Вс" disabled>
+          <label for="day-7">Воскресенье</label>
+        </div>
+      </div>
+    </p>
+    <p>Укажите дату начала: <input type="date" name="start"></p>
+    <div>
+      <input type="checkbox" class="custom-radio" id="end-day">
+      <label for="end-day">Назначить дату завершения?</label>
+    </div>
+    <p>Укажите дату завершения: <input type="date" name="end" id="end-date" disabled></p>
+    <div>
+      <input type="checkbox" class="custom-radio" id="debt" name="debt" value="true">
+      <label for="debt">Учитывать долги</label>
+    </div>
     <button id="btn-create-action" type="submit">Создать действие</button>
   </form>
 </section>
