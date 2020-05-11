@@ -1,5 +1,4 @@
 .create-actions {
-  border: 1px solid blue;
   display: flex;
   justify-content: center;
   padding: 20px 0;
@@ -12,7 +11,9 @@
   border-radius: 10px;
   font-size: 20px;
   color: #fff;
-  background: linear-gradient(to top, rgb(26, 58, 119), rgb(39, 90, 184));
+  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  border: 2px solid rgba(124, 124, 124, 0.863);
+  box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
 }
 
 .create-actions .create-action input[type=text],
@@ -97,6 +98,7 @@
 
 .create-actions .create-action .days-action {
   display: flex;
+  flex-wrap: wrap;
   padding: 0 20px;
 }
 
@@ -123,8 +125,8 @@
 }
 
 .actions {
-  border: 1px solid blue;
   font-family: MyriadProSemiBold;
+  color: rgb(56, 56, 56);
 }
 .actions h2 {
   text-align: center;
@@ -142,25 +144,48 @@
 }
 
 .stub {
-  border: 1px solid rgb(22, 120, 177);
+  border: 4px solid rgb(22, 120, 177);
   position: relative;
-  width: 373px;
+  width: 16%;
+  padding: 9px 18px;
   margin-bottom: 20px;
-  opacity: 0;
+  margin-left: 20px;
+  opacity: 0.3;
+  background-color: rgb(109, 109, 109);
+  border-radius: 10px;
+}
+
+.stub button {
+  display: block;
+  padding: 5px 10px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 15px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
 }
 
 .action-item .dnd-action {
-  border: 1px solid blue;
+  background-image: url('/img/dnd.png');
+  background-size: contain;
+  background-repeat: no-repeat;
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 20px;
-  height: 20px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
+  transition: 0.1s;
+}
+
+.action-item .dnd-action:hover {
+  background-image: url('/img/dnd-hover.png');
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 .actions .active-actions-box, .actions .inactive-actions-box {
-  border: 1px solid red;
   display: flex;
   justify-content: start;
   flex-wrap: wrap;
@@ -169,18 +194,46 @@
 }
 
 .actions .action-item, .inactive-actions .action-item {
-  border: 1px solid green;
   position: relative;
-  width: 353px;
+  padding: 20px;
+  padding-bottom: 25px;
+  width: 16%;
   height: 203.52px;
   margin-left: 20px;
   margin-bottom: 20px;
+  background: linear-gradient(to bottom, rgb(66, 26, 119), rgb(95, 39, 184));
+  border: 2px solid rgba(47, 0, 109, 0.863);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
 }
 
-.actions .action-name, .inactive-actions .action-name {
-  border: 1px solid purple;
+.actions .action-item .deactivate-action,
+.actions .action-item .delete-action {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  padding: 5px 10px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 15px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
 }
 
-.actions .action-days, .inactive-actions .action-days {
-  border: 1px solid indigo;
+.actions .action-item .deactivate-action:hover {
+  background-color: #0b76ef;
+  color: #fff;
+}
+
+.actions .action-item .delete-action:hover {
+  background-color: #ce1b1b;
+  color: #fff;
 }

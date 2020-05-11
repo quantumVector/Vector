@@ -1,0 +1,42 @@
+@media only screen and (max-width : 1617px) {
+  .stub {
+    width: 15%;
+  }
+
+  .actions .action-item, .inactive-actions .action-item {
+    width: 15%;
+  }
+}
+
+@media only screen and (max-width : 1296px) {
+  .actions .action-item, .inactive-actions .action-item {
+    width: 14%;
+  }
+
+  .actions .action-name, .inactive-actions .action-name {
+    font-size: 1.4vw;
+  }
+
+  .actions .action-item h3 {
+    font-size: 1.3vw;
+    margin: 0;
+  }
+
+  .actions .action-days, .inactive-actions .action-days {
+    font-size: 1.3vw;
+  }
+
+  .actions .action-debt, .inactive-actions .action-debt {
+    font-size: 1.3vw;
+  }
+}
+
+@media only screen and (max-width : 1083px) {
+  .stub {
+    width: 14%;
+  }
+
+  .actions .action-item, .inactive-actions .action-item {
+    width: 13%;
+  }
+}
