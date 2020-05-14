@@ -98,8 +98,14 @@ class ActionsCreater {
     const btn = document.createElement('button');
     const dnd = document.createElement('div');
 
+    console.log(actionsBox.className);
+
     actionsBox.appendChild(item);
-    item.classList.add('action-item');
+    if (actionsBox.className === 'inactive-actions-box') {
+      item.classList.add('action-item-inactive');
+    } else {
+      item.classList.add('action-item');
+    }
     item.appendChild(name);
     name.classList.add('action-name');
     item.appendChild(boxTitle);
@@ -307,13 +313,13 @@ class ActionsCreater {
 
     document.addEventListener('mousemove', onMouseMove);
 
-    action.onmouseup = async () => {
+    document.onmouseup = async () => {
       action.remove();
       stub.classList.remove('stub');
       stub.classList.add('action-item');
       parentAction.classList.remove('active-actions-box-drag');
       document.removeEventListener('mousemove', onMouseMove);
-      action.onmouseup = null;
+      document.onmouseup = null;
 
       const actionsId = [];
 

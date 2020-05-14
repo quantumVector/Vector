@@ -193,7 +193,7 @@
   height: auto;
 }
 
-.actions .action-item, .inactive-actions .action-item {
+.actions .action-item, .actions .action-item-inactive {
   position: relative;
   padding: 20px;
   padding-bottom: 25px;
