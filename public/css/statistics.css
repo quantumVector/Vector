@@ -1,27 +1,28 @@
 .statistics {
   padding: 0 20px;
+  font-family: MyriadProRegular;
 }
 
 .statistics .wrapper {
-  width: 80%;
-  margin: 0 auto;
   margin-top: 50px;
-  border: 1px solid blue;
   display: grid;
-  grid-template-columns: repeat(55, 20px);
-  grid-template-rows: repeat(8, 20px);
+  grid-template-columns: repeat(55, 1.3vw);
+  grid-template-rows: repeat(8, 1.3vw);
   grid-auto-flow: column;
+  justify-content: center;
+  align-items: center;
   grid-gap: 5px;
+  font-size: 0.8vw;
 }
 
 .statistics .wrapper .month {
-  font-size: 13px;
+  font-size: 0.8vw;
 }
 
 .statistics .wrapper .day {
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 100%;
+  height: 100%;
   background-color: rgb(194, 194, 194);
 }
 
@@ -72,17 +73,41 @@
 }
 
 .statistics .btn-box {
-  border: 1px solid green;
   display: flex;
   justify-content: center;
+  padding: 20px 0;
 }
 
 .statistics .btn-box .btn-year {
-  border: 1px solid purple;
   padding: 10px 20px;
+  margin: 0 5px;
   cursor: pointer;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(to top, rgb(26, 58, 119), rgb(39, 90, 184));
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
+
+.statistics .btn-box .btn-year:not(.active):hover {
+  background: rgb(30, 30, 119);
 }
 
 .statistics .btn-box .active {
-  background-color: rgb(101, 136, 231);
+  background: linear-gradient(to bottom, rgb(68, 95, 168), rgb(101, 136, 231));
+}
+
+.statistics .statistics-info {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 20px;
+  font-size: 23px;
+  border-radius: 10px;
+  color: #fff;
+  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  border: 2px solid rgba(124, 124, 124, 0.863);
+}
+
+.statistics .statistics-info .info-first-block,
+.statistics .statistics-info .info-second-block  {
+  width: 45%;
 }

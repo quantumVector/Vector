@@ -3,16 +3,20 @@
   <div class="wrapper"></div>
   <div class="btn-box"></div>
   <div class="statistics-info">
-    <p>Количество успешных дней в текущем месяце:
+    <div class="info-first-block">
+      <p>Количество успешных дней в текущем месяце:
       <span id="success-days-in-month"></span> (<span id="percent-success-days-in-month"></span>)</p>
     <p>Количество незавершенных дней в текущем месяце:
       <span id="all-failed-days-in-month"></span> (<span id="percent-failed-days-in-month"></span>)</p>
     <p>Общее количество успешных дней за текущий год:
       <span id="all-success-days"></span> (<span id="percent-success-days"></span>)</p>
-    <p>Общее количество незавершенных дней за текущий год:
+    </div>
+    <div class="info-second-block">
+      <p>Общее количество незавершенных дней за текущий год:
       <span id="all-failed-days"></span> (<span id="percent-failed-days"></span>)</p>
-    <p>Общее количество дней (включая текущий) c момента первого действия: <span id="total-days"></span></p>
-    <p>Долги: <span id="debts"></span></p>
+      <p>Общее количество дней (включая текущий) c момента первого действия: <span id="total-days"></span></p>
+      <p>Долги: <span id="debts"></span></p>
+    </div>
   </div>
 
   {{#if script}}
