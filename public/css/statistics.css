@@ -27,11 +27,11 @@
 }
 
 .statistics .wrapper .day-done {
-  background-color: green;
+  background-color: rgb(52, 175, 58);
 }
 
 .statistics .wrapper .day-failed {
-  background-color: red;
+  background-color: rgb(64, 0, 107);
 }
 
 .statistics .wrapper .tooltip {
