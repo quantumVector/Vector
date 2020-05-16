@@ -45,23 +45,11 @@ class ActionsCreater {
     }
   }
 
-  async renderActions(container) {
-    const titleActiveBox = document.createElement('h2');
-    const activeActionsBox = document.createElement('div');
-    const titleInactiveBox = document.createElement('h2');
-    const inactiveActionsBox = document.createElement('div');
+  async setActions() {
+    const currentActionsBox = document.getElementById('active-actions-box');
+    const completedActionsBox = document.getElementById('completed-actions-box');
     const activeActionsObj = {};
     let activeActionsLength = 0;
-
-    titleActiveBox.innerText = 'Текущие действия';
-    activeActionsBox.classList.add('active-actions-box');
-    container.appendChild(titleActiveBox);
-    container.appendChild(activeActionsBox);
-
-    titleInactiveBox.innerText = 'Завершенные действия';
-    inactiveActionsBox.classList.add('inactive-actions-box');
-    container.appendChild(titleInactiveBox);
-    container.appendChild(inactiveActionsBox);
 
     await this.getData();
 
@@ -70,22 +58,21 @@ class ActionsCreater {
         activeActionsObj[action.position] = action;
         activeActionsLength += 1;
       } else {
-        this.renderActionItem(inactiveActionsBox, 'delete', 'Удалить', action);
+        this.renderActionItem(completedActionsBox, 'delete', 'Удалить', action);
       }
     }
 
     if (activeActionsLength > 0) {
       for (let i = 1; i <= activeActionsLength; i++) {
-        console.log(activeActionsObj[i])
-        this.renderActionItem(activeActionsBox, 'deactivate', 'Завершить', activeActionsObj[i]);
+        this.renderActionItem(currentActionsBox, 'deactivate', 'Завершить', activeActionsObj[i]);
       }
     }
 
-    if (!activeActionsBox.children.length) {
-      this.constructor.renderEmptyMessage(activeActionsBox, 'active');
+    if (!currentActionsBox.children.length) {
+      this.constructor.renderEmptyMessage(currentActionsBox, 'active');
     }
-    if (!inactiveActionsBox.children.length) {
-      this.constructor.renderEmptyMessage(inactiveActionsBox, 'inactive');
+    if (!completedActionsBox.children.length) {
+      this.constructor.renderEmptyMessage(completedActionsBox, 'inactive');
     }
   }
 
@@ -98,11 +85,9 @@ class ActionsCreater {
     const btn = document.createElement('button');
     const dnd = document.createElement('div');
 
-    console.log(actionsBox.className);
-
     actionsBox.appendChild(item);
-    if (actionsBox.className === 'inactive-actions-box') {
-      item.classList.add('action-item-inactive');
+    if (actionsBox.id === 'completed-actions-box') {
+      item.classList.add('completed-action-item');
     } else {
       item.classList.add('action-item');
     }
@@ -346,13 +331,47 @@ class ActionsCreater {
       }
     };
   }
+
+  static toggleActionBlock(block) {
+    const arrows = block.getElementsByClassName('arrow-down');
+    let box;
+
+    if (block.closest('.btn-completed-box')) box = document.getElementById('completed-actions-box');
+    if (block.closest('.btn-active-box')) box = document.getElementById('active-actions-box');
+    if (block.closest('.btn-creation-box')) box = document.getElementById('creation-box');
+
+    if (block.closest('.btn-close')) {
+      block.getElementsByClassName('btn-action')[0].innerText = 'Скрыть';
+      arrows[0].classList.remove('close-block');
+      arrows[1].classList.remove('close-block');
+      arrows[0].classList.add('open-block');
+      arrows[1].classList.add('open-block');
+      block.classList.remove('btn-close');
+      block.classList.add('btn-open');
+
+      box.style.display = 'flex';
+
+      return;
+    }
+
+    if (block.closest('.btn-open')) {
+      block.getElementsByClassName('btn-action')[0].innerText = 'Показать';
+      arrows[0].classList.remove('open-block');
+      arrows[1].classList.remove('open-block');
+      arrows[0].classList.add('close-block');
+      arrows[1].classList.add('close-block');
+      block.classList.remove('btn-open');
+      block.classList.add('btn-close');
+      box.style.display = 'none';
+    }
+  }
 }
 
 const container = document.getElementsByClassName('actions')[0];
 const endDay = document.getElementById('end-day');
 const actions = new ActionsCreater();
 
-actions.renderActions(container);
+actions.setActions();
 
 everyday.addEventListener('click', () => {
   actions.constructor.togglePeriod();
@@ -364,15 +383,17 @@ endDay.addEventListener('click', () => {
 
 
 container.addEventListener('click', (e) => {
-  if (e.target.closest('.deactivate-action')) {
-    const actionId = e.target.closest('.action-item').getAttribute('data-id');
-    const position = e.target.closest('.action-item').getAttribute('data-position');
+  const { target } = e;
+
+  if (target.closest('.deactivate-action')) {
+    const actionId = target.closest('.action-item').getAttribute('data-id');
+    const position = target.closest('.action-item').getAttribute('data-position');
 
     actions.deactivateAction(actionId, position, container);
   }
 
-  if (e.target.closest('.delete-action')) {
-    const actionId = e.target.closest('.action-item').getAttribute('data-id');
+  if (target.closest('.delete-action')) {
+    const actionId = target.closest('.action-item').getAttribute('data-id');
 
     actions.deleteAction(actionId, container);
   }
@@ -382,4 +403,22 @@ container.addEventListener('mousedown', (e) => {
   if (e.target.closest('.dnd-action')) {
     actions.constructor.dragAction(e, e.target.parentNode);
   }
+});
+
+const btnComletedBox = document.getElementsByClassName('btn-completed-box')[0];
+
+btnComletedBox.addEventListener('click', () => {
+  actions.constructor.toggleActionBlock(btnComletedBox);
+});
+
+const btnActiveBox = document.getElementsByClassName('btn-active-box')[0];
+
+btnActiveBox.addEventListener('click', () => {
+  actions.constructor.toggleActionBlock(btnActiveBox);
+});
+
+const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
+
+btnCreationBox.addEventListener('click', () => {
+  actions.constructor.toggleActionBlock(btnCreationBox);
 });
