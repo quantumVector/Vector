@@ -136,7 +136,7 @@ class ActionsCreater {
     }
   }
 
-  async deactivateAction(actionId, position, container) {
+  async deactivateAction(actionId, position, activeBox, completedBox) {
     const obj = { actionId, position };
     const response = await fetch('/deactivate-action', {
       method: 'POST',
@@ -147,14 +147,15 @@ class ActionsCreater {
     });
 
     if (response.ok) {
-      container.innerHTML = '';
-      this.renderActions(container);
+      activeBox.innerHTML = '';
+      completedBox.innerHTML = '';
+      this.setActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
   }
 
-  async deleteAction(actionId, container) {
+  async deleteAction(actionId, activeBox, completedBox) {
     const obj = { actionId };
     const response = await fetch('/delete-action', {
       method: 'POST',
@@ -165,8 +166,9 @@ class ActionsCreater {
     });
 
     if (response.ok) {
-      container.innerHTML = '';
-      this.renderActions(container);
+      activeBox.innerHTML = '';
+      completedBox.innerHTML = '';
+      this.setActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -183,8 +185,8 @@ class ActionsCreater {
     stub.classList.add('stub');
     action.style.position = 'absolute';
     action.style.zIndex = 1000;
-    parentAction.classList.add('active-actions-box-drag');
-    parentAction.append(action);
+    action.style.margin = 0; // нужено, чтобы элемент не выходил за границы
+    document.body.classList.add('active-actions-box-drag');
 
     // если курсор был нажат на последнем действии
     if (!closeSibling) {
@@ -194,13 +196,15 @@ class ActionsCreater {
       closeSibling.before(stub);
     }
 
+    document.body.append(action);
+
     function moveAt(pageX, pageY) {
       const styleAction = getComputedStyle(action);
       const styleParent = getComputedStyle(parentAction);
-      const maxLeft = parseInt(styleParent.width, 10) - parseInt(styleAction.width, 10);
+      const maxLeft = parseInt(parentAction.offsetWidth, 10) - action.offsetWidth;
       const maxTop = parentAction.offsetTop;
       const maxBottom = maxTop + parseInt(styleParent.height, 10)
-        - parseInt(styleAction.height, 10);
+        - action.offsetHeight - 10;
 
       action.style.left = `${pageX - shiftX}px`;
       action.style.top = `${pageY - shiftY}px`;
@@ -272,10 +276,10 @@ class ActionsCreater {
           // элемент над курсором не является соседом заглушки + эелемент не имеет соседа слева
           if (stub.nextSibling !== actionBelow && stub.previousSibling !== actionBelow
             && !item.previousSibling) {
-            const rightSiblingStub = stub.nextSibling;
+            const rightSiblingStub = stub.previousSibling;
             const rightSiblingItem = item.nextSibling;
 
-            rightSiblingStub.before(item);
+            rightSiblingStub.after(item);
             rightSiblingItem.before(stub);
 
             return;
@@ -302,7 +306,7 @@ class ActionsCreater {
       action.remove();
       stub.classList.remove('stub');
       stub.classList.add('action-item');
-      parentAction.classList.remove('active-actions-box-drag');
+      document.body.classList.remove('active-actions-box-drag');
       document.removeEventListener('mousemove', onMouseMove);
       document.onmouseup = null;
 
@@ -385,17 +389,20 @@ endDay.addEventListener('click', () => {
 container.addEventListener('click', (e) => {
   const { target } = e;
 
+  const activeBox = document.getElementById('active-actions-box');
+  const completedBox = document.getElementById('completed-actions-box');
+
   if (target.closest('.deactivate-action')) {
     const actionId = target.closest('.action-item').getAttribute('data-id');
     const position = target.closest('.action-item').getAttribute('data-position');
 
-    actions.deactivateAction(actionId, position, container);
+    actions.deactivateAction(actionId, position, activeBox, completedBox);
   }
 
   if (target.closest('.delete-action')) {
-    const actionId = target.closest('.action-item').getAttribute('data-id');
+    const actionId = target.closest('.completed-action-item').getAttribute('data-id');
 
-    actions.deleteAction(actionId, container);
+    actions.deleteAction(actionId, activeBox, completedBox);
   }
 });
 

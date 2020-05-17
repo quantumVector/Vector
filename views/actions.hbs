@@ -1,3 +1,6 @@
+{{#if errors}}
+  <p class="error-msg">{{errors}}</p>
+{{/if}}
 <section class="actions">
   <div class="btn-active-box btn-open">
     <div class="arrow-down open-block"></div>
@@ -20,9 +23,6 @@
   </div>
   <div id="creation-box">
     <form action="/create-action" method="POST" class="create-action">
-      {{#if errors}}
-      <p class="error-msg">{{errors}}</p>
-      {{/if}}
       <label>Название действия <input name="action" type="text" placeholder="Введите название действия"></label><br>
       <div>
         <input type="checkbox" class="custom-radio" id="everyday" name="period" value="everyday" checked>
