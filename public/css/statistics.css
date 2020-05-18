@@ -96,6 +96,10 @@
   background: linear-gradient(to bottom, rgb(68, 95, 168), rgb(101, 136, 231));
 }
 
+.statistics .title-info {
+  text-align: center;
+}
+
 .statistics .statistics-info {
   display: flex;
   justify-content: space-around;
