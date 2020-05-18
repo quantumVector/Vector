@@ -102,12 +102,42 @@
   padding: 0 20px;
   font-size: 23px;
   border-radius: 10px;
-  color: #fff;
-  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  color: rgb(56, 56, 56);
   border: 2px solid rgba(124, 124, 124, 0.863);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
 }
 
 .statistics .statistics-info .info-first-block,
 .statistics .statistics-info .info-second-block  {
   width: 45%;
+}
+
+.statistics .statistics-act {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.statistics .statistics-act .info-first-block {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.statistics .statistics-act .info-first-block div {
+  display: inline-block;
+  min-width: 15%;
+}
+
+.statistics .statistics-act .info-first-block div span {
+  display: block;
+  margin-top: 20px;
+}
+
+.statistics .statistics-act .info-first-block div .act-done {
+  color: rgb(52, 175, 58);
+}
+
+.statistics .statistics-act .info-first-block div .act-failed {
+  color: rgb(64, 0, 107);
 }
