@@ -68,12 +68,20 @@ router.get('/manual', (req, res) => {
 router.get('/login', (req, res) => {
   res.render('login', {
     title: 'Авторизация',
+    style: {
+      desk: 'css/log-and-reg.css',
+      mob: 'css/log-and-reg-mob.css',
+    },
   });
 });
 
 router.get('/register', (req, res) => {
   res.render('register', {
     title: 'Регистрация',
+    style: {
+      desk: 'css/log-and-reg.css',
+      mob: 'css/log-and-reg-mob.css',
+    },
   });
 });
 

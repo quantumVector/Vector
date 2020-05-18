@@ -1,12 +1,15 @@
 <div class="register">
-  <h2>Регистрация</h2>
-  {{#if errors}}
-  <h2 class="error-msg">{{errors}}</h2>
-  {{/if}}
-  <form action="/register" method="POST">
-    <label>Имя <input name="name" type="text" placeholder="Введите имя"></label><br>
-    <label>Пароль <input name="password" type="password" placeholder="Введите пароль"></label><br>
-    <label>Повторите пароль <input name="password-confirmation" type="password" placeholder="Повторите пароль"></label><br>
-    <button id="btn-create-user" type="submit">Зарегистрироваться</button>
-  </form>
+  <div class="register-container">
+    <h2>Регистрация</h2>
+    {{#if errors}}
+    <h2 class="error-msg">{{errors}}</h2>
+    {{/if}}
+    <form action="/register" method="POST">
+      <label>Имя <input name="name" type="text" placeholder="Введите имя"></label>
+      <label>Пароль <input name="password" type="password" placeholder="Введите пароль"></label>
+      <label>Повторите пароль <input name="password-confirmation" type="password"
+          placeholder="Повторите пароль"></label><br>
+      <button id="btn-create-user" type="submit">Зарегистрироваться</button>
+    </form>
+  </div>
 </div>
