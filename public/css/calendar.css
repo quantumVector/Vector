@@ -120,7 +120,7 @@
 }
 
 .calendar table tbody tr .incompleted-day {
-  border: 2px solid rgba(124, 124, 124, 0.863);
+  border: 2px solid rgba(49, 0, 82, 0.863);
   background: linear-gradient(to bottom right, rgb(54, 0, 90), rgb(123, 1, 204));
   box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
   color: #fff;
@@ -189,7 +189,7 @@
 
 .calendar table tbody tr td .actions-container .action-debt {
   border: 1px solid rgba(63, 63, 97, 0.651);
-  background: linear-gradient(to bottom, rgb(105, 23, 94),rgb(192, 39, 179));
+  background: linear-gradient(to bottom, rgb(54, 0, 90), rgb(123, 1, 204));
 }
 
 .calendar table tbody tr td .actions-container .action:hover:not(.action-unused) {
