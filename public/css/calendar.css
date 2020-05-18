@@ -114,14 +114,14 @@
 
 .calendar table tbody tr .completed-day {
   border: 2px solid rgb(26, 119, 26);
-  background: linear-gradient(to bottom right, rgb(26, 119, 26), rgb(64, 214, 71));
+  background: linear-gradient(to bottom right, rgb(22, 105, 22), rgb(70, 230, 78));
   box-shadow: -3px 3px 8px rgba(26, 119, 26, 0.664);
   color: #fff;
 }
 
 .calendar table tbody tr .incompleted-day {
   border: 2px solid rgba(124, 124, 124, 0.863);
-  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  background: linear-gradient(to bottom right, rgb(54, 0, 90), rgb(123, 1, 204));
   box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
   color: #fff;
 }
