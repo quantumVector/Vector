@@ -468,7 +468,7 @@ class CalendarCreator {
       }
 
       if (parentTd.children.length === 2) {
-        newContainer.classList.add('actions-container');
+        newContainer.classList.add('actions-container', 'actions-container-start');
         parentTd.appendChild(newContainer);
         div.classList.add('action-level-2');
         newContainer.appendChild(div);
@@ -486,7 +486,7 @@ class CalendarCreator {
       }
 
       if (parentTd.children.length === 3) {
-        newContainer.classList.add('actions-container');
+        newContainer.classList.add('actions-container', 'actions-container-start');
         parentTd.appendChild(newContainer);
         div.classList.add('action-level-3');
         newContainer.appendChild(div);

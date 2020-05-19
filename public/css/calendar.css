@@ -138,6 +138,10 @@
   justify-content: center;
 }
 
+.calendar table tbody tr td .actions-container-start {
+  justify-content: start;
+}
+
 .calendar table tbody tr td .actions-container .action {
   position: relative;
   margin: 5px;
