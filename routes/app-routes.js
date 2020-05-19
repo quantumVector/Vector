@@ -206,6 +206,15 @@ router.post('/create-action', [
   await UserCalendar.findOne({ _id: new ObjectId(req.session.userId) }, async (err, user) => {
     if (err) throw err;
 
+    const { action, period, start, end, debt } = req.body;
+
+    let checkName = false;
+
+    // проверить, есть ли уже действия с таким названием
+    for (const item of user.actions) {
+      if (action === item.name) checkName = true;
+    }
+
     // максимальное число можно увеличить до 30
     if (user.actions.length === 10) {
       req.session.errors = 'У вас уже максимальное число созданных действий';
@@ -214,8 +223,10 @@ router.post('/create-action', [
       // eslint-disable-next-line prefer-destructuring
       req.session.errors = result.array({ onlyFirstError: true })[0];
       res.redirect('back');
+    } else if (checkName) {
+      req.session.errors = 'У вас уже есть действие с таким название';
+      res.redirect('back');
     } else {
-      const { action, period, start, end, debt } = req.body;
       let position;
 
       // найти и узнать последний порядковый номер действия
