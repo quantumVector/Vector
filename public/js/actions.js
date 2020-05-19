@@ -127,8 +127,8 @@ class ActionsCreater {
     item.id = action._id;
     name.innerText = action.name;
 
-    if (action.days === 'everyday') box.innerText = 'Каждый день';
-    if (Array.isArray(action.days)) box.innerText = days.join(', ');
+    if (action.days[0] === 'everyday') box.innerText = 'Каждый день';
+    if (action.days.length > 1 && action.days[0] !== 'everyday') box.innerText = days.join(', ');
     if (action.debt) {
       debt.innerText = 'Долги учитываются';
     } else {
