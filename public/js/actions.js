@@ -428,4 +428,5 @@ const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
 
 btnCreationBox.addEventListener('click', () => {
   actions.constructor.toggleActionBlock(btnCreationBox);
+  window.scrollBy(0, window.innerHeight);
 });
