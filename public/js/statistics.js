@@ -184,6 +184,8 @@ class StatisticsCreator {
       const { target } = e;
 
       this.showTooltip(target);
+
+      console.log('stub');
     });
 
     this.container.addEventListener('mouseout', (e) => {
@@ -235,22 +237,20 @@ class StatisticsCreator {
       const day = regexp.exec(target.id)[0];
 
       actionDate.innerText = `${month} ${day}, ${year}`;
+      actionDate.classList.add('action-date');
       tooltip.append(actionDate);
 
       if (this.tooltips[target.id]) {
-        const actionWrapper = document.createElement('div');
-
-        actionWrapper.classList.add('action-wrapper');
-        tooltip.append(actionWrapper);
-
         for (const action of this.tooltips[target.id]) {
           const actionName = document.createElement('p');
 
           actionName.innerText = action.name;
           if (!action.status) actionName.style.color = 'red';
 
-          actionWrapper.append(actionName);
+          tooltip.append(actionName);
         }
+      } else {
+        tooltip.classList.add('tooltip-only-date');
       }
 
       const tooltipStyle = getComputedStyle(tooltip);
@@ -262,6 +262,23 @@ class StatisticsCreator {
 
       tooltip.style.left = `${leftValue}px`;
       tooltip.style.top = `${topValue}px`;
+
+      const coord = tooltip.getBoundingClientRect();
+
+      if (coord.left < 0) {
+        tooltip.style.left = '-40px';
+        triangle.style.left = '45px';
+      }
+      if (coord.left > 0) {
+        triangle.style.right = 0;
+      }
+
+      if (coord.right > document.documentElement.clientWidth) {
+        tooltip.style.left = 'auto';
+        tooltip.style.right = '-40px';
+        triangle.style.right = '45px';
+        triangle.style.left = 'auto';
+      }
     }
   }
 

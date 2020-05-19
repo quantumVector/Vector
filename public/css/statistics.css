@@ -36,12 +36,29 @@
 
 .statistics .wrapper .tooltip {
   position: absolute;
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  grid-template-rows: repeat(3, 1.8vw);
+  grid-auto-flow: column;
   align-items: center;
   top: -40px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.89);
   z-index: 999;
+}
+
+.statistics .wrapper .tooltip-only-date {
+  grid-template-rows: repeat(1, 1.8vw);
+}
+
+.statistics .wrapper .tooltip .action-date {
+  grid-row: 1 / span 3;
+}
+
+.statistics .wrapper .tooltip p {
+  margin: 0;
+  padding: 0 10px;
+  white-space: nowrap;
 }
 
 .statistics .wrapper .tooltip .triangle-down {
@@ -50,26 +67,12 @@
   height: 0;
   bottom: -8px;
   left: 0;
-  right: 0;
   margin-left: auto;
   margin-right: auto;
 	border-left: 7px solid transparent;
 	border-right: 7px solid transparent;
   border-top: 8px solid rgba(0, 0, 0, 0.89);
   z-index: 998;
-}
-
-.statistics .wrapper .tooltip p {
-  margin: 10px;
-  white-space: nowrap;
-}
-
-.statistics .wrapper .tooltip .action-wrapper {
-  display: flex;
-  border: 1px solid red;
-  flex-wrap: wrap;
-  min-width: 300px;
-  max-width: 1000px;
 }
 
 .statistics .btn-box {
