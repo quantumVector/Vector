@@ -6,7 +6,19 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const connectMongo = require('connect-mongo');
 const config = require('./config');
-const routes = require('./routes/app-routes');
+
+// маршруты
+const getCalendar = require('./routes/get-calendar');
+const getActions = require('./routes/get-actions');
+const getStatistics = require('./routes/get-statistics');
+const getManual = require('./routes/get-manual');
+const getLog = require('./routes/get-log');
+const getReg = require('./routes/get-reg');
+const getLogout = require('./routes/get-logout');
+const postLog = require('./routes/post-log');
+const postReg = require('./routes/post-reg');
+const postActions = require('./routes/post-actions');
+const postCalendar = require('./routes/post-calendar');
 
 const app = express();
 const environment = config.DEVELOPMENT;
@@ -60,7 +72,17 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(routes);
+app.use(getCalendar);
+app.use(getActions);
+app.use(getStatistics);
+app.use(getManual);
+app.use(getLog);
+app.use(getReg);
+app.use(getLogout);
+app.use(postCalendar);
+app.use(postActions);
+app.use(postLog);
+app.use(postReg);
 
 // ------------------------------ Database Connection ----------------------------------
 
