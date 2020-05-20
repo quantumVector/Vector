@@ -4,6 +4,16 @@
 'use strict';
 
 class ActionsCreater {
+  constructor(container, everyday, endDay, btnComletedBox,
+    btnActiveBox, btnCreationBox) {
+    this.container = container;
+    this.everyday = everyday;
+    this.endDay = endDay;
+    this.btnComletedBox = btnComletedBox;
+    this.btnActiveBox = btnActiveBox;
+    this.btnCreationBox = btnCreationBox;
+  }
+
   static togglePeriod() {
     const everyday = document.getElementById('everyday');
     const certainDays = document.getElementsByName('period');
@@ -74,6 +84,8 @@ class ActionsCreater {
     if (!completedActionsBox.children.length) {
       this.constructor.renderEmptyMessage(completedActionsBox, 'inactive');
     }
+
+    this.setEvents();
   }
 
   renderActionItem(actionsBox, btnClassName, btnName, action) {
@@ -369,64 +381,65 @@ class ActionsCreater {
       box.style.display = 'none';
     }
   }
+
+  setEvents() {
+    this.everyday.addEventListener('click', () => {
+      this.constructor.togglePeriod();
+    });
+
+    this.endDay.addEventListener('click', () => {
+      this.constructor.toggleEndDate();
+    });
+
+    this.container.addEventListener('click', (e) => {
+      const { target } = e;
+
+      const activeBox = document.getElementById('active-actions-box');
+      const completedBox = document.getElementById('completed-actions-box');
+
+      if (target.closest('.deactivate-action')) {
+        const actionId = target.closest('.action-item').getAttribute('data-id');
+        const position = target.closest('.action-item').getAttribute('data-position');
+
+        this.deactivateAction(actionId, position, activeBox, completedBox);
+      }
+
+      if (target.closest('.delete-action')) {
+        const actionId = target.closest('.completed-action-item').getAttribute('data-id');
+
+        this.deleteAction(actionId, activeBox, completedBox);
+      }
+    });
+
+    this.container.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.dnd-action')) {
+        this.constructor.dragAction(e, e.target.parentNode);
+      }
+    });
+
+    this.btnComletedBox.addEventListener('click', () => {
+      this.constructor.toggleActionBlock(this.btnComletedBox);
+    });
+
+    this.btnActiveBox.addEventListener('click', () => {
+      this.constructor.toggleActionBlock(this.btnActiveBox);
+    });
+
+    this.btnCreationBox.addEventListener('click', () => {
+      console.log('kek')
+      this.constructor.toggleActionBlock(this.btnCreationBox);
+      window.scrollBy(0, window.innerHeight);
+    });
+  }
 }
 
 const container = document.getElementsByClassName('actions')[0];
+const everyday = document.getElementById('everyday');
 const endDay = document.getElementById('end-day');
-const actions = new ActionsCreater();
+const btnComletedBox = document.getElementsByClassName('btn-completed-box')[0];
+const btnActiveBox = document.getElementsByClassName('btn-active-box')[0];
+const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
+const actions = new ActionsCreater(container, everyday, endDay, btnComletedBox,
+  btnActiveBox, btnCreationBox);
 
 actions.setActions();
-
-everyday.addEventListener('click', () => {
-  actions.constructor.togglePeriod();
-});
-
-endDay.addEventListener('click', () => {
-  actions.constructor.toggleEndDate();
-});
-
-
-container.addEventListener('click', (e) => {
-  const { target } = e;
-
-  const activeBox = document.getElementById('active-actions-box');
-  const completedBox = document.getElementById('completed-actions-box');
-
-  if (target.closest('.deactivate-action')) {
-    const actionId = target.closest('.action-item').getAttribute('data-id');
-    const position = target.closest('.action-item').getAttribute('data-position');
-
-    actions.deactivateAction(actionId, position, activeBox, completedBox);
-  }
-
-  if (target.closest('.delete-action')) {
-    const actionId = target.closest('.completed-action-item').getAttribute('data-id');
-
-    actions.deleteAction(actionId, activeBox, completedBox);
-  }
-});
-
-container.addEventListener('mousedown', (e) => {
-  if (e.target.closest('.dnd-action')) {
-    actions.constructor.dragAction(e, e.target.parentNode);
-  }
-});
-
-const btnComletedBox = document.getElementsByClassName('btn-completed-box')[0];
-
-btnComletedBox.addEventListener('click', () => {
-  actions.constructor.toggleActionBlock(btnComletedBox);
-});
-
-const btnActiveBox = document.getElementsByClassName('btn-active-box')[0];
-
-btnActiveBox.addEventListener('click', () => {
-  actions.constructor.toggleActionBlock(btnActiveBox);
-});
-
-const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
-
-btnCreationBox.addEventListener('click', () => {
-  actions.constructor.toggleActionBlock(btnCreationBox);
-  window.scrollBy(0, window.innerHeight);
-});
