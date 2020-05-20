@@ -163,18 +163,40 @@
   margin: 2px;
 }
 
-.calendar table tbody tr td .actions-container .action .action-info {
+.calendar table tbody tr td .actions-container .action .tooltip {
   position: absolute;
-  width: 200px;
-  padding: 10px;
-  top: 70px;
-  left: -100px;
-  font-size: 1.1vw;
-  background-color: #fff;
-  color: rgb(56, 56, 56);
-  border: 1px solid rgb(63, 63, 97);
-  border-radius: 13px;
-  z-index: 1000;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  grid-template-rows: repeat(1, 3vw);
+  grid-auto-flow: column;
+  align-items: center;
+  top: -40px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.89);
+  border-radius: 10px;
+  z-index: 999;
+}
+
+
+.calendar table tbody tr td .actions-container .action .tooltip p {
+  margin: 0;
+  padding: 0 20px;
+  font-size: 23px;
+  white-space: nowrap;
+}
+
+.calendar table tbody tr td .actions-container .action .tooltip .triangle-down {
+  position: absolute;
+	width: 0;
+  height: 0;
+  bottom: -8px;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.89);
+  z-index: 998;
 }
 
 .calendar table tbody tr td .actions-container .action-false {

@@ -595,20 +595,57 @@ class CalendarCreator {
     }
   }
 
-  static showActionInfo(action) {
-    const name = action.getAttribute('data-action');
-    const modal = document.createElement('div');
-    modal.classList.add('action-info');
-    modal.innerText = name;
+  static showActionInfo(target) {
+    const tooltip = document.createElement('div');
+    const triangle = document.createElement('div');
+    const name = target.getAttribute('data-action');
 
-    if (action.closest('.action-debt')) {
-      const debtInfo = document.createElement('div');
+    tooltip.innerHTML = `<p>${name}</p>`;
 
-      debtInfo.innerText = `Дата долга: ${action.getAttribute('data-date')}`;
-      modal.appendChild(debtInfo);
+    if (target.closest('.action-debt')) {
+      const debtInfo = document.createElement('p');
+      const debt = target.getAttribute('data-date');
+      const monthsArr = ['января', 'февраля', 'марта',
+        'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября',
+        'октября', 'ноября', 'декабря'];
+
+      const date = debt.match(/\d+/g);
+
+      debtInfo.innerText = `${date[2]} ${monthsArr[date[1]]} ${date[0]} `;
+      tooltip.appendChild(debtInfo);
     }
 
-    action.appendChild(modal);
+    tooltip.classList.add('tooltip');
+    target.append(tooltip);
+    triangle.classList.add('triangle-down');
+    tooltip.append(triangle);
+
+    const tooltipStyle = getComputedStyle(tooltip);
+    const targetStyle = getComputedStyle(target);
+    const leftValue = (parseInt(tooltipStyle.width, 10) / 2
+      - parseInt(targetStyle.width, 10) / 2) * -1;
+    const topValue = (parseInt(tooltipStyle.height, 10)
+      + parseInt(targetStyle.height, 10) / 2) * -1;
+
+    tooltip.style.left = `${leftValue}px`;
+    tooltip.style.top = `${topValue}px`;
+
+    const coord = tooltip.getBoundingClientRect();
+
+    if (coord.left < 0) {
+      tooltip.style.left = '-40px';
+      triangle.style.left = '45px';
+    }
+    if (coord.left > 0) {
+      triangle.style.right = 0;
+    }
+
+    if (coord.right > document.documentElement.clientWidth) {
+      tooltip.style.left = 'auto';
+      tooltip.style.right = '-40px';
+      triangle.style.right = '45px';
+      triangle.style.left = 'auto';
+    }
   }
 
   clickDirection(direction) {
@@ -691,11 +728,9 @@ container.addEventListener('mouseover', (e) => {
 });
 
 container.addEventListener('mouseout', (e) => {
-  const target = e.target;
+  const { target } = e;
 
   if (target.closest('.action')) {
-    const info = target.getElementsByClassName('action-info')[0];
-
-    info.remove();
+    document.getElementsByClassName('tooltip')[0].remove();
   }
 });
