@@ -23,6 +23,7 @@ class CalendarCreator {
     this.renderCalendar(this.middleCalendar[0], this.middleCalendar[1], 'middle');
     this.renderCalendar(this.rightCalendar[0], this.rightCalendar[1], 'right');
     this.insertData();
+    this.setEvents();
   }
 
   setDates() {
@@ -691,6 +692,33 @@ class CalendarCreator {
 
     this.container.appendChild(modal);
   }
+
+  setEvents() {
+    this.container.addEventListener('click', (e) => {
+      const target = e.target;
+
+      if (target.closest('.action') && !target.closest('.action-unused')) {
+        const id = target.getAttribute('data-id');
+        const status = target.getAttribute('data-status');
+
+        this.updateActionStatus(id, status, target);
+      }
+    });
+
+    this.container.addEventListener('mouseover', (e) => {
+      const target = e.target;
+
+      if (target.closest('.action')) this.constructor.showActionInfo(target);
+    });
+
+    this.container.addEventListener('mouseout', (e) => {
+      const { target } = e;
+
+      if (target.closest('.action')) {
+        document.getElementsByClassName('tooltip')[0].remove();
+      }
+    });
+  }
 }
 
 
@@ -708,29 +736,4 @@ left.addEventListener('click', () => {
 
 right.addEventListener('click', () => {
   calendar.clickDirection('right');
-});
-
-container.addEventListener('click', (e) => {
-  const target = e.target;
-
-  if (target.closest('.action') && !target.closest('.action-unused')) {
-    const id = target.getAttribute('data-id');
-    const status = target.getAttribute('data-status');
-
-    calendar.updateActionStatus(id, status, target);
-  }
-});
-
-container.addEventListener('mouseover', (e) => {
-  const target = e.target;
-
-  if (target.closest('.action')) calendar.constructor.showActionInfo(target);
-});
-
-container.addEventListener('mouseout', (e) => {
-  const { target } = e;
-
-  if (target.closest('.action')) {
-    document.getElementsByClassName('tooltip')[0].remove();
-  }
 });
