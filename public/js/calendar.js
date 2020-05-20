@@ -6,12 +6,14 @@
 'use strict';
 
 class CalendarCreator {
-  constructor(container) {
+  constructor(container, btnPrevious, btnNext) {
     this.currentDate = 0;
     this.leftCalendar = 0;
     this.middleCalendar = 0;
     this.rightCalendar = 0;
     this.container = container;
+    this.btnPrevious = btnPrevious;
+    this.btnNext = btnNext;
   }
 
   install() {
@@ -694,6 +696,14 @@ class CalendarCreator {
   }
 
   setEvents() {
+    this.btnPrevious.addEventListener('click', () => {
+      this.clickDirection('left');
+    });
+
+    this.btnNext.addEventListener('click', () => {
+      this.clickDirection('right');
+    });
+
     this.container.addEventListener('click', (e) => {
       const target = e.target;
 
@@ -723,17 +733,8 @@ class CalendarCreator {
 
 
 const container = document.getElementsByClassName('calendar')[0];
-const calendar = new CalendarCreator(container);
+const btnPrevious = document.getElementById('left');
+const btnNext = document.getElementById('right');
+const calendar = new CalendarCreator(container, btnPrevious, btnNext);
 
 calendar.install();
-
-const left = document.getElementById('left');
-const right = document.getElementById('right');
-
-left.addEventListener('click', () => {
-  calendar.clickDirection('left');
-});
-
-right.addEventListener('click', () => {
-  calendar.clickDirection('right');
-});
