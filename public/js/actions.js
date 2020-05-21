@@ -340,11 +340,7 @@ class ActionsCreater {
         body: JSON.stringify(actionsId),
       });
 
-      if (response.ok) {
-        console.log('Порядок действий обновлён');
-      } else {
-        throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     };
   }
 

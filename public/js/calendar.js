@@ -192,9 +192,6 @@ class CalendarCreator {
     }
 
     await this.getActions(); // получить обновленные данные
-
-    console.log(this.dataActions)
-
     this.changeInsertTarget();
   }
 
@@ -288,11 +285,7 @@ class CalendarCreator {
         body: JSON.stringify(obj),
       });
 
-      if (response.ok) {
-        console.log('Активность обновлена');
-      } else {
-        throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
   }
 

@@ -26,7 +26,6 @@ class StatisticsCreator {
 
     if (response.ok) {
       this.dataActions = await response.json();
-      console.log(this.dataActions)
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
     }
@@ -184,8 +183,6 @@ class StatisticsCreator {
       const { target } = e;
 
       this.showTooltip(target);
-
-      console.log('stub');
     });
 
     this.container.addEventListener('mouseout', (e) => {
@@ -296,8 +293,6 @@ class StatisticsCreator {
     const actionsWithDebts = [];
     const debts = [];
     const activeActions = {};
-
-    console.log(this.dates);
 
     for (const action of this.dataActions.actions) {
       if (action.debt) actionsWithDebts.push(action);
