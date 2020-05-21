@@ -362,27 +362,31 @@ class StatisticsCreator {
     document.getElementById('all-failed-days-in-month').innerText = failedDays.length;
     document.getElementById('percent-failed-days-in-month').innerText = `${Math.floor(percentFailedInMonth)}%`;
     document.getElementById('all-success-days').innerText = allSuccesDays.length;
-    document.getElementById('percent-success-days').innerText = `${Math.floor(percentSuccessInYear)}%`;
+    document.getElementById('percent-success-days').innerText = `${Math.floor(percentSuccessInYear) || 0}%`;
     document.getElementById('all-failed-days').innerText = allFailedDays.length;
-    document.getElementById('percent-failed-days').innerText = `${Math.floor(percentFailedInYear)}%`;
+    document.getElementById('percent-failed-days').innerText = `${Math.floor(percentFailedInYear || 0)}%`;
     document.getElementById('total-days').innerText = totalDays.length;
     document.getElementById('debts').innerText = debts.length;
 
-    console.log(activeActions)
+    const activeActionsLength = Object.keys(activeActions).length;
+    const actBlock = document.getElementById('stat-act-block');
 
-    for (const key in activeActions) {
-      if (Object.prototype.hasOwnProperty.call(activeActions, key)) {
-        const action = document.createElement('div');
-        const percentCompletedAct = (activeActions[key].successDaysInMonth * 100) / daysInMonth;
-        const percentFailedAct = (activeActions[key].failedDaysInMonth * 100) / daysInMonth;
-        const actBlock = document.getElementById('stat-act-block');
+    if (activeActionsLength) {
+      for (const key in activeActions) {
+        if (Object.prototype.hasOwnProperty.call(activeActions, key)) {
+          const action = document.createElement('div');
+          const percentCompletedAct = (activeActions[key].successDaysInMonth * 100) / daysInMonth;
+          const percentFailedAct = (activeActions[key].failedDaysInMonth * 100) / daysInMonth;
 
-        action.innerHTML = `<span>${key}:</span>
-        <p class="act-done">Выполнено: ${activeActions[key].successDaysInMonth} (${Math.floor(percentCompletedAct)}%)</p>
-        <p class="act-failed">Провалено: ${activeActions[key].failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p>`;
+          action.innerHTML = `<span>${key}:</span>
+          <p class="act-done">Выполнено: ${activeActions[key].successDaysInMonth} (${Math.floor(percentCompletedAct)}%)</p>
+          <p class="act-failed">Провалено: ${activeActions[key].failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p>`;
 
-        actBlock.append(action);
+          actBlock.append(action);
+        }
       }
+    } else {
+      actBlock.innerHTML = '<p class="not-actions">Нет созданных действий</p>';
     }
   }
 }
