@@ -8,14 +8,17 @@
 }
 
 .calendar .modal-empty-calendar {
-  border: 1px solid red;
   position: absolute;
-  top: 13px;
-  left: 12%;
-  width: 22%;
-  padding: 10px;
-  font-size: 1.3vw;
-  background-color: rgba(143, 143, 143, 0.486);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 1.7vw;
+  color: #fff;
+  background-color: rgba(29, 29, 29, 0.788);
   z-index: 1000;
 }
 
