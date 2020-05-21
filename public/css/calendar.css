@@ -145,6 +145,12 @@
   justify-content: start;
 }
 
+.calendar table tbody tr td .actions-container-start-lvl3 {
+  justify-content: start;
+  width: 90%;
+  margin: 0 auto;
+}
+
 .calendar table tbody tr td .actions-container .action {
   position: relative;
   margin: 5px;
@@ -154,6 +160,10 @@
   cursor: pointer;
   transition: 0.1s;
   box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.514);
+}
+
+.calendar table tbody tr td .actions-container-start-lvl3 .action {
+  width: 6.3%;
 }
 
 .calendar table tbody tr td .actions-container .action-level-2 {

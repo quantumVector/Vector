@@ -489,10 +489,12 @@ class CalendarCreator {
       }
 
       if (parentTd.children.length === 3) {
-        newContainer.classList.add('actions-container', 'actions-container-start');
+        newContainer.classList.add('actions-container', 'actions-container-start', 'actions-container-start-lvl3');
         parentTd.appendChild(newContainer);
         div.classList.add('action-level-3');
         newContainer.appendChild(div);
+        newContainer.previousSibling.classList.add('actions-container-start-lvl3');
+        newContainer.previousSibling.previousSibling.classList.add('actions-container-start-lvl3');
 
         [].forEach.call(parentTd.children[1].children, (item) => {
           item.classList.add('action-level-3');
