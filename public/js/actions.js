@@ -417,19 +417,22 @@ class ActionsCreater {
       }
     });
 
-    this.btnComletedBox.addEventListener('click', () => {
+    // Далее addEventListener не используется, так как события с ним будут вызываться два раза,
+    // если завершить или удалить действие. (вероятнее всего из-за всплытия и перехвата события)
+
+    this.btnComletedBox.onclick = () => {
       this.constructor.toggleActionBlock(this.btnComletedBox);
-    });
+    };
 
-    this.btnActiveBox.addEventListener('click', () => {
+    this.btnActiveBox.onclick = () => {
       this.constructor.toggleActionBlock(this.btnActiveBox);
-    });
+    };
 
-    this.btnCreationBox.addEventListener('click', () => {
-      console.log('kek')
+    this.btnCreationBox.onclick = (e) => {
       this.constructor.toggleActionBlock(this.btnCreationBox);
       window.scrollBy(0, window.innerHeight);
-    });
+      e.preventDefault();
+    };
   }
 }
 
