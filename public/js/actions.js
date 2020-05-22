@@ -78,6 +78,12 @@ class ActionsCreater {
       }
     }
 
+    if (currentActionsBox.children.length) {
+      const icon = document.createElement('div');
+
+      icon.classList.add('current-actions-info');
+      currentActionsBox.before(icon);
+    }
     if (!currentActionsBox.children.length) {
       this.constructor.renderEmptyMessage(currentActionsBox, 'active');
     }
@@ -353,6 +359,13 @@ class ActionsCreater {
     if (block.closest('.btn-creation-box')) box = document.getElementById('creation-box');
 
     if (block.closest('.btn-close')) {
+      if (block.closest('.btn-active-box')) {
+        const icon = document.createElement('div');
+
+        icon.classList.add('current-actions-info');
+        block.after(icon);
+      }
+
       block.getElementsByClassName('btn-action')[0].innerText = 'Скрыть';
       arrows[0].classList.remove('close-block');
       arrows[1].classList.remove('close-block');
@@ -367,6 +380,10 @@ class ActionsCreater {
     }
 
     if (block.closest('.btn-open')) {
+      if (block.closest('.btn-active-box')) {
+        block.parentNode.getElementsByClassName('current-actions-info')[0].remove();
+      }
+
       block.getElementsByClassName('btn-action')[0].innerText = 'Показать';
       arrows[0].classList.remove('open-block');
       arrows[1].classList.remove('open-block');
@@ -379,6 +396,8 @@ class ActionsCreater {
   }
 
   setEvents() {
+    const closeModalInfo = document.getElementById('close-modal-info');
+
     this.everyday.addEventListener('click', () => {
       this.constructor.togglePeriod();
     });
@@ -405,6 +424,10 @@ class ActionsCreater {
 
         this.deleteAction(actionId, activeBox, completedBox);
       }
+
+      if (target.closest('.current-actions-info')) {
+        document.getElementById('modal-info').style.display = 'flex';
+      }
     });
 
     this.container.addEventListener('mousedown', (e) => {
@@ -429,6 +452,10 @@ class ActionsCreater {
       window.scrollBy(0, window.innerHeight);
       e.preventDefault();
     };
+
+    closeModalInfo.addEventListener('click', () => {
+      document.getElementById('modal-info').style.display = 'none';
+    });
   }
 }
 

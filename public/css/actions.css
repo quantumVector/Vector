@@ -69,6 +69,24 @@
   display: flex;
 }
 
+.actions .current-actions-info {
+  background-image: url('/img/icon-info.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.actions .current-actions-info:hover {
+  background-image: url('/img/icon-info-hover.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .actions #completed-actions-box {
   display: none;
 }
@@ -147,13 +165,18 @@
   align-items: center;
   width: 98%;
   margin: 0 auto;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding: 5px 0;
   font-size: 24px;
   border: 2px solid rgb(56, 56, 56);
   border-radius: 10px;
   cursor: pointer;
   transition: 0.1s;
+  user-select: none;
+}
+
+.actions .btn-active-box {
+  margin-bottom: 10px;
 }
 
 .actions .btn-active-box:hover,
@@ -335,4 +358,49 @@
 .actions .empty-msg {
   margin: 0 auto;
   margin-bottom: 20px;
+}
+
+#modal-info {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  content: 'gqgqwgwqgwqg';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.877);
+}
+
+#modal-info .modal-content {
+  text-align: center;
+  font-family: MyriadProSemiBold;
+  font-size: 24px;
+  color: #fff;
+}
+
+#modal-info .modal-content img {
+  display: block;
+  margin: 0 auto;
+}
+
+#modal-info .modal-content #close-modal-info {
+  display: block;
+  padding: 10px 20px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 20px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
+  outline: none;
+}
+
+#modal-info .modal-content #close-modal-info:hover {
+  background-color: #0b76ef;
+  color: #fff;
 }
