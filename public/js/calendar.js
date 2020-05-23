@@ -452,7 +452,7 @@ class CalendarCreator {
     const parentTd = actionsContainer.parentNode;
 
     // если действий меньше 10 то рендерить в одну строчку, если больше то в несколько
-    if (actionsContainer.children.length < 10) {
+   /*  if (actionsContainer.children.length < 10) {
       actionsContainer.appendChild(div);
     } else if (!parentTd.children[2]
       || (parentTd.children[2] && parentTd.children[2].children.length < 10)) {
@@ -496,7 +496,9 @@ class CalendarCreator {
           item.classList.add('action-level-3');
         });
       }
-    }
+    } */
+
+    actionsContainer.appendChild(div);
 
     this.setDayStatus(td, actionsContainer);
   }

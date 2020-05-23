@@ -1,3 +1,98 @@
 html, body {
   height: 100%;
 }
+
+.calendar {
+  position: absolute;
+  width: 100%;
+  top: 60px;
+  bottom: 0;
+  overflow: hidden;
+  font-family: MyriadProSemiBold;
+  color: #F2F2F2;
+}
+
+.calendar .left-calendar, .calendar .middle-calendar, .calendar .right-calendar {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  top: 0;
+  width: 100%;
+  height: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+.calendar .left-calendar {
+  left: -100%;
+}
+.calendar .middle-calendar {
+  left: 0;
+}
+.calendar .right-calendar {
+  left: 100%;
+}
+
+.calendar .calendar-title {
+  padding: 15px 0;
+  font-size: 1.2vw;
+  text-transform: uppercase;
+  font-family: MyriadProBold;
+}
+
+.calendar table {
+  width: 1024px;
+  height: 650px;
+  border-collapse: collapse;
+}
+
+.calendar table thead tr th {
+  font-size: 1vw;
+  text-transform: uppercase;
+}
+
+.calendar table tbody tr td {
+  position: relative;
+  width: 13%;
+  font-size: 1.6vw;
+  text-align: center;
+  color: #313131;
+  border: 2px solid #e2e2e2;
+  background-color: #F2F2F2;
+}
+
+.calendar table tbody tr td .actions-container {
+  display: inline-flex;
+  justify-content: start;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  width: auto;
+  max-width: 85px;
+  overflow: hidden;
+}
+
+.calendar table tbody tr td .actions-container .action {
+  position: relative;
+  margin: 5px 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
+  background-color: #9fa09b;
+}
+
+#right {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border: 1px solid red;
+  z-index: 999;
+}
+
+/* .calendar table tbody tr td .actions-container .action-debt {
+  border: 1px solid rgba(63, 63, 97, 0.651);
+  background: linear-gradient(to bottom, rgb(54, 0, 90), rgb(123, 1, 204));
+} */
