@@ -3,18 +3,18 @@
 'use strict';
 
 function setVersion(version) {
-  if (version === 'mob') document.getElementsByClassName('header-desk')[0].style.display = 'none';
-  if (version === 'desk') document.getElementsByClassName('header-mob')[0].style.display = 'none';
+  if (version === 'mob') document.getElementsByClassName('header-desktop')[0].style.display = 'none';
+  if (version === 'desk') document.getElementsByClassName('header-mobile')[0].style.display = 'none';
 }
 
 function changeVersion(version) {
   if (version === 'mob') {
-    document.getElementsByClassName('header-desk')[0].style.display = 'none';
-    document.getElementsByClassName('header-mob')[0].style.display = 'flex';
+    document.getElementsByClassName('header-desktop')[0].style.display = 'none';
+    document.getElementsByClassName('header-mobile')[0].style.display = 'flex';
   }
   if (version === 'desk') {
-    document.getElementsByClassName('header-mob')[0].style.display = 'none';
-    document.getElementsByClassName('header-desk')[0].style.display = 'flex';
+    document.getElementsByClassName('header-mobile')[0].style.display = 'none';
+    document.getElementsByClassName('header-desktop')[0].style.display = 'flex';
   }
 }
 

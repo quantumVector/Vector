@@ -1,5 +1,6 @@
-<nav class="header-desk">
-  <a href="/" class="label">Goals Calendar</a>
+<header>
+  <nav class="header-desktop">
+  <a href="/" class="label">Vector</a>
   {{#if displayLink}}
     <ul>
       {{#if isCalendar}}
@@ -38,56 +39,57 @@
       <span class="user-name">{{userName}}</span> <a href="/logout" class="logout">Выйти</a>
     </div>
   {{/if}}
-</nav>
+  </nav>
 
-<nav class="header-mob">
-  <button type="button" class="btn-navbar">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a href="/" class="label">Goals Calendar</a>
-  <div class="modal-nav">
-    <div class="modal-container">
-        <div class="close"></div>
-      {{#if displayLink}}
-        <ul>
-          {{#if isCalendar}}
-            <li class="active"><a href="/">Календарь</a></li>
-          {{else}}
-            <li><a href="/">Календарь</a></li>
-          {{/if}}
+  <nav class="header-mobile">
+    <button type="button" class="btn-navbar">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a href="/" class="label">Goals Calendar</a>
+    <div class="modal-nav">
+      <div class="modal-container">
+          <div class="close"></div>
+        {{#if displayLink}}
+          <ul>
+            {{#if isCalendar}}
+              <li class="active"><a href="/">Календарь</a></li>
+            {{else}}
+              <li><a href="/">Календарь</a></li>
+            {{/if}}
 
-          {{#if isSettings}}
-            <li class="active"><a href="/actions">Действия</a></li>
-          {{else}}
-            <li><a href="/actions">Действия</a></li>
-          {{/if}}
+            {{#if isSettings}}
+              <li class="active"><a href="/actions">Действия</a></li>
+            {{else}}
+              <li><a href="/actions">Действия</a></li>
+            {{/if}}
 
-          {{#if isStatistics}}
-            <li class="active"><a href="/statistics">Статистика</a></li>
-          {{else}}
-            <li><a href="/statistics">Статистика</a></li>
-          {{/if}}
+            {{#if isStatistics}}
+              <li class="active"><a href="/statistics">Статистика</a></li>
+            {{else}}
+              <li><a href="/statistics">Статистика</a></li>
+            {{/if}}
 
-          {{#if isManual}}
-            <li class="active"><a href="/manual">Руководство</a></li>
-          {{else}}
-            <li><a href="/manual">Руководство</a></li>
-          {{/if}}
-        </ul>
-      {{/if}}
-      {{#unless displayLink}}
-        <div class="access-box">
-          <a href="/login" class="logout">Войти</a>
-          <a href="/register" class="reg">Регистрация</a>
-        </div>
-      {{/unless}}
-      {{#if displayLink}}
-        <div class="user-box">
-          <span class="user-name">{{userName}}</span> <a href="/logout" class="logout">Выйти</a>
-        </div>
-      {{/if}}
+            {{#if isManual}}
+              <li class="active"><a href="/manual">Руководство</a></li>
+            {{else}}
+              <li><a href="/manual">Руководство</a></li>
+            {{/if}}
+          </ul>
+        {{/if}}
+        {{#unless displayLink}}
+          <div class="access-box">
+            <a href="/login" class="logout">Войти</a>
+            <a href="/register" class="reg">Регистрация</a>
+          </div>
+        {{/unless}}
+        {{#if displayLink}}
+          <div class="user-box">
+            <span class="user-name">{{userName}}</span> <a href="/logout" class="logout">Выйти</a>
+          </div>
+        {{/if}}
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+</header>
