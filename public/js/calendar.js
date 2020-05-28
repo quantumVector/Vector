@@ -387,14 +387,14 @@ class CalendarCreator {
         }
 
         // есть есть долги, то вставить их в текущий день
-        if (this.dataActions.debts.length > 0) {
+        /* if (this.dataActions.debts.length > 0) {
           if (tdDate.getTime() === zeroDateNow.getTime()) {
             for (const date of this.dataActions.debts) {
               this.constructor.renderAction(item, date.action_name, date.action_id, 'debt', date._id,
                 date.year, date.month, date.day);
             }
           }
-        }
+        } */
       }
     }); // end forEach td
   }
@@ -656,12 +656,14 @@ class CalendarCreator {
     this.container.addEventListener('click', (e) => {
       const target = e.target;
 
-      /* if (target.closest('.action') && !target.closest('.action-unused')) {
+      if (target.closest('.action') && !target.closest('.action-unused')) {
         const id = target.getAttribute('data-id');
         const status = target.getAttribute('data-status');
 
         this.updateActionStatus(id, status, target);
-      } */
+
+        return;
+      }
 
       if (target.closest('.incompleted-day') || target.closest('.current-day') || target.closest('.completed-day')) {
         this.modalInfoActions.style.display = 'block';
@@ -674,7 +676,7 @@ class CalendarCreator {
       if (!target.closest('.action-item')) this.modalInfoActions.style.display = 'none';
     });
 
-    this.container.addEventListener('mouseover', (e) => {
+    /* this.container.addEventListener('mouseover', (e) => {
       const target = e.target;
 
       if (target.closest('.action')) this.constructor.showActionInfo(target);
@@ -686,7 +688,7 @@ class CalendarCreator {
       if (target.closest('.action')) {
         document.getElementsByClassName('tooltip')[0].remove();
       }
-    });
+    }); */
   }
 }
 

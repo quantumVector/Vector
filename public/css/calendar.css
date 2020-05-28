@@ -44,6 +44,7 @@ html, body {
   width: 1024px;
   height: 650px;
   border-collapse: collapse;
+  border-style: hidden;
 }
 
 .calendar table thead tr th {
@@ -57,8 +58,31 @@ html, body {
   font-size: 1.6vw;
   text-align: center;
   color: #313131;
-  border: 2px solid #e2e2e2;
+  border: 1px solid #e2e2e2;
   background-color: #F2F2F2;
+}
+
+.calendar table tbody tr:first-child td {
+  border-top: hidden;
+}
+
+.calendar table tbody tr .current-day,
+.calendar table tbody tr .incompleted-day,
+.calendar table tbody tr .completed-day {
+  cursor: pointer;
+}
+
+.calendar table tbody tr .completed-day {
+  background-color: #02B3C7;
+}
+
+.calendar table tbody tr .incompleted-day {
+  color: #F2F2F2;
+  background-color: #1B2940;
+}
+
+.calendar table tbody tr .current-day {
+  background-color: #026873;
 }
 
 .calendar table tbody tr td .actions-container {
@@ -77,8 +101,26 @@ html, body {
   width: 13px;
   height: 13px;
   border-radius: 13px;
+  cursor: pointer;
   transition: 0.1s;
   background-color: #9fa09b;
+}
+
+.calendar table tbody tr td .actions-container .action-done {
+  background-color: #05B363;
+}
+
+.calendar table tbody tr .completed-day .actions-container .action-done {
+  background-color: #0546B3;
+}
+
+.calendar table tbody tr td .actions-container .action-done:hover,
+.calendar table tbody tr td .actions-container .action-false:hover {
+  box-shadow: 0px 0px 2px 1px #05B363 inset;
+}
+
+.calendar table tbody tr .completed-day .actions-container .action-done:hover {
+  box-shadow: 0px 0px 2px 2px #067ABD inset;
 }
 
 #right {
