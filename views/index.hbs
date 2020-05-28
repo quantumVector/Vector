@@ -1,7 +1,29 @@
-<section class="calendar">
-  {{#if script}}
+<section class="calendar-test">
+  <section class="calendar">
+    {{#if script}}
     <div id="left"></div>
     <div id="right"></div>
+
+    <div id="modal-info-actions">
+      <div class="actions-container">
+        <p class="action-date">
+          <span id="modal-action-day">25</span> <span id="modal-action-month">Май</span> <span
+            id="modal-action-year">2020</span>
+        </p>
+        <div class="action-box">
+          <div class="action-item">
+            <p>Хотьба</p>
+            <button class="complete-action">Выполнить</button>
+          </div>
+          <div class="action-item">
+            <p>Программирование</p>
+            <button class="cancel-action">Отменить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="{{script}}"></script>
-  {{/if}}
+    {{/if}}
+  </section>
 </section>

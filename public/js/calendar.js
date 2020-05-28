@@ -6,7 +6,7 @@
 'use strict';
 
 class CalendarCreator {
-  constructor(container, btnPrevious, btnNext) {
+  constructor(container, btnPrevious, btnNext, modalInfoActions) {
     this.currentDate = 0;
     this.leftCalendar = 0;
     this.middleCalendar = 0;
@@ -14,6 +14,7 @@ class CalendarCreator {
     this.container = container;
     this.btnPrevious = btnPrevious;
     this.btnNext = btnNext;
+    this.modalInfoActions = modalInfoActions;
   }
 
   install() {
@@ -37,28 +38,6 @@ class CalendarCreator {
     if (rightMonth > 11) this.rightCalendar = [this.currentDate[0] + 1, 0];
     if (rightMonth <= 11) this.rightCalendar = [this.currentDate[0], rightMonth];
     this.middleCalendar = this.currentDate;
-  }
-
-  update(direction) {
-    if (direction === 'left') {
-      const newCurrentMounth = this.currentDate[1] - 1;
-
-      if (newCurrentMounth < 0) this.currentDate = [this.currentDate[0] - 1, 11];
-      if (newCurrentMounth >= 0) this.currentDate = [this.currentDate[0], newCurrentMounth];
-
-      this.setDates();
-      this.renderCalendar(this.leftCalendar[0], this.leftCalendar[1], 'left');
-    }
-
-    if (direction === 'right') {
-      const newCurrentMounth = this.currentDate[1] + 1;
-
-      if (newCurrentMounth > 11) this.currentDate = [this.currentDate[0] + 1, 0];
-      if (newCurrentMounth <= 11) this.currentDate = [this.currentDate[0], newCurrentMounth];
-
-      this.setDates();
-      this.renderCalendar(this.rightCalendar[0], this.rightCalendar[1], 'right');
-    }
   }
 
   renderCalendar(year, month, position) {
@@ -449,55 +428,6 @@ class CalendarCreator {
       // no default
     }
 
-    const parentTd = actionsContainer.parentNode;
-
-    // если действий меньше 10 то рендерить в одну строчку, если больше то в несколько
-   /*  if (actionsContainer.children.length < 10) {
-      actionsContainer.appendChild(div);
-    } else if (!parentTd.children[2]
-      || (parentTd.children[2] && parentTd.children[2].children.length < 10)) {
-      const newContainer = document.createElement('div');
-
-      if (parentTd.children.length === 3) {
-        div.classList.add('action-level-2');
-        parentTd.children[2].appendChild(div);
-      }
-
-      if (parentTd.children.length === 2) {
-        newContainer.classList.add('actions-container', 'actions-container-start');
-        parentTd.appendChild(newContainer);
-        div.classList.add('action-level-2');
-        newContainer.appendChild(div);
-
-        [].forEach.call(parentTd.children[1].children, (item) => {
-          item.classList.add('action-level-2');
-        });
-      }
-    } else {
-      const newContainer = document.createElement('div');
-
-      if (parentTd.children.length === 4) {
-        div.classList.add('action-level-3');
-        parentTd.children[3].appendChild(div);
-      }
-
-      if (parentTd.children.length === 3) {
-        newContainer.classList.add('actions-container', 'actions-container-start', 'actions-container-start-lvl3');
-        parentTd.appendChild(newContainer);
-        div.classList.add('action-level-3');
-        newContainer.appendChild(div);
-        newContainer.previousSibling.classList.add('actions-container-start-lvl3');
-        newContainer.previousSibling.previousSibling.classList.add('actions-container-start-lvl3');
-
-        [].forEach.call(parentTd.children[1].children, (item) => {
-          item.classList.add('action-level-3');
-        });
-        [].forEach.call(parentTd.children[2].children, (item) => {
-          item.classList.add('action-level-3');
-        });
-      }
-    } */
-
     actionsContainer.appendChild(div);
 
     this.setDayStatus(td, actionsContainer);
@@ -683,6 +613,28 @@ class CalendarCreator {
     this.changeInsertTarget(direction);
   }
 
+  update(direction) {
+    if (direction === 'left') {
+      const newCurrentMounth = this.currentDate[1] - 1;
+
+      if (newCurrentMounth < 0) this.currentDate = [this.currentDate[0] - 1, 11];
+      if (newCurrentMounth >= 0) this.currentDate = [this.currentDate[0], newCurrentMounth];
+
+      this.setDates();
+      this.renderCalendar(this.leftCalendar[0], this.leftCalendar[1], 'left');
+    }
+
+    if (direction === 'right') {
+      const newCurrentMounth = this.currentDate[1] + 1;
+
+      if (newCurrentMounth > 11) this.currentDate = [this.currentDate[0] + 1, 0];
+      if (newCurrentMounth <= 11) this.currentDate = [this.currentDate[0], newCurrentMounth];
+
+      this.setDates();
+      this.renderCalendar(this.rightCalendar[0], this.rightCalendar[1], 'right');
+    }
+  }
+
   showModalEmpty() {
     const modal = document.createElement('div');
 
@@ -704,12 +656,22 @@ class CalendarCreator {
     this.container.addEventListener('click', (e) => {
       const target = e.target;
 
-      if (target.closest('.action') && !target.closest('.action-unused')) {
+      /* if (target.closest('.action') && !target.closest('.action-unused')) {
         const id = target.getAttribute('data-id');
         const status = target.getAttribute('data-status');
 
         this.updateActionStatus(id, status, target);
+      } */
+
+      if (target.closest('.incompleted-day') || target.closest('.current-day') || target.closest('.completed-day')) {
+        this.modalInfoActions.style.display = 'block';
       }
+    });
+
+    this.modalInfoActions.addEventListener('click', (e) => {
+      const target = e.target;
+
+      if (!target.closest('.action-item')) this.modalInfoActions.style.display = 'none';
     });
 
     this.container.addEventListener('mouseover', (e) => {
@@ -732,6 +694,7 @@ class CalendarCreator {
 const container = document.getElementsByClassName('calendar')[0];
 const btnPrevious = document.getElementById('left');
 const btnNext = document.getElementById('right');
-const calendar = new CalendarCreator(container, btnPrevious, btnNext);
+const modalInfoActions = document.getElementById('modal-info-actions');
+const calendar = new CalendarCreator(container, btnPrevious, btnNext, modalInfoActions);
 
 calendar.install();
