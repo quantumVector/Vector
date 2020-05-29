@@ -151,11 +151,11 @@ html, body {
   height: 500px;
 }
 
-.calendar #modal-info-actions .actions-container .action-date {
+.calendar #modal-info-actions .actions-container #action-date {
   text-align: center;
 }
 
-.calendar #modal-info-actions .actions-container .action-box .action-item {
+.calendar #modal-info-actions .actions-container #action-box .action-item {
   display: flex;
   justify-content: space-between;
   padding: 10px 20px;
@@ -164,7 +164,7 @@ html, body {
   background-color: #F2F2F2;
 }
 
-.calendar #modal-info-actions .actions-container .action-box .action-item button {
+.calendar #modal-info-actions .actions-container #action-box .action-item button {
   width: 100px;
   font-size: 15px;
   color: #313131;
@@ -173,12 +173,12 @@ html, body {
   outline: none;
 }
 
-.calendar #modal-info-actions .actions-container .action-box .action-item .complete-action:hover {
+.calendar #modal-info-actions .actions-container #action-box .action-item .complete-action:hover {
   color: #04BFBF;
   border: 1px solid #04BFBF;
 }
 
-.calendar #modal-info-actions .actions-container .action-box .action-item .cancel-action:hover {
+.calendar #modal-info-actions .actions-container #action-box .action-item .cancel-action:hover {
   color: #F2391D;
   border: 1px solid #F2391D;
 }

@@ -644,6 +644,50 @@ class CalendarCreator {
     this.container.appendChild(modal);
   }
 
+  renderActionsInModal(day, month, year, actions) {
+    console.log(this.modalInfoActions);
+
+    const date = document.getElementById('action-date');
+    const monthsName = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
+      'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
+
+    date.innerHTML = `${day} ${monthsName[month]} ${year}`;
+
+    [].forEach.call(actions.children, (action) => {
+      const name = action.getAttribute('data-action');
+      const actionId = action.getAttribute('data-action-id');
+      const id = action.getAttribute('data-id');
+      const status = action.getAttribute('data-status');
+      const actionDate = action.getAttribute('data-date');
+      const debt = action.id || null;
+      const actionBox = document.getElementById('action-box');
+      const divAction = document.createElement('div');
+      const btn = document.createElement('button');
+
+      divAction.setAttribute('data-action', name);
+      divAction.setAttribute('data-action-id', actionId);
+      divAction.setAttribute('data-id', id);
+      divAction.setAttribute('data-status', status);
+      divAction.setAttribute('data-date', actionDate);
+      divAction.classList.add('action-item');
+
+      if (debt) divAction.id = debt;
+
+      divAction.innerHTML = `<p>${name}</p>`;
+
+      if (status) {
+        btn.classList.add('complete-action');
+        btn.innerText = 'Выполнить';
+      } else {
+        btn.classList.add('cancel-action');
+        btn.innerText = 'Отменить';
+      }
+
+      actionBox.append(divAction);
+      divAction.append(btn);
+    });
+  }
+
   setEvents() {
     this.btnPrevious.addEventListener('click', () => {
       this.clickDirection('left');
@@ -667,13 +711,28 @@ class CalendarCreator {
 
       if (target.closest('.incompleted-day') || target.closest('.current-day') || target.closest('.completed-day')) {
         this.modalInfoActions.style.display = 'block';
+
+        const td = target.closest('.incompleted-day') || target.closest('.current-day') || target.closest('.completed-day');
+        const day = td.getAttribute('data-day');
+        const month = td.getAttribute('data-month');
+        const year = td.getAttribute('data-year');
+        const actions = td.getElementsByClassName('actions-container')[0];
+
+        this.renderActionsInModal(day, month, year, actions);
       }
     });
 
     this.modalInfoActions.addEventListener('click', (e) => {
       const target = e.target;
 
-      if (!target.closest('.action-item')) this.modalInfoActions.style.display = 'none';
+      if (!target.closest('.action-item')) {
+        const date = document.getElementById('action-date');
+        const actionBox = document.getElementById('action-box');
+
+        date.innerHTML = '';
+        actionBox.innerHTML = '';
+        this.modalInfoActions.style.display = 'none';
+      }
     });
 
     /* this.container.addEventListener('mouseover', (e) => {
