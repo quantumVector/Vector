@@ -164,6 +164,11 @@ html, body {
   background-color: #F2F2F2;
 }
 
+.calendar #modal-info-actions .actions-container #action-box .action-item-done {
+  color: #313131;
+  background-color: #02B3C7;
+}
+
 .calendar #modal-info-actions .actions-container #action-box .action-item button {
   width: 100px;
   font-size: 15px;
@@ -171,6 +176,10 @@ html, body {
   border: 1px solid #313131;
   cursor: pointer;
   outline: none;
+}
+
+.calendar #modal-info-actions .actions-container #action-box .action-item .cancel-action {
+  background-color: #02B3C7;
 }
 
 .calendar #modal-info-actions .actions-container #action-box .action-item .complete-action:hover {

@@ -15,6 +15,7 @@ class CalendarCreator {
     this.btnPrevious = btnPrevious;
     this.btnNext = btnNext;
     this.modalInfoActions = modalInfoActions;
+    this.actionsForModal = null;
   }
 
   install() {
@@ -644,9 +645,7 @@ class CalendarCreator {
     this.container.appendChild(modal);
   }
 
-  renderActionsInModal(day, month, year, actions) {
-    console.log(this.modalInfoActions);
-
+  static renderActionsInModal(day, month, year, actions) {
     const date = document.getElementById('action-date');
     const monthsName = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
       'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
@@ -675,10 +674,11 @@ class CalendarCreator {
 
       divAction.innerHTML = `<p>${name}</p>`;
 
-      if (status) {
+      if (status === 'false') {
         btn.classList.add('complete-action');
         btn.innerText = 'Выполнить';
       } else {
+        divAction.classList.add('action-item-done');
         btn.classList.add('cancel-action');
         btn.innerText = 'Отменить';
       }
@@ -709,6 +709,7 @@ class CalendarCreator {
         return;
       }
 
+      // открыть модальное окно с действиями
       if (target.closest('.incompleted-day') || target.closest('.current-day') || target.closest('.completed-day')) {
         this.modalInfoActions.style.display = 'block';
 
@@ -718,20 +719,51 @@ class CalendarCreator {
         const year = td.getAttribute('data-year');
         const actions = td.getElementsByClassName('actions-container')[0];
 
-        this.renderActionsInModal(day, month, year, actions);
+        this.actionsForModal = actions;
+        this.constructor.renderActionsInModal(day, month, year, actions);
       }
     });
 
     this.modalInfoActions.addEventListener('click', (e) => {
       const target = e.target;
 
+      // закрыть модальное окно
       if (!target.closest('.action-item')) {
         const date = document.getElementById('action-date');
         const actionBox = document.getElementById('action-box');
 
         date.innerHTML = '';
         actionBox.innerHTML = '';
+        this.actionsForModal = null;
         this.modalInfoActions.style.display = 'none';
+      }
+
+      // отменить или выполнить действие
+      if (target.tagName === 'BUTTON') {
+        const id = target.parentNode.getAttribute('data-id');
+        const status = target.parentNode.getAttribute('data-status');
+        const name = target.parentNode.getAttribute('data-action');
+        let actionCell;
+
+        [].forEach.call(this.actionsForModal.children, (action) => {
+          if (action.getAttribute('data-action') === name) actionCell = action;
+        });
+
+        this.updateActionStatus(id, status, actionCell);
+
+        target.parentNode.classList.toggle('action-item-done');
+
+        if (status === 'false') {
+          target.parentNode.setAttribute('data-status', true);
+          target.classList.remove('complete-action');
+          target.classList.add('cancel-action');
+          target.innerText = 'Отменить';
+        } else {
+          target.parentNode.setAttribute('data-status', false);
+          target.classList.remove('cancel-action');
+          target.classList.add('complete-action');
+          target.innerText = 'Выполнить';
+        }
       }
     });
 
