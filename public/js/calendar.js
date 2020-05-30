@@ -16,6 +16,7 @@ class CalendarCreator {
     this.btnNext = btnNext;
     this.modalInfoActions = modalInfoActions;
     this.actionsForModal = null;
+    this.debts = [];
   }
 
   install() {
@@ -387,15 +388,14 @@ class CalendarCreator {
           }
         }
 
-        // есть есть долги, то вставить их в текущий день
-        /* if (this.dataActions.debts.length > 0) {
+        // есть есть долги, то создасть массив с долгами
+        if (this.dataActions.debts.length > 0) {
           if (tdDate.getTime() === zeroDateNow.getTime()) {
             for (const date of this.dataActions.debts) {
-              this.constructor.renderAction(item, date.action_name, date.action_id, 'debt', date._id,
-                date.year, date.month, date.day);
+              this.debts.push(date);
             }
           }
-        } */
+        }
       }
     }); // end forEach td
   }
@@ -416,9 +416,6 @@ class CalendarCreator {
     switch (status) {
       case 'unused':
         div.classList.add('action-unused');
-        break;
-      case 'debt':
-        div.classList.add('action-debt');
         break;
       case false:
         div.classList.add('action-false');
@@ -645,12 +642,14 @@ class CalendarCreator {
     this.container.appendChild(modal);
   }
 
-  static renderActionsInModal(day, month, year, actions) {
+  renderActionsInModal(day, month, year, actions, currentDay) {
     const date = document.getElementById('action-date');
     const monthsName = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
       'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
 
     date.innerHTML = `${day} ${monthsName[month]} ${year}`;
+
+    console.log(currentDay);
 
     [].forEach.call(actions.children, (action) => {
       const name = action.getAttribute('data-action');
@@ -686,6 +685,29 @@ class CalendarCreator {
       actionBox.append(divAction);
       divAction.append(btn);
     });
+
+    if (currentDay && this.debts.length > 0) {
+      for (const debt of this.debts) {
+        const actionBox = document.getElementById('action-box');
+        const divAction = document.createElement('div');
+        const btn = document.createElement('button');
+
+        divAction.setAttribute('data-action', debt.action_name);
+        divAction.setAttribute('data-action-id', debt.id_action);
+        divAction.setAttribute('data-id', debt._id);
+        divAction.setAttribute('data-status', debt.status);
+        divAction.setAttribute('data-day', debt.day);
+        divAction.setAttribute('data-month', debt.month);
+        divAction.setAttribute('data-year', debt.year);
+        divAction.classList.add('action-item', 'action-item-debt');
+        divAction.innerHTML = `<p>${debt.action_name} задолжность за ${debt.day} ${monthsName[debt.month]} ${debt.year}</p>`;
+        btn.classList.add('complete-debt');
+        btn.innerText = 'Закрыть долг';
+
+        actionBox.append(divAction);
+        divAction.append(btn);
+      }
+    }
   }
 
   setEvents() {
@@ -718,9 +740,12 @@ class CalendarCreator {
         const month = td.getAttribute('data-month');
         const year = td.getAttribute('data-year');
         const actions = td.getElementsByClassName('actions-container')[0];
+        let currentDay = false;
+
+        if (target.closest('.current-day')) currentDay = true;
 
         this.actionsForModal = actions;
-        this.constructor.renderActionsInModal(day, month, year, actions);
+        this.renderActionsInModal(day, month, year, actions, currentDay);
       }
     });
 
