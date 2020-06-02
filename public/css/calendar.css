@@ -133,6 +133,16 @@ html, body {
   z-index: 999;
 }
 
+#left {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border: 1px solid red;
+  z-index: 999;
+}
+
 .calendar #modal-info-actions {
   display: none;
   position: absolute;
@@ -192,6 +202,14 @@ html, body {
   color: #F2F2F2;
   border: 1px solid #F2F2F2;
   background-color: #7B14A6;
+}
+
+.calendar #modal-info-actions .actions-container #action-box .action-item .debt-done {
+  width: 110px;
+  color: #F2F2F2;
+  border: none;
+  cursor: default;
+  background-color: #02B3C7;
 }
 
 .calendar #modal-info-actions .actions-container #action-box .action-item .complete-action:hover {

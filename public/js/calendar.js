@@ -173,6 +173,7 @@ class CalendarCreator {
     }
 
     await this.getActions(); // получить обновленные данные
+    this.insertDebts();
     this.changeInsertTarget();
   }
 
@@ -387,17 +388,17 @@ class CalendarCreator {
             }
           }
         }
-
-        // есть есть долги, то создасть массив с долгами
-        if (this.dataActions.debts.length > 0) {
-          if (tdDate.getTime() === zeroDateNow.getTime()) {
-            for (const date of this.dataActions.debts) {
-              this.debts.push(date);
-            }
-          }
-        }
       }
     }); // end forEach td
+  }
+
+  insertDebts() {
+    // есть долги, то создасть массив с долгами
+    if (this.dataActions.debts.length > 0) {
+      for (const date of this.dataActions.debts) {
+        this.debts.push(date);
+      }
+    }
   }
 
   static renderAction(td, name, actionId, status, dateId = 0, year = 0, month = 0, day = 0, debt) {
@@ -474,16 +475,20 @@ class CalendarCreator {
   async updateActionStatus(dateId, status, action) {
     let obj = {};
 
-    if (status === 'false' || status === 'debt') {
+    if (status === 'false') {
       obj = { dateId, status: true };
-      action.classList.remove('action-false');
-      action.classList.add('action-done');
-      action.setAttribute('data-status', true);
+      if (action) { // если действие находится в отрендеренных календарях
+        action.classList.remove('action-false');
+        action.classList.add('action-done');
+        action.setAttribute('data-status', true);
+      }
     } else {
       obj = { dateId, status: false };
-      action.classList.remove('action-done');
-      action.classList.add('action-false');
-      action.setAttribute('data-status', false);
+      if (action) {
+        action.classList.remove('action-done');
+        action.classList.add('action-false');
+        action.setAttribute('data-status', false);
+      }
     }
 
     const response = await fetch('/update-action-status', {
@@ -495,27 +500,52 @@ class CalendarCreator {
     });
 
     if (response.ok) {
-      if (status === 'debt') {
-        const debtDay = document.getElementById(`debt-${dateId}`);
+      if (action) {
+        const actionsBox = action.parentNode;
+        const calendarDay = actionsBox.parentNode;
 
-        if (debtDay) {
-          debtDay.classList.remove('action-false');
-          debtDay.classList.add('action-done');
-          debtDay.setAttribute('data-status', true);
+        this.constructor.setDayStatus(calendarDay, actionsBox);
+        await this.getActions();
 
-          const actionsBox = debtDay.parentNode;
-          const day = actionsBox.parentNode;
+        // если завершаем действие (у которого учитываются долги),
+        // то удалить долг из модального окна с действиями
+        if (action.id && status === 'false') {
+          const id = action.getAttribute('data-id');
 
-          this.constructor.setDayStatus(day, actionsBox);
-          await this.getActions();
+          for (let i = 0; i < this.debts.length; i++) {
+            if (this.debts[i]._id === id) {
+              this.debts.splice(i, 1);
+              return;
+            }
+          }
         }
 
-        action.remove();
-      } else {
-        const actionsBox = action.parentNode;
-        const day = actionsBox.parentNode;
+        // а если наоборот снимаем статус завершённости с действия (у которого учитываются долги),
+        // то добавляем долг в модальное окно
+        if (action.id && status === 'true') {
+          const name = action.getAttribute('data-action');
+          const idAction = action.getAttribute('data-action-id');
+          const id = action.getAttribute('data-id');
+          const actionDate = action.getAttribute('data-date');
+          const regexp = /(\d\d\d\d)-(\d)-(\d)/;
+          const result = actionDate.match(regexp);
+          const year = result[1];
+          const month = result[2];
+          const day = result[3];
 
-        this.constructor.setDayStatus(day, actionsBox);
+          const objDebt = {
+            action_name: name,
+            id_action: idAction,
+            _id: id,
+            status: false,
+            year,
+            month,
+            day,
+          };
+
+          this.debts.unshift(objDebt);
+        }
+      } else {
         await this.getActions();
       }
     } else {
@@ -649,8 +679,6 @@ class CalendarCreator {
 
     date.innerHTML = `${day} ${monthsName[month]} ${year}`;
 
-    console.log(currentDay);
-
     [].forEach.call(actions.children, (action) => {
       const name = action.getAttribute('data-action');
       const actionId = action.getAttribute('data-action-id');
@@ -763,8 +791,7 @@ class CalendarCreator {
         this.modalInfoActions.style.display = 'none';
       }
 
-      // отменить или выполнить действие
-      if (target.tagName === 'BUTTON') {
+      if (target.tagName === 'BUTTON' && !target.parentNode.closest('.action-item-debt')) {
         const id = target.parentNode.getAttribute('data-id');
         const status = target.parentNode.getAttribute('data-status');
         const name = target.parentNode.getAttribute('data-action');
@@ -788,6 +815,32 @@ class CalendarCreator {
           target.classList.remove('cancel-action');
           target.classList.add('complete-action');
           target.innerText = 'Выполнить';
+        }
+      }
+
+      if (target.tagName === 'BUTTON' && target.parentNode.closest('.action-item-debt')) {
+        const id = target.parentNode.getAttribute('data-id');
+        const actionCell = document.getElementById(`debt-${id}`);
+        const status = target.parentNode.getAttribute('data-status');
+
+        this.updateActionStatus(id, status, actionCell);
+
+        target.parentNode.classList.remove('action-item-debt');
+        target.parentNode.classList.add('action-item-done');
+        target.classList.remove('complete-debt');
+        target.classList.add('debt-done');
+        target.disabled = true;
+        target.innerText = 'Долг закрыт!';
+
+        console.log(this.debts);
+
+        for (let i = 0; i < this.debts.length; i++) {
+          console.log(this.debts[i]);
+          if (this.debts[i]._id === id) {
+            this.debts.splice(i, 1);
+            console.log(this.debts);
+            return;
+          }
         }
       }
     });
