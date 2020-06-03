@@ -92,7 +92,6 @@ html, body {
   margin: 0 auto;
   width: auto;
   max-width: 85px;
-  overflow: hidden;
 }
 
 .calendar table tbody tr td .actions-container .action {
@@ -122,6 +121,42 @@ html, body {
 .calendar table tbody tr .completed-day .actions-container .action-done:hover {
   box-shadow: 0px 0px 2px 2px #067ABD inset;
 }
+
+.calendar table tbody tr td .actions-container .action .tooltip {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(1, auto);
+  grid-template-rows: repeat(1, 40px);
+  grid-auto-flow: column;
+  align-items: center;
+  top: -40px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.89);
+  z-index: 999;
+}
+
+
+.calendar table tbody tr td .actions-container .action .tooltip p {
+  margin: 0;
+  padding: 0 20px;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.calendar table tbody tr td .actions-container .action .tooltip .triangle-down {
+  position: absolute;
+	width: 0;
+  height: 0;
+  bottom: -8px;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.89);
+  z-index: 998;
+}
+
 
 #right {
   position: absolute;

@@ -560,19 +560,6 @@ class CalendarCreator {
 
     tooltip.innerHTML = `<p>${name}</p>`;
 
-    if (target.closest('.action-debt')) {
-      const debtInfo = document.createElement('p');
-      const debt = target.getAttribute('data-date');
-      const monthsArr = ['января', 'февраля', 'марта',
-        'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября',
-        'октября', 'ноября', 'декабря'];
-
-      const date = debt.match(/\d+/g);
-
-      debtInfo.innerText = `${date[2]} ${monthsArr[date[1]]} ${date[0]} `;
-      tooltip.appendChild(debtInfo);
-    }
-
     tooltip.classList.add('tooltip');
     target.append(tooltip);
     triangle.classList.add('triangle-down');
@@ -845,7 +832,7 @@ class CalendarCreator {
       }
     });
 
-    /* this.container.addEventListener('mouseover', (e) => {
+    this.container.addEventListener('mouseover', (e) => {
       const target = e.target;
 
       if (target.closest('.action')) this.constructor.showActionInfo(target);
@@ -857,7 +844,7 @@ class CalendarCreator {
       if (target.closest('.action')) {
         document.getElementsByClassName('tooltip')[0].remove();
       }
-    }); */
+    });
   }
 }
 
