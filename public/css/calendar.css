@@ -12,6 +12,48 @@ html, body {
   color: #F2F2F2;
 }
 
+.calendar .btn-box {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 1024px;
+  height: 55px;
+}
+
+.calendar .btn-box #right,
+.calendar .btn-box #left {
+  width: 55px;
+  height: 55px;
+  z-index: 999;
+  transition: 0.1s;
+}
+
+.calendar .btn-box #right {
+  background-image: url('/img/arrow-right.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.calendar .btn-box #left {
+  background-image: url('/img/arrow-left.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.calendar .btn-box #right:hover{
+  background-image: url('/img/arrow-right-hover.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.calendar .btn-box #left:hover{
+  background-image: url('/img/arrow-left-hover.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .calendar .left-calendar, .calendar .middle-calendar, .calendar .right-calendar {
   position: absolute;
   display: flex;
@@ -155,27 +197,6 @@ html, body {
 	border-right: 7px solid transparent;
   border-top: 8px solid rgba(0, 0, 0, 0.89);
   z-index: 998;
-}
-
-
-#right {
-  position: absolute;
-  top: 50px;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  border: 1px solid red;
-  z-index: 999;
-}
-
-#left {
-  position: absolute;
-  top: 100px;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  border: 1px solid red;
-  z-index: 999;
 }
 
 .calendar #modal-info-actions {
