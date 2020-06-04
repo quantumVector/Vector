@@ -1,0 +1,399 @@
+html, body {
+  height: 100%;
+}
+
+.actions {
+  margin-top: 20px;
+  font-family: MyriadProSemiBold;
+  color: #F2F2F2;
+}
+
+.active-actions-box-drag {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+}
+
+.actions #active-actions-box {
+  display: none;
+}
+
+.actions #completed-actions-box {
+  display: none;
+}
+
+.actions #active-actions-box,
+.actions #completed-actions-box {
+  position: relative;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  width: 1006px;
+  height: auto;
+  animation: 0.3s ease openBox;
+}
+
+.actions .current-actions-info {
+  display: none;
+  background-image: url('/img/icon-info.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.actions .current-actions-info:hover {
+  background-image: url('/img/icon-info-hover.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.actions #creation-box {
+  position: relative;
+  animation: 0.3s ease openBox;
+}
+
+@keyframes openBox {
+  from {
+    left: -100%;
+  }
+
+  to {
+    left: 0;
+  }
+}
+
+/* action-item может оказаться в области body при drag'n'drop */
+.action-item,
+.actions .completed-action-item,
+.stub {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 20px;
+  padding-bottom: 25px;
+  width: 150px;
+  height: 203.52px;
+  font-family: MyriadProSemiBold;
+  background-color: #1B2940;
+  color: #F2F2F2;
+}
+
+.stub {
+  opacity: 0.3;
+  background-color: rgb(109, 109, 109);
+  outline: 4px solid rgb(22, 120, 177);
+}
+
+.stub button {
+  display: block;
+  padding: 5px 10px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 15px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+}
+
+.action-item .dnd-action {
+  background-image: url('/img/dnd.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.action-item .dnd-action:hover {
+  background-image: url('/img/dnd-hover.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.action-item h2,
+.action-item h3,
+.completed-action-item h2,
+.action-item .action-days,
+.action-item .action-debt,
+.stub h2,
+.stub h3,
+.stub .action-days,
+.stub .action-debt {
+  text-align: center;
+}
+
+.action-item .deactivate-action,
+.actions .completed-action-item .delete-action {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  padding: 5px 10px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 15px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.actions .action-item .deactivate-action:hover {
+  background-color: #04BFBF;
+  color: #F2F2F2;
+}
+
+.actions .action-item .delete-action:hover {
+  background-color: #ce1b1b;
+  color: #F2F2F2;
+}
+
+.actions .btn-active-box,
+.actions .btn-completed-box,
+.actions .btn-creation-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 1006px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  font-size: 24px;
+  background-color: #0396A6;
+  cursor: pointer;
+  transition: 0.1s;
+  user-select: none;
+}
+
+.actions .btn-active-box {
+  margin-bottom: 10px;
+}
+
+.actions .btn-active-box:hover,
+.actions .btn-completed-box:hover,
+.actions .btn-creation-box:hover {
+  background-color: #04BFBF;
+}
+
+.actions .btn-active-box .arrow-down,
+.actions .btn-completed-box .arrow-down,
+.actions .btn-creation-box .arrow-down {
+  width: 50px;
+  height: 50px;
+  background-image: url('/img/arrow-down.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  transition: 0.3s;
+}
+
+.actions .btn-active-box .close-block,
+.actions .btn-completed-box .close-block,
+.actions .btn-creation-box .close-block {
+  transform: rotate(0deg);
+}
+
+.actions .btn-active-box .open-block,
+.actions .btn-completed-box .open-block,
+.actions .btn-creation-box .open-block {
+  transform: rotate(180deg);
+}
+
+.actions .btn-active-box .arrow-down:first-child,
+.actions .btn-completed-box .arrow-down:first-child,
+.actions .btn-creation-box .arrow-down:first-child {
+  margin-left: 50px;
+}
+
+.actions .btn-active-box .arrow-down:last-child,
+.actions .btn-completed-box .arrow-down:last-child,
+.actions .btn-creation-box .arrow-down:last-child {
+  margin-right: 50px;
+}
+
+.actions #creation-box {
+  display: none;
+  justify-content: center;
+  padding: 20px 0;
+  font-family: MyriadProSemiBold;
+}
+
+.actions #creation-box .create-action {
+  padding: 20px;
+  width: 50%;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #fff;
+  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
+  box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
+}
+
+.actions #creation-box .create-action input[type=text],
+.actions #creation-box .create-action input[type=date] {
+  border-radius: 10px;
+  padding: 5px 20px;
+  margin-left: 10px;
+  font-family: MyriadProRegular;
+  font-size: 18px;
+  color: rgb(56, 56, 56);
+  border: none;
+  outline: none;
+}
+
+.actions #creation-box .create-action input[type=text] {
+  width: 50%;
+  margin-bottom: 20px;
+}
+
+.actions #creation-box .create-action input[type=text]:focus,
+.actions #creation-box .create-action input[type=date]:focus {
+  border: 1px solid rgb(5, 185, 230);
+  padding: 4px 19px;
+}
+
+.actions #creation-box .create-action input[type=checkbox] {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+
+.actions #creation-box .create-action .custom-radio + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+}
+
+.actions #creation-box .create-action .custom-radio+label::before {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid #adb5bd;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.actions #creation-box .create-action .custom-radio:not(:disabled):not(:checked)+label:hover::before {
+  border-color: #b3d7ff;
+}
+
+.actions #creation-box .create-action .custom-radio:not(:disabled):active+label::before {
+  background-color: #b3d7ff;
+  border-color: #b3d7ff;
+}
+
+.actions #creation-box .create-action .custom-radio:focus+label::before {
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.actions #creation-box .create-action .custom-radio:focus:not(:checked)+label::before {
+  border-color: #80bdff;
+}
+
+.actions #creation-box .create-action .custom-radio:checked+label::before {
+  border-color: #0b76ef;
+  background-color: #0b76ef;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
+}
+
+.actions #creation-box .create-action .custom-radio:disabled+label::before {
+  background-color: #e9ecef00;
+  cursor: default;
+}
+
+.actions #creation-box .create-action .days-action {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+
+.actions #creation-box .create-action .days-action div {
+  margin-right: 20px;
+}
+
+.actions #creation-box .create-action #btn-create-action {
+  display: block;
+  padding: 10px 20px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 20px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
+}
+
+.actions #creation-box .create-action #btn-create-action:hover {
+  background-color: #0b76ef;
+  color: #fff;
+}
+
+.actions .empty-msg {
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+#modal-info {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  content: 'gqgqwgwqgwqg';
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.877);
+}
+
+#modal-info .modal-content {
+  text-align: center;
+  font-family: MyriadProSemiBold;
+  font-size: 24px;
+  color: #fff;
+}
+
+#modal-info .modal-content img {
+  display: block;
+  margin: 0 auto;
+}
+
+#modal-info .modal-content #close-modal-info {
+  display: block;
+  padding: 10px 20px;
+  margin: 0 auto;
+  font-family: MyriadProSemiBold;
+  font-size: 20px;
+  color: rgb(56, 56, 56);
+  border: none;
+  border-radius: 13px;
+  cursor: pointer;
+  transition: 0.1s;
+  outline: none;
+}
+
+#modal-info .modal-content #close-modal-info:hover {
+  background-color: #0b76ef;
+  color: #fff;
+}

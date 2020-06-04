@@ -1,7 +1,7 @@
 html, body {
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom right, #128391, #071923) no-repeat;;
+  background: linear-gradient(to bottom right, #128391, #071923);
 }
 
 @font-face {
