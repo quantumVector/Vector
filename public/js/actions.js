@@ -351,62 +351,6 @@ class ActionsCreater {
   }
 
   static toggleActionBlock(block) {
-    /* const arrows = block.getElementsByClassName('arrow-down');
-    const icon = block.parentNode.getElementsByClassName('current-actions-info')[0];
-    let box;
-
-    if (block.closest('.btn-completed-box')) box = document.getElementById('completed-actions-box');
-    if (block.closest('.btn-active-box')) box = document.getElementById('active-actions-box');
-    if (block.closest('.btn-creation-box')) box = document.getElementById('creation-box');
-
-    if (block.closest('.btn-close')) {
-      if (block.closest('.btn-active-box')) icon.style.display = 'block';
-
-      block.getElementsByClassName('btn-action')[0].innerText = 'Скрыть';
-      arrows[0].classList.remove('close-block');
-      arrows[1].classList.remove('close-block');
-      arrows[0].classList.add('open-block');
-      arrows[1].classList.add('open-block');
-      block.classList.remove('btn-close');
-      block.classList.add('btn-open');
-
-      box.style.display = 'flex';
-
-      if (block.closest('.btn-active-box')) {
-        document.getElementById('completed-actions-box').style.display = 'none';
-        document.getElementsByClassName('btn-completed-box')[0].classList.remove('btn-open');
-        document.getElementsByClassName('btn-completed-box')[0].classList.add('btn-close');
-        document.getElementById('creation-box').style.display = 'none';
-        document.getElementsByClassName('btn-creation-box')[0].classList.remove('btn-open');
-        document.getElementsByClassName('btn-creation-box')[0].classList.add('btn-close');
-      }
-      if (block.closest('.btn-completed-box')) {
-        document.getElementById('active-actions-box').style.display = 'none';
-        icon.style.display = 'none';
-        document.getElementById('creation-box').style.display = 'none';
-      }
-      if (block.closest('.btn-creation-box')) {
-        console.log('here')
-        document.getElementById('active-actions-box').style.display = 'none';
-        icon.style.display = 'none';
-        document.getElementById('completed-actions-box').style.display = 'none';
-      }
-
-      return;
-    }
-
-    if (block.closest('.btn-open')) {
-      if (block.closest('.btn-active-box')) icon.style.display = 'none';
-
-      block.getElementsByClassName('btn-action')[0].innerText = 'Показать';
-      arrows[0].classList.remove('open-block');
-      arrows[1].classList.remove('open-block');
-      arrows[0].classList.add('close-block');
-      arrows[1].classList.add('close-block');
-      block.classList.remove('btn-open');
-      block.classList.add('btn-close');
-      box.style.display = 'none';
-    } */
     const activeBox = document.getElementById('active-actions-box');
     const completedBox = document.getElementById('completed-actions-box');
     const creationBox = document.getElementById('creation-box');
@@ -414,51 +358,59 @@ class ActionsCreater {
     const btnCompletedBox = document.getElementsByClassName('btn-completed-box')[0];
     const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
     const icon = document.getElementsByClassName('current-actions-info')[0];
-    const arrows = block.getElementsByClassName('arrow-down');
+    const arrowsActiveBox = btnActiveBox.getElementsByClassName('arrow-down');
+    const arrowsCompletedBox = btnCompletedBox.getElementsByClassName('arrow-down');
+    const arrowsCreationBox = btnCreationBox.getElementsByClassName('arrow-down');
+    const textActiveBox = btnActiveBox.getElementsByClassName('btn-action')[0];
+    const textCompletedBox = btnCompletedBox.getElementsByClassName('btn-action')[0];
+    const textCreationBox = btnCreationBox.getElementsByClassName('btn-action')[0];
+    const paramsActiveBox = [textActiveBox, arrowsActiveBox, btnActiveBox, activeBox];
+    const paramsCompletedBox = [textCompletedBox, arrowsCompletedBox, btnCompletedBox,
+      completedBox];
+    const paramsCrationBox = [textCreationBox, arrowsCreationBox, btnCreationBox, creationBox];
 
-    function openBox(box) {
-      block.getElementsByClassName('btn-action')[0].innerText = 'Скрыть';
+    function openBox(text, arrows, btn, box) {
+      text.innerText = 'Скрыть';
       arrows[0].classList.remove('close-block');
       arrows[1].classList.remove('close-block');
       arrows[0].classList.add('open-block');
       arrows[1].classList.add('open-block');
-      block.classList.remove('btn-close');
-      block.classList.add('btn-open');
+      btn.classList.remove('btn-close');
+      btn.classList.add('btn-open');
       box.style.display = 'flex';
     }
 
-    function closeBox(box) {
-      console.log('here')
-      block.getElementsByClassName('btn-action')[0].innerText = 'Показать';
+    function closeBox(text, arrows, btn, box) {
+      text.innerText = 'Показать';
       arrows[0].classList.remove('open-block');
       arrows[1].classList.remove('open-block');
       arrows[0].classList.add('close-block');
       arrows[1].classList.add('close-block');
-      block.classList.remove('btn-open');
-      block.classList.add('btn-close');
+      btn.classList.remove('btn-open');
+      btn.classList.add('btn-close');
       box.style.display = 'none';
     }
 
     if (block.closest('.btn-close')) {
       if (block.closest('.btn-active-box')) {
         icon.style.display = 'block';
-        openBox(activeBox);
-        if (btnCompletedBox.classList.contains('btn-open')) closeBox(completedBox);
-        if (btnCreationBox.classList.contains('btn-open')) closeBox(creationBox);
+        openBox(...paramsActiveBox);
+        if (btnCompletedBox.classList.contains('btn-open')) closeBox(...paramsCompletedBox);
+        if (btnCreationBox.classList.contains('btn-open')) closeBox(...paramsCrationBox);
       }
 
       if (block.closest('.btn-completed-box')) {
         icon.style.display = 'none';
-        openBox(completedBox);
-        if (btnActiveBox.classList.contains('btn-open')) closeBox(activeBox);
-        if (btnCreationBox.classList.contains('btn-open')) closeBox(creationBox);
+        openBox(...paramsCompletedBox);
+        if (btnActiveBox.classList.contains('btn-open')) closeBox(...paramsActiveBox);
+        if (btnCreationBox.classList.contains('btn-open')) closeBox(...paramsCrationBox);
       }
 
       if (block.closest('.btn-creation-box')) {
         icon.style.display = 'none';
-        openBox(creationBox);
-        if (btnActiveBox.classList.contains('btn-open')) closeBox(activeBox);
-        if (btnCompletedBox.classList.contains('btn-open')) closeBox(completedBox);
+        openBox(...paramsCrationBox);
+        if (btnActiveBox.classList.contains('btn-open')) closeBox(...paramsActiveBox);
+        if (btnCompletedBox.classList.contains('btn-open')) closeBox(...paramsCompletedBox);
       }
 
       return;
@@ -466,17 +418,11 @@ class ActionsCreater {
 
     if (block.closest('.btn-open')) {
       if (block.closest('.btn-active-box')) {
-        closeBox(activeBox);
-      }
-
-      if (block.closest('.btn-completed-box')) {
-        closeBox(completedBox);
-      }
-
-      if (block.closest('.btn-creation-box')) {
         icon.style.display = 'none';
-        closeBox(creationBox);
+        closeBox(...paramsActiveBox);
       }
+      if (block.closest('.btn-completed-box')) closeBox(...paramsCompletedBox);
+      if (block.closest('.btn-creation-box')) closeBox(...paramsCrationBox);
     }
   }
 
