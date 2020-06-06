@@ -91,6 +91,15 @@ class ActionsCreater {
       this.constructor.renderEmptyMessage(completedActionsBox, 'inactive');
     }
 
+    const date = new Date();
+    const formatter = new Intl.DateTimeFormat('ru', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+    });
+    const stringDate = formatter.format(date);
+    const currentDate = stringDate.match(/(\d+).(\d+).(\d+)/);
+
+    document.getElementsByName('start')[0].value = `${currentDate[3]}-${currentDate[2]}-${currentDate[1]}`;
+
     this.setEvents();
   }
 
