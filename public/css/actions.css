@@ -15,20 +15,15 @@ html, body {
   -webkit-user-select: none;
 }
 
-.actions #active-actions-box {
-  display: none;
-}
-
-.actions #completed-actions-box {
-  display: none;
-}
-
 .actions #active-actions-box,
 .actions #completed-actions-box {
   position: relative;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: none;
+  grid-template-columns: repeat(5, 190px);
+  grid-template-rows: repeat(2, auto);
+  grid-gap: 14px;
   margin: 0 auto;
+  margin-bottom: 10px;
   width: 1006px;
   height: auto;
   animation: 0.3s ease openBox;
@@ -41,8 +36,8 @@ html, body {
   background-size: cover;
   margin: 0 auto;
   margin-bottom: 10px;
-  width: 35px;
-  height: 35px;
+  width: 25px;
+  height: 25px;
   cursor: pointer;
   transition: 0.1s;
 }
@@ -73,11 +68,10 @@ html, body {
 .actions .completed-action-item,
 .stub {
   position: relative;
-  margin-bottom: 20px;
   padding: 20px;
   padding-bottom: 25px;
   width: 150px;
-  height: 203.52px;
+  height: 155px;
   font-family: MyriadProSemiBold;
   background-color: #1B2940;
   color: #F2F2F2;
@@ -107,8 +101,8 @@ html, body {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   transition: 0.1s;
 }
@@ -121,14 +115,48 @@ html, body {
 
 .action-item h2,
 .action-item h3,
-.completed-action-item h2,
 .action-item .action-days,
 .action-item .action-debt,
 .stub h2,
 .stub h3,
 .stub .action-days,
-.stub .action-debt {
+.stub .action-debt,
+.completed-action-item h2,
+.completed-action-item h3,
+.completed-action-item .action-days,
+.completed-action-item .action-debt {
   text-align: center;
+}
+
+.action-item h2,
+.stub h2,
+.completed-action-item h2 {
+  font-size: 17px;
+  height: 42px;
+  overflow: hidden;
+}
+
+.action-item h3,
+.completed-action-item h3 {
+  font-size: 15px;
+}
+
+.action-item .action-days,
+.action-item .action-debt,
+.stub .action-days,
+.stub .action-debt,
+.completed-action-item .action-days,
+.completed-action-item .action-debt {
+  font-size: 13px;
+}
+
+.action-item h3,
+.action-item .action-debt,
+.stub h3,
+.stub .action-debt,
+.completed-action-item h3,
+.completed-action-item .action-debt {
+  margin: 0;
 }
 
 .action-item .deactivate-action,
@@ -349,8 +377,7 @@ html, body {
 }
 
 .actions .empty-msg {
-  margin: 0 auto;
-  margin-bottom: 20px;
+  margin: 20px auto;
 }
 
 #modal-info {

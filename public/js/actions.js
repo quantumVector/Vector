@@ -132,7 +132,11 @@ class ActionsCreater {
     emptyMsg.classList.add('empty-msg');
     if (boxType === 'active') emptyMsg.innerText = 'Вы ещё не создали ни одного действия';
     if (boxType === 'inactive') emptyMsg.innerText = 'У вас ещё нет неактивных действий';
+
+    const icon = document.getElementsByClassName('current-actions-info')[0];
+
     box.appendChild(emptyMsg);
+    icon.style.display = 'none';
   }
 
   static insertData(item, action, name, box, debt) {
@@ -166,6 +170,7 @@ class ActionsCreater {
 
     if (response.ok) {
       activeBox.innerHTML = '';
+      activeBox.style.display = 'flex';
       completedBox.innerHTML = '';
       this.setActions();
     } else {
@@ -186,6 +191,7 @@ class ActionsCreater {
     if (response.ok) {
       activeBox.innerHTML = '';
       completedBox.innerHTML = '';
+      completedBox.style.display = 'flex';
       this.setActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
@@ -364,12 +370,13 @@ class ActionsCreater {
     const textActiveBox = btnActiveBox.getElementsByClassName('btn-action')[0];
     const textCompletedBox = btnCompletedBox.getElementsByClassName('btn-action')[0];
     const textCreationBox = btnCreationBox.getElementsByClassName('btn-action')[0];
-    const paramsActiveBox = [textActiveBox, arrowsActiveBox, btnActiveBox, activeBox];
+    const paramsActiveBox = [textActiveBox, arrowsActiveBox, btnActiveBox, activeBox, 'grid'];
     const paramsCompletedBox = [textCompletedBox, arrowsCompletedBox, btnCompletedBox,
-      completedBox];
-    const paramsCrationBox = [textCreationBox, arrowsCreationBox, btnCreationBox, creationBox];
+      completedBox, 'grid'];
+    const paramsCrationBox = [textCreationBox, arrowsCreationBox, btnCreationBox, creationBox,
+      'flex'];
 
-    function openBox(text, arrows, btn, box) {
+    function openBox(text, arrows, btn, box, layout) {
       text.innerText = 'Скрыть';
       arrows[0].classList.remove('close-block');
       arrows[1].classList.remove('close-block');
@@ -377,7 +384,8 @@ class ActionsCreater {
       arrows[1].classList.add('open-block');
       btn.classList.remove('btn-close');
       btn.classList.add('btn-open');
-      box.style.display = 'flex';
+      if (box.getElementsByClassName('empty-msg')[0]) layout = 'flex';
+      box.style.display = layout;
     }
 
     function closeBox(text, arrows, btn, box) {
@@ -393,10 +401,14 @@ class ActionsCreater {
 
     if (block.closest('.btn-close')) {
       if (block.closest('.btn-active-box')) {
-        icon.style.display = 'block';
         openBox(...paramsActiveBox);
         if (btnCompletedBox.classList.contains('btn-open')) closeBox(...paramsCompletedBox);
         if (btnCreationBox.classList.contains('btn-open')) closeBox(...paramsCrationBox);
+        if (document.getElementsByClassName('action-item')[0]) {
+          icon.style.display = 'block';
+        } else {
+          icon.style.display = 'none';
+        }
       }
 
       if (block.closest('.btn-completed-box')) {
