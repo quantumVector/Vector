@@ -145,6 +145,13 @@ class ActionsCreater {
     const icon = document.getElementsByClassName('current-actions-info')[0];
 
     box.appendChild(emptyMsg);
+
+    const styleBox = window.getComputedStyle(box);
+
+    if (styleBox.display === 'grid') {
+      // eslint-disable-next-line no-param-reassign
+      box.style.display = 'flex';
+    }
     icon.style.display = 'none';
   }
 
@@ -179,7 +186,6 @@ class ActionsCreater {
 
     if (response.ok) {
       activeBox.innerHTML = '';
-      activeBox.style.display = 'flex';
       completedBox.innerHTML = '';
       this.setActions();
     } else {
@@ -200,7 +206,6 @@ class ActionsCreater {
     if (response.ok) {
       activeBox.innerHTML = '';
       completedBox.innerHTML = '';
-      completedBox.style.display = 'flex';
       this.setActions();
     } else {
       throw new Error(`Возникла проблема с fetch запросом. ${response.status}`);
