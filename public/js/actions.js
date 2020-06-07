@@ -463,7 +463,16 @@ class ActionsCreater {
       this.constructor.toggleEndDate();
     });
 
-    this.container.addEventListener('click', (e) => {
+    this.container.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.dnd-action')) {
+        this.constructor.dragAction(e, e.target.parentNode);
+      }
+    });
+
+    // Далее addEventListener не используется, так как события с ним будут вызываться два раза,
+    // если завершить или удалить действие. (вероятнее всего из-за всплытия и перехвата события)
+
+    this.container.onclick = (e) => {
       const { target } = e;
 
       const activeBox = document.getElementById('active-actions-box');
@@ -485,16 +494,7 @@ class ActionsCreater {
       if (target.closest('.current-actions-info')) {
         document.getElementById('modal-info').style.display = 'flex';
       }
-    });
-
-    this.container.addEventListener('mousedown', (e) => {
-      if (e.target.closest('.dnd-action')) {
-        this.constructor.dragAction(e, e.target.parentNode);
-      }
-    });
-
-    // Далее addEventListener не используется, так как события с ним будут вызываться два раза,
-    // если завершить или удалить действие. (вероятнее всего из-за всплытия и перехвата события)
+    };
 
     this.btnComletedBox.onclick = () => {
       this.constructor.toggleActionBlock(this.btnComletedBox);
