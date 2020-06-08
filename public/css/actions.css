@@ -255,34 +255,33 @@ html, body {
   display: none;
   justify-content: center;
   padding: 20px 0;
+  margin: 0 auto;
+  width: 1006px;
   font-family: MyriadProSemiBold;
 }
 
 .actions #creation-box .create-action {
-  padding: 20px;
-  width: 50%;
-  border-radius: 10px;
-  font-size: 20px;
-  color: #fff;
-  background: linear-gradient(to bottom right, rgb(95, 95, 95), rgb(189, 189, 189));
-  box-shadow: -3px 3px 8px rgba(95, 95, 95, 0.664);
+  padding: 35px;
+  width: 100%;
+  font-size: 18px;
+  color: #F2F2F2;
+  background-color: #1B2940;
 }
 
 .actions #creation-box .create-action input[type=text],
 .actions #creation-box .create-action input[type=date] {
   border-radius: 10px;
-  padding: 5px 20px;
+  padding: 3px 20px;
   margin-left: 10px;
   font-family: MyriadProRegular;
-  font-size: 18px;
+  font-size: 15px;
   color: rgb(56, 56, 56);
   border: none;
   outline: none;
 }
 
 .actions #creation-box .create-action input[type=text] {
-  width: 50%;
-  margin-bottom: 20px;
+  width: 280px;
 }
 
 .actions #creation-box .create-action input[type=text]:focus,
@@ -330,7 +329,7 @@ html, body {
 }
 
 .actions #creation-box .create-action .custom-radio:focus+label::before {
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(3, 150, 166, 0.25);
 }
 
 .actions #creation-box .create-action .custom-radio:focus:not(:checked)+label::before {
@@ -338,8 +337,8 @@ html, body {
 }
 
 .actions #creation-box .create-action .custom-radio:checked+label::before {
-  border-color: #0b76ef;
-  background-color: #0b76ef;
+  border-color: #04BFBF;
+  background-color: #04BFBF;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
 }
 
@@ -352,6 +351,7 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   padding: 0 20px;
+  font-size: 15px;
 }
 
 .actions #creation-box .create-action .days-action div {
@@ -363,7 +363,7 @@ html, body {
   padding: 10px 20px;
   margin: 0 auto;
   font-family: MyriadProSemiBold;
-  font-size: 20px;
+  font-size: 15px;
   color: rgb(56, 56, 56);
   border: none;
   border-radius: 13px;

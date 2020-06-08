@@ -4,29 +4,41 @@
 'use strict';
 
 class ActionsCreater {
-  constructor(container, everyday, endDay, btnComletedBox,
+  constructor(container, period, endDay, btnComletedBox,
     btnActiveBox, btnCreationBox) {
     this.container = container;
-    this.everyday = everyday;
+    this.period = period;
     this.endDay = endDay;
     this.btnComletedBox = btnComletedBox;
     this.btnActiveBox = btnActiveBox;
     this.btnCreationBox = btnCreationBox;
   }
 
-  static togglePeriod() {
-    const everyday = document.getElementById('everyday');
+  static togglePeriod(target) {
     const certainDays = document.getElementsByName('period');
+    let counter = 0;
 
-    if (everyday.checked) {
-      for (let i = 1; i <= 7; i++) {
-        certainDays[i].disabled = 1;
-        certainDays[i].checked = 0;
-      }
+    if (target.value === 'everyday') {
+      [].forEach.call(certainDays, (item) => {
+        // eslint-disable-next-line no-param-reassign
+        if (item.value !== 'everyday') item.checked = 0;
+      });
     } else {
-      for (let i = 1; i <= 7; i++) {
-        certainDays[i].disabled = 0;
-      }
+      certainDays[0].checked = 0;
+    }
+
+    [].forEach.call(certainDays, (item) => {
+      // eslint-disable-next-line no-param-reassign
+      if (item.value !== 'everyday' && item.checked) counter += 1;
+    });
+
+    if (counter === 7) {
+      certainDays[0].checked = 1;
+
+      [].forEach.call(certainDays, (item) => {
+        // eslint-disable-next-line no-param-reassign
+        if (item.value !== 'everyday') item.checked = 0;
+      });
     }
   }
 
@@ -457,8 +469,10 @@ class ActionsCreater {
   setEvents() {
     const closeModalInfo = document.getElementById('close-modal-info');
 
-    this.everyday.addEventListener('click', () => {
-      this.constructor.togglePeriod();
+    this.period.addEventListener('click', (e) => {
+      if (e.target.closest('.custom-radio')) {
+        this.constructor.togglePeriod(e.target);
+      }
     });
 
     this.endDay.addEventListener('click', () => {
@@ -519,12 +533,12 @@ class ActionsCreater {
 }
 
 const container = document.getElementsByClassName('actions')[0];
-const everyday = document.getElementById('everyday');
+const period = document.getElementsByClassName('days-action')[0];
 const endDay = document.getElementById('end-day');
 const btnComletedBox = document.getElementsByClassName('btn-completed-box')[0];
 const btnActiveBox = document.getElementsByClassName('btn-active-box')[0];
 const btnCreationBox = document.getElementsByClassName('btn-creation-box')[0];
-const actions = new ActionsCreater(container, everyday, endDay, btnComletedBox,
+const actions = new ActionsCreater(container, period, endDay, btnComletedBox,
   btnActiveBox, btnCreationBox);
 
 actions.setActions();

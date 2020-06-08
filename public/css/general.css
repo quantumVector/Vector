@@ -91,12 +91,12 @@ html, body {
 
 .error-msg {
   border: 2px solid red;
-  width: 98%;
+  width: 1006px;
   margin: 0 auto;
   margin-top: 20px;
   padding: 10px 0;
   font-family: MyriadProSemiBold;
-  font-size: 24px;
+  font-size: 18px;
   text-align: center;
   color: red;
   background-color: rgba(255, 0, 0, 0.123);
