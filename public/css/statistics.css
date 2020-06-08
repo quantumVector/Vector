@@ -17,7 +17,7 @@ html, body {
   justify-content: center;
   align-items: center;
   grid-gap: 3px;
-  margin-top: 20px;
+  margin-top: 40px;
   font-size: 12px;
   color: #F2F2F2;
 }
@@ -45,7 +45,7 @@ html, body {
   position: absolute;
   display: grid;
   grid-template-columns: repeat(5, auto);
-  grid-template-rows: repeat(3, 1.8vw);
+  grid-template-rows: repeat(3, 35px);
   grid-auto-flow: column;
   align-items: center;
   top: -40px;
