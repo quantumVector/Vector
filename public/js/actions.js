@@ -239,15 +239,17 @@ class ActionsCreater {
     function moveAt(pageX, pageY) {
       const styleAction = getComputedStyle(action);
       const styleParent = getComputedStyle(parentAction);
-      const maxLeft = parseInt(parentAction.offsetWidth, 10) - action.offsetWidth;
+      const minLeft = parentAction.offsetLeft;
+      const maxLeft = parentAction.offsetLeft + parseInt(styleParent.width, 10)
+        - parseInt(styleAction.width, 10) - 40;
       const maxTop = parentAction.offsetTop;
       const maxBottom = maxTop + parseInt(styleParent.height, 10)
-        - action.offsetHeight - 10;
+        - action.offsetHeight;
 
       action.style.left = `${pageX - shiftX}px`;
       action.style.top = `${pageY - shiftY}px`;
 
-      if (parseInt(styleAction.left, 10) < 0) action.style.left = '0px';
+      if (parseInt(styleAction.left, 10) < minLeft) action.style.left = `${minLeft}px`;
       if (parseInt(styleAction.left, 10) > maxLeft) action.style.left = `${maxLeft}px`;
       if (parseInt(styleAction.top, 10) < maxTop) action.style.top = `${maxTop}px`;
       if (parseInt(styleAction.top, 10) > maxBottom) action.style.top = `${maxBottom}px`;
