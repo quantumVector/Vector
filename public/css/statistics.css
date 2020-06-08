@@ -1,0 +1,174 @@
+html, body {
+  height: 100%;
+}
+
+.statistics {
+  margin: 0 auto;
+  padding: 0 10px;
+  width: 1006px;
+  font-family: MyriadProRegular;
+}
+
+.statistics .wrapper {
+  display: grid;
+  grid-template-columns: repeat(55, 15.3px);
+  grid-template-rows: repeat(8, 15.3px);
+  grid-auto-flow: column;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 3px;
+  margin-top: 20px;
+  font-size: 12px;
+  color: #F2F2F2;
+}
+
+.statistics .wrapper .month {
+  font-size: 12px;
+}
+
+.statistics .wrapper .day {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #F2F2F2;
+}
+
+.statistics .wrapper .day-done {
+  background-color: #02B3C7;
+}
+
+.statistics .wrapper .day-failed {
+  background-color: #1B2940;
+}
+
+.statistics .wrapper .tooltip {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  grid-template-rows: repeat(3, 1.8vw);
+  grid-auto-flow: column;
+  align-items: center;
+  top: -40px;
+  font-size: 16px;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.89);
+  z-index: 999;
+}
+
+.statistics .wrapper .tooltip-only-date {
+  grid-template-rows: repeat(1, 1.8vw);
+}
+
+.statistics .wrapper .tooltip .action-date {
+  grid-row: 1 / span 3;
+  color: #F2F2F2;
+}
+
+.statistics .wrapper .tooltip p {
+  margin: 0;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.statistics .wrapper .tooltip .triangle-down {
+  position: absolute;
+	width: 0;
+  height: 0;
+  bottom: -8px;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+	border-left: 7px solid transparent;
+	border-right: 7px solid transparent;
+  border-top: 8px solid rgba(0, 0, 0, 0.89);
+  z-index: 998;
+}
+
+.statistics .btn-box {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.statistics .btn-box .btn-year {
+  padding: 5px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  background-color: #F2F2F2;
+}
+
+.statistics .btn-box .btn-year:not(.active) {
+  color: #313131;
+}
+
+.statistics .btn-box .btn-year:not(.active):hover {
+  color: #F2F2F2;
+  background: #04BFBF;
+}
+
+.statistics .btn-box .active {
+  color: #F2F2F2;
+  background-color: #0396A6;
+}
+
+.statistics .title-info {
+  font-size: 22px;
+  font-family: MyriadProSemiBold;
+  text-align: center;
+  color: #F2F2F2;
+}
+
+.statistics .statistics-info {
+  display: flex;
+  justify-content: space-around;
+  padding: 0 20px;
+  font-size: 18px;
+  color: #F2F2F2;
+  background-color: #1B2940;
+}
+
+.statistics .statistics-info .info-first-block,
+.statistics .statistics-info .info-second-block  {
+  width: 45%;
+}
+
+.statistics .statistics-act {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.statistics .statistics-act .info-first-block {
+  display: grid;
+  grid-template-columns: repeat(5, 180px);
+  grid-template-rows: repeat(2, auto);
+  grid-gap: 14px;
+  text-align: center;
+}
+
+.statistics .statistics-act #stat-act-block {
+  width: 100%;
+}
+
+.statistics .statistics-act .info-first-block .not-actions {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.statistics .statistics-act .info-first-block div {
+  display: inline-block;
+  min-width: 15%;
+}
+
+.statistics .statistics-act .info-first-block div span {
+  display: block;
+  margin-top: 20px;
+}
+
+.statistics .statistics-act .info-first-block div .act-done {
+  color: #04BFBF;
+}
+
+.statistics .statistics-act .info-first-block div .act-failed {
+  color: #BF250D;
+}

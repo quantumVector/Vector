@@ -242,7 +242,8 @@ class StatisticsCreator {
           const actionName = document.createElement('p');
 
           actionName.innerText = action.name;
-          if (!action.status) actionName.style.color = 'red';
+          if (!action.status) actionName.style.color = '#BF250D';
+          if (action.status) actionName.style.color = '#02B3C7';
 
           tooltip.append(actionName);
         }
