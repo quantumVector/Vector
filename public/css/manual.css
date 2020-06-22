@@ -1,9 +1,14 @@
+body {
+  background: #073040;
+}
+
 .manual {
-  padding: 20px 0;
+  padding: 20px 60px;
   margin: 0 auto;
   width: 50%;
   font-size: 23px;
   font-family: MyriadProRegular;
+  color: #F2F2F2;
 }
 
 .manual h1,
