@@ -659,7 +659,7 @@ class CalendarCreator {
     this.container.appendChild(modal);
   }
 
-  renderActionsInModal(day, month, year, actions, currentDay) {
+  renderActionsInModal(day, month, year, actions) {
     const date = document.getElementById('action-date');
     const monthsName = ['Января', 'Февраля', 'Марта', 'Апреля', 'Мая', 'Июня',
       'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'];
@@ -701,7 +701,10 @@ class CalendarCreator {
       divAction.append(btn);
     });
 
-    if (currentDay && this.debts.length > 0) {
+    const dateNow = new Date();
+
+    if (+day === dateNow.getDate() && +month === dateNow.getMonth()
+      && +year === dateNow.getFullYear() && this.debts.length > 0) {
       for (const debt of this.debts) {
         const actionBox = document.getElementById('action-box');
         const divAction = document.createElement('div');
@@ -755,12 +758,9 @@ class CalendarCreator {
         const month = td.getAttribute('data-month');
         const year = td.getAttribute('data-year');
         const actions = td.getElementsByClassName('actions-container')[0];
-        let currentDay = false;
-
-        if (target.closest('.current-day')) currentDay = true;
 
         this.actionsForModal = actions;
-        this.renderActionsInModal(day, month, year, actions, currentDay);
+        this.renderActionsInModal(day, month, year, actions);
       }
     });
 
