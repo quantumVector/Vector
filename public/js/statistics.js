@@ -375,8 +375,8 @@ class StatisticsCreator {
           const percentFailedAct = (activeActions[key].failedDaysInMonth * 100) / daysInMonth;
 
           action.innerHTML = `<span>${key}:</span>
-          <p class="act-done">Выполнено: ${activeActions[key].successDaysInMonth} (${Math.floor(percentCompletedAct)}%)</p>
-          <p class="act-failed">Провалено: ${activeActions[key].failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p>`;
+          <div><p class="act-done">Выполнено: ${activeActions[key].successDaysInMonth} (${Math.floor(percentCompletedAct)}%)</p>
+          <p class="act-failed">Провалено: ${activeActions[key].failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p></div>`;
 
           actBlock.append(action);
         }

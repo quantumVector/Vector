@@ -122,14 +122,14 @@ html, body {
   display: flex;
   justify-content: space-around;
   padding: 0 20px;
-  font-size: 18px;
+  font-size: 17px;
   color: #F2F2F2;
   background-color: #1B2940;
 }
 
 .statistics .statistics-info .info-first-block,
 .statistics .statistics-info .info-second-block  {
-  width: 45%;
+  width: 50%;
 }
 
 .statistics .statistics-act {
@@ -156,8 +156,14 @@ html, body {
 }
 
 .statistics .statistics-act .info-first-block div {
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   min-width: 15%;
+}
+
+.statistics .statistics-act .info-first-block div p {
+  margin: 10px 0;
 }
 
 .statistics .statistics-act .info-first-block div span {
