@@ -372,11 +372,20 @@ class StatisticsCreator {
         if (Object.prototype.hasOwnProperty.call(activeActions, key)) {
           const action = document.createElement('div');
           const percentCompletedAct = (activeActions[key].successDaysInMonth * 100) / daysInMonth;
-          const percentFailedAct = (activeActions[key].failedDaysInMonth * 100) / daysInMonth;
+          let percentFailedAct = (activeActions[key].failedDaysInMonth * 100) / daysInMonth;
+          let failedDaysInMonth;
+
+          if (activeActions[key].failedDaysInMonth - 1 < 0) {
+            failedDaysInMonth = 0;
+          } else {
+            failedDaysInMonth = activeActions[key].failedDaysInMonth - 1;
+          }
+
+          if (activeActions[key].failedDaysInMonth - 1 === 0) percentFailedAct = 0;
 
           action.innerHTML = `<span>${key}:</span>
           <div><p class="act-done">Выполнено: ${activeActions[key].successDaysInMonth} (${Math.floor(percentCompletedAct)}%)</p>
-          <p class="act-failed">Провалено: ${activeActions[key].failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p></div>`;
+          <p class="act-failed">Провалено: ${failedDaysInMonth} (${Math.floor(percentFailedAct)}%)</p></div>`;
 
           actBlock.append(action);
         }
