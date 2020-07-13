@@ -5,7 +5,7 @@ body {
 .manual {
   padding: 20px 60px;
   margin: 0 auto;
-  width: 50%;
+  width: 887px;
   font-size: 21px;
   font-family: MyriadProRegular;
   color: #F2F2F2;
@@ -17,4 +17,28 @@ body {
 .manual h2 + p + p,
 .manual h2 + p + p + p {
   text-align: center;
+}
+
+.manual p {
+  text-align: center;
+}
+
+.manual img {
+  display: block;
+  margin: 0 auto;
+  width: 700px;
+}
+
+.manual a {
+  display: block;
+  margin: 0 auto;
+  width: 90px;
+  text-decoration: none;
+  font-size: 31px;
+  font-weight: bold;
+  color: #F2F2F2;
+}
+
+.manual a:hover {
+  color: #04BFBF;
 }
