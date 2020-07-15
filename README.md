@@ -4,6 +4,12 @@
 
 ---
 
+## Что использовалось
+
+- HTML, CSS, Flexbox, Grid, JavaScript
+- Node.js, Express, Handlebars, MongoBD, Mongoose
+- Chai, Mocha, Selenium WebDriver
+
 ## Примеры использования
 
 ### 1. Создание действия
